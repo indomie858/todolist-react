@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# json config files
+/Backend Stuff/go/*.json
+
 # testing
 /coverage
 
