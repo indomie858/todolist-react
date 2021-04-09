@@ -72,8 +72,7 @@ type Task struct {
 }
 
 func main() {
-   userid := "a3a1hWUx5geKB8qeR6fbk5LZZGI2"
-
+   // Setup our Firestore client ..
    ctx := context.Background()
 
    opt := option.WithCredentialsFile("/Users/sabra/Library/Mobile Documents/com~apple~CloudDocs/School/COMP 482/Project1/todolist-react/Backend Stuff/go/friday-584-firebase-adminsdk-es3qw-60b3f32bf1.json")
@@ -83,15 +82,24 @@ func main() {
 	}
 	defer client.Close()
 
+   // Let's try getting user data
    fmt.Printf("Getting User Data -- \n")
+
+   userid := "a3a1hWUx5geKB8qeR6fbk5LZZGI2"
+
+   // This formats a string for us, so we can be eventually passed user id?
    useridpath := fmt.Sprintf("users/%s", userid)
+
+   // Pass that to Firestore
    user := client.Doc(useridpath)
+
+   // Get a snapshot of the user data
    usersnap, err := user.Get(ctx)
    if err != nil {
       log.Fatalf("Cannot get user snapshot: %v", err)    // %v is to format error values
    }
 
-   // Get the data in map format
+   // Get the data in map format - default format for Go's Firestore package
    dataMap := usersnap.Data()
    fmt.Println("Data in map format: ")
    fmt.Println(dataMap)
@@ -104,23 +112,31 @@ func main() {
    if err != nil {
       log.Fatalf("Cannot put data to struct: %v", err)   // %v is to format error values
    }
+
    fmt.Printf("\nData pulled from structure:\n")
    fmt.Printf("Name: %s, Lists: [%s %s]\n",userStruct.Name, userStruct.Lists[0], userStruct.Lists[1])
 
-
    // Now for the list data
    fmt.Printf("\nGetting List Data -- \n")
+
+   // Get the string version of the path
    listpath := fmt.Sprintf("lists/%s", userStruct.Lists[0])
+
+   // Pass that to Firestore
    list := client.Doc(listpath)
+
+   // Get a snapshot of the list data
    listsnap, err := list.Get(ctx)
    if err != nil {
       log.Fatalf("Cannot get list snapshot: %v", err)    // %v is to format error values
    }
+
+   // Get the data in map format - default format for Go's Firestore package
    fmt.Println("Data in map format: ")
    listMap := listsnap.Data()
-
    fmt.Println(listMap)
 
+   // Now let's try getting it into a list struct
    var listStruct List
    err = listsnap.DataTo(&listStruct)
    if err != nil {
