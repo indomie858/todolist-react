@@ -35,5 +35,6 @@ func testEditList() error {
       "newval": false,
    }
    err := request.DataBaseRequest(uid, action, item, description)
+
    return err
 }

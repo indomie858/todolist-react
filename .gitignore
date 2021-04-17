@@ -6,9 +6,6 @@ node_modules
 .pnp.js
 go.sum
 
-# json config files
-/Backend Stuff/go/*.json
-
 # testing
 /coverage
 
@@ -16,6 +13,7 @@ go.sum
 /build
 
 # misc
+/Backend Stuff/database/bin/database/.env
 .DS_Store
 .env.local
 .env.development.local

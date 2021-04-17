@@ -7,6 +7,10 @@ import (
    "cloud.google.com/go/firestore"
 )
 
+/*func AddUser() {
+
+}*/
+
 // func GetUser {{{
 //
 // Returns a user from the Firestore database
