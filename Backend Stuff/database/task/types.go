@@ -23,7 +23,6 @@ const (
    WBE  = "weeks before event"
 )
 
-
 // Structure for task data
 type Task struct {
    // Firestore generated task ID
