@@ -3,7 +3,7 @@
 # TESTING
 TODO
 
-#QUICK Start
+# QUICK Start
 Fill out $HOME/.aws/credentials
 ```bash
    [default]
