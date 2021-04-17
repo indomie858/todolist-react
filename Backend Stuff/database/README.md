@@ -35,23 +35,27 @@ Then run the program
 ```
 
 ## TESTS / CODE TO WRITE
-TestAddUser
-TestAddList
-TestAddTask
+**ADD**
+- TestAddUser
+- TestAddList
+- TestAddTask
 
-TestGetClientSetting
-TestGetUser
-TestGetList
-TestGetTask
+**GET**
+- TestGetClientSetting
+- TestGetUser
+- TestGetList
+- TestGetTask
 
-TestEditClientSetting
-TestEditUser
-~~TestEditList~~
-TestEditTask
+**EDIT**
+- TestEditClientSetting
+- TestEditUser
+- ~~TestEditList~~
+- TestEditTask
 
-TestDeleteUser
-TestDeleteList
-TestDeleteTask
+**DELETE**
+- TestDeleteUser
+- TestDeleteList
+- TestDeleteTask
 
 *Note*
 
