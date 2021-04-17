@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+/Backend Stuff/go/go.sum
 
 # json config files
 /Backend Stuff/go/*.json
