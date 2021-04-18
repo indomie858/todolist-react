@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+       
+        {
+            "type": "node-terminal",
+            "name": "Run Script: Node",
+            "request": "launch",
+            "command": "npm run start",
+            "cwd": "${workspaceFolder}/Backend Stuff/node/server"
+        },
+        {
+            "type": "node-terminal",
+            "name": "Run Script: React",
+            "request": "launch",
+            "command": "npm run start",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

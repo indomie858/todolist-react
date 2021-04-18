@@ -30,6 +30,14 @@ const TestComponent = () => {
                 firstParam: {text},
             })
         });
+
+       fetch('http://localhost:3003/api/'+text,{
+            method: 'GET',
+            
+            
+        }).then(response => response.json()).then(data=>setOutput(data));
+        
+        
     }
 
     return (
