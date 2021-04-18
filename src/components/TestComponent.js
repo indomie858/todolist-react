@@ -35,7 +35,12 @@ const TestComponent = () => {
             method: 'GET',
             
             
-        }).then(response => response.json()).then(data=>setOutput(data));
+        }).then(response => {
+                if(response.status===404){
+                    return "Error: 404"
+                }else{
+                return response.json()}
+            }).then(data=>setOutput(data));
         
         
     }
