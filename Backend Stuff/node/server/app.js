@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const fs = require('fs')
+const http = require('http')
 // importing the dependencies
 const cookieParser = require('cookie-parser');
 
@@ -64,6 +65,29 @@ app.get('/api/:input',(req,res) =>{
     res.render('error')
   }
 })
+
+
+app.get('/api/userData/:id',(req,res)=>{
+  
+
+http.get('http://localhost/userData/'+req.params.id, (resp) => {
+  let data = '';
+
+  // A chunk of data has been received.
+  resp.on('data', (chunk) => {
+    data += chunk;
+  });
+
+  // The whole response has been received. Print out the result.
+  resp.on('end', () => {
+    console.log(JSON.parse(data).explanation);
+  });
+
+}).on("error", (err) => {
+  console.log("Error: " + err.message);
+});
+})
+
 function setCustomError(req,res,message,name,status){
   const err = createError(status,name)
   res.locals.title=name
@@ -72,6 +96,8 @@ function setCustomError(req,res,message,name,status){
   res.status(status)
   
 }
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
