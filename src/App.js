@@ -47,42 +47,6 @@ const App = () => {
         day: 'Feb 5th at 5:30pm',
         reminder: false,
       },
-      {
-        id: 1,
-        text: 'Doctors appt',
-        day: 'Feb 5th at 2:30pm',
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: 'School meeting',
-        day: 'Feb 6th at 1:30pm',
-        reminder: true,
-      },
-      {
-        id: 3,
-        text: 'Food shopping',
-        day: 'Feb 5th at 5:30pm',
-        reminder: false,
-      },
-      {
-        id: 1,
-        text: 'Doctors appt',
-        day: 'Feb 5th at 2:30pm',
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: 'School meeting',
-        day: 'Feb 6th at 1:30pm',
-        reminder: true,
-      },
-      {
-        id: 3,
-        text: 'Food shopping',
-        day: 'Feb 5th at 5:30pm',
-        reminder: false,
-      },
     ]
   )
 
