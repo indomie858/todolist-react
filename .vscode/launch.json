@@ -7,6 +7,7 @@
         "request": "launch",
         "mode": "debug",
         
+        
         "program": "${workspaceFolder}/Backend Stuff/database/bin/database/api_server.go"
     },
        
@@ -15,6 +16,7 @@
             "name": "Run Script: Node",
             "request": "launch",
             "command": "npm run start",
+            "skipfiles": ["<node_internals>/**"],
             "cwd": "${workspaceFolder}/Backend Stuff/node/server"
         },
         {

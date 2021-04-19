@@ -31,7 +31,7 @@ const TestComponent = () => {
             })
         });
 
-       fetch('http://localhost:3003/api/'+text,{
+       fetch('http://localhost:3003/api/userData/'+text,{
             method: 'GET',
             
             
@@ -40,7 +40,7 @@ const TestComponent = () => {
                     return "Error: 404"
                 }else{
                 return response.json()}
-            }).then(data=>setOutput(data));
+            }).then(data=>setOutput(JSON.stringify(data)));
         
         
     }
