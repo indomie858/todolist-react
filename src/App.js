@@ -53,13 +53,13 @@ const App = () => {
   return (
     <>
     <TestComponent />
-
-    <Container maxWidth="xs" >
-      
-        <Header />
-
-        {tasks.length > 0 ? (<Tasks tasks={tasks} />) : ('No tasks to show')}
-
+    {/* Container is from material-ui library */}
+    <Container maxWidth="xs">
+    <Header />
+      <div className='listContainer'>
+        {/* displays placeholder list and title "Today" */}
+        {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' />) : ('No tasks to show')}
+      </div>
     </Container>
     <BottomNavBar />
     </>
