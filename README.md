@@ -18,6 +18,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+If you intend on using any backend functionality, please ensure that you have both node and go running. It will save you many headaches.
+
+To make API calls, enter the USER ID in the first field and any optional parameters in the second field.
+
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\
