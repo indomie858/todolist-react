@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const fs = require('fs')
+const http = require('http')
 // importing the dependencies
 const cookieParser = require('cookie-parser');
 
@@ -15,7 +16,8 @@ const usersRouter = require('./routes/users');
 
 const app = express();
 
-let jsonObject = require('./test.json')
+let jsonObject = require('./test.json');
+const { getDefaultNormalizer } = require('@testing-library/dom');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -64,6 +66,86 @@ app.get('/api/:input',(req,res) =>{
     res.render('error')
   }
 })
+
+
+app.get('/api/userData/:id',(req,res)=>{
+  console.log(req.params.id)
+  getName(req.params.id,(name)=>{ //this is terrible and I hate it
+    
+    console.log(name)
+    res.send(JSON.stringify(name))
+  })
+  // res.send(JSON.stringify(name.Name))
+
+})
+
+app.get('/api/userData/:id/name',(req,res)=>{
+  console.log(req.params.id)
+  getName(req.params.id,(name)=>{ //this is terrible and I hate it
+    
+    console.log(name)
+    res.send(JSON.stringify(name.Name))
+  })
+  // res.send(JSON.stringify(name.Name))
+
+})
+
+app.get('/api/userData/:id/email',(req,res)=>{
+  console.log(req.params.id)
+  getName(req.params.id,(name)=>{ //this is terrible and I hate it
+    
+    console.log(name)
+    res.send(JSON.stringify(name.Email))
+  })
+  // res.send(JSON.stringify(name.Name))
+
+})
+
+app.get('/api/userData/:id/status',(req,res)=>{
+  console.log(req.params.id)
+  getName(req.params.id,(name)=>{ //this is terrible and I hate it
+    
+    console.log(name)
+    res.send(JSON.stringify(name.Status))
+  })
+  // res.send(JSON.stringify(name.Name))
+
+})
+
+app.get('/api/userData/:id/lists',(req,res)=>{
+  console.log(req.params.id)
+  getName(req.params.id,(name)=>{ //this is terrible and I hate it
+    
+    console.log(name)
+    res.send(JSON.stringify(name.Lists))
+  })
+  // res.send(JSON.stringify(name.Name))
+
+})
+
+function getName(uid,callback){
+  // var output =1
+  http.get('http://localhost:10000/userData/'+uid, (resp) => {
+    let data = ''
+  
+    // A chunk of data has been received.
+    resp.on('data', (chunk) => {
+      data += chunk
+    })
+  
+    // The whole response has been received. Print out the result.
+     resp.on('end', () => {
+      console.log(JSON.parse(data).explanation)
+      callback(JSON.parse(data))
+      // return output
+    });
+  
+  }).on("error", (err) => {
+    console.log("Error: " + err.message)
+  })
+  // return output
+}
+
 function setCustomError(req,res,message,name,status){
   const err = createError(status,name)
   res.locals.title=name
@@ -72,6 +154,8 @@ function setCustomError(req,res,message,name,status){
   res.status(status)
   
 }
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

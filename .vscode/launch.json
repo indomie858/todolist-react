@@ -1,12 +1,22 @@
 {
     "version": "0.2.0",
     "configurations": [
+    {
+        "name": "Launch api",
+        "type": "go",
+        "request": "launch",
+        "mode": "debug",
+        
+        
+        "program": "${workspaceFolder}/Backend Stuff/database/bin/database/api_server.go"
+    },
        
         {
             "type": "node-terminal",
             "name": "Run Script: Node",
             "request": "launch",
             "command": "npm run start",
+            "skipfiles": ["<node_internals>/**"],
             "cwd": "${workspaceFolder}/Backend Stuff/node/server"
         },
         {
