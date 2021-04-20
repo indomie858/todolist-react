@@ -1,67 +1,41 @@
-import TestComponent from './components/TestComponent'
+import TestComponent from './components/TestComponent';
 
-import { useState } from 'react'
-import Header from './components/Header'
-import Tasks from './components/Tasks'
-import BottomNavBar from './components/BottomNavBar'
-
+import { useState } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
+import Home from './components/Home';
+import Preferences from './components/Preferences';
+import Login from './components/login/Login'
+import useToken from './components/login/useToken'
+
 
 const App = () => {
-  //state for displaying tasks. currently has placeholder objects. will replace with tasks from database
-  const [tasks, setTasks] = useState(
-    [
-      {
-        id: 1,
-        text: 'Doctors appt',
-        day: 'Feb 5th at 2:30pm',
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: 'School meeting',
-        day: 'Feb 6th at 1:30pm',
-        reminder: true,
-      },
-      {
-        id: 3,
-        text: 'Food shopping',
-        day: 'Feb 5th at 5:30pm',
-        reminder: false,
-      },
-      {
-        id: 1,
-        text: 'Doctors appt',
-        day: 'Feb 5th at 2:30pm',
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: 'School meeting',
-        day: 'Feb 6th at 1:30pm',
-        reminder: true,
-      },
-      {
-        id: 3,
-        text: 'Food shopping',
-        day: 'Feb 5th at 5:30pm',
-        reminder: false,
-      },
-    ]
-  )
+  //login token with custom hook:  /components/login/useToken
+  const { token, setToken } = useToken();
+
+  if (!token) {
+    //if there is no user token, then render login page
+
+    // NOTE: COMMENT THIS LINE TO HIDE LOGIN PAGE IF SERVER ISN'T RUNNING
+    return <Login setToken={setToken} />
+  }
 
   return (
     <>
-    <TestComponent />
-    {/* Container is from material-ui library */}
-    <Container maxWidth="xs">
-    <Header />
-      <div className='listContainer'>
-        {/* displays placeholder list and title "Today" */}
-        {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' />) : ('No tasks to show')}
-      </div>
-    </Container>
-    <BottomNavBar />
+      <TestComponent />
+
+      <Container maxWidth="xs">
+        <BrowserRouter>
+          <Switch>
+            <Route path="/">
+              <Home />
+            </Route>
+            <Route path="/preferences">
+              <Preferences />
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </Container>
     </>
   );
 }

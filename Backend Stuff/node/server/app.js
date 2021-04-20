@@ -45,9 +45,12 @@ app.use(cors());
 // server.on('listening', onListening);
 
 
-
-
-
+// to test login page from front end. will delete later - gaven
+app.use('/login', (req, res) => {
+  res.send({
+    token: 'test123'
+  });
+});
 
 
 // defining an endpoint to return all ads
