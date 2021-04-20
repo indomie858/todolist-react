@@ -1,9 +1,9 @@
 import React from 'react'
 import { useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Header from './Header';
-import Tasks from './Tasks';
-import BottomNavBar from './BottomNavBar';
+import Header from '../Header';
+import Tasks from '../Tasks';
+import BottomNavBar from '../BottomNavBar';
 import Container from '@material-ui/core/Container';
 
 const Home = () => {

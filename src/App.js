@@ -3,8 +3,8 @@ import TestComponent from './components/TestComponent';
 import { useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
-import Home from './components/Home';
-import Preferences from './components/Preferences';
+import Home from './components/Pages/Home';
+import Preferences from './components/Pages/Preferences';
 import Login from './components/login/Login'
 import useToken from './components/login/useToken'
 
