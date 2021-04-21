@@ -7,7 +7,7 @@ import BottomNavBar from '../BottomNavBar';
 import Container from '@material-ui/core/Container';
 
 const Home = () => {
-    //state for displaying tasks. currently has placeholder objects. will replace with tasks from database
+  //state for displaying tasks. currently has placeholder objects. will replace with tasks from database
   const [tasks, setTasks] = useState(
     [
       {
@@ -49,19 +49,16 @@ const Home = () => {
     ]
   )
 
-    return (
-        <>
-            {/* Container is from material-ui library */}
-            <Container maxWidth="xs">
-                <Header />
-                <div className='listContainer'>
-                    {/* displays placeholder list and title "Today" */}
-                    {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' />) : ('No tasks to show')}
-                </div>
-            </Container>
-            <BottomNavBar />
-        </>
-    )
+  return (
+    <>
+      <Header />
+      <div className='listContainer'>
+        {/* displays placeholder list and title "Today" */}
+        {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' />) : ('No tasks to show')}
+      </div>
+      <BottomNavBar />
+    </>
+  )
 }
 
 export default Home

@@ -16,14 +16,14 @@ const App = () => {
   if (!token) {
     //if there is no user token, then render login page
 
-    // NOTE: COMMENT THIS LINE TO HIDE LOGIN PAGE IF SERVER ISN'T RUNNING
+    // NOTE: COMMENT THIS LINE TO HIDE LOGIN PAGE
     return <Login setToken={setToken} />
   }
 
   return (
     <>
       <TestComponent />
-
+      {/* main container for ui */}
       <Container maxWidth="xs">
         <BrowserRouter>
           <Switch>

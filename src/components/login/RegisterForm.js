@@ -1,3 +1,5 @@
+//component for registration form. used on login page - Login.js
+
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
+//styles for material ui components
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
