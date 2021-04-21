@@ -1,49 +1,62 @@
 package request
 import (
    "context"
-   "database/user"
    "cloud.google.com/go/firestore"
 )
 
 // Actions that can be performed
 const (
-   ADD = "add"
-   GET = "get"
-   EDIT = "edit"
-   DELETE = "delete"
+   CREATE = "create"
+   READ = "read"
+   UPDATE = "update"
+   DESTROY = "destroy"
 )
 
 // Items that can be modified/retrieved
 const (
    CLIENT = "client"
    LIST = "list"
+   SETTINGS = "settings"
    TASK = "task"
    USER = "user"
 )
 
+/*switch (req.Type) {
+case "delete":
+   // Get each item in the payload and delete it
+case "update":
+   // Get each item in the payload
+   // if any value != database_value && value != null
+   //    change value
+   //    return true if all successful
+case "read":
+   // Get each item in the payload and return any field that was not omitted
+case "create":
+   // Create new object in firestore, return new object & its id
+}*/
+
 // Structure for the request
 type Request struct {
    // Pointer to a struct representing the user the request is targeting
-   User      *user.User
+   UserId  string
+
+   User *User
+   List *List
 
    // The action to be performed : add, edit, delete
-   Action    string
+   Type    string
 
-   // Item the requesting is targeting
-   Item      string
-
-   // Name of the item
-   ItemName  interface{}
-
-   // Field to be edited
-   ItemField interface{}
-
-   // New value of the field, if applicable -- only used in edit
-   NewValue  interface{}
+   Payload Payload
 
    // Firestore client for the session
-   Client    *firestore.Client
+   Client  *firestore.Client
 
    // Context for the session
-   Ctx       context.Context
+   Ctx     context.Context
+}
+
+type Payload struct {
+   Users []*User
+   Lists []*List
+   Tasks []*Task
 }
