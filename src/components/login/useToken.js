@@ -5,7 +5,7 @@ export default function useToken() {
   //gets token from memory
   const getToken = () => {
     //tokens are stored locally so user doesn't have to keep logging in
-    const tokenString = localStorage.getItem('token');
+    const tokenString = sessionStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
     return userToken?.token
   };
@@ -15,7 +15,7 @@ export default function useToken() {
   //saves token to state
   const saveToken = userToken => {
     //tokens are stored locally so user doesn't have to keep logging in
-    localStorage.setItem('token', JSON.stringify(userToken));
+    sessionStorage.setItem('token', JSON.stringify(userToken));
     setToken(userToken.token);
   };
 
