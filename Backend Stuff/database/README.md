@@ -201,9 +201,11 @@ In terminal
 `http://localhost:10000/update/{uid}?<params>`
 
 **Example**
+
 Add list to list array
 
 URL
+
 `http://localhost:10000/update/MIUVfleqSkxAtzwNeW0W?lists=qqEkD06oFudIRrCVPAc5`
 
 Return
