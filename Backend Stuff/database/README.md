@@ -37,7 +37,7 @@ URL
 `http://localhost:10000/create/user/sabra`
 
 Return
-
+(updated list)
 ```json
 {
     "Id": "hpeOH5GDaYRelq51m4XP",
@@ -48,6 +48,8 @@ Return
     "Settings": ""
 }
 ```
+
+In terminal
 
 ```bash
  Endpoint Hit: createUser
@@ -67,7 +69,8 @@ URL
 
 `http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/test_add_list?lock=false`
 
-Return
+Return 
+(updated list)
 
 ```json
 {
@@ -81,6 +84,7 @@ Return
 }
 ```
 
+In terminal
 ```bash
  Endpoint Hit: createList
  list_name: test_add_list
