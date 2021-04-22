@@ -1,3 +1,25 @@
+TOC
+- [Getting Started with Database Server](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#getting-started-with-database-server)
+- [Datbase API Requests](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#database-api-requests)
+   - [Adding Data to a Collection](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#adding-data-to-a-collection)
+      - [Add User](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-user)
+      - [Add List](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-list)
+      - [Add Task](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-task)
+      - [Add Subtask](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-subtask)
+   - [Removing Data](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#removing-data-from-a-collection)
+      - [Destroy User](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-user)
+      - [Destroy List](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-list)
+      - [Destroy Task](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-task)
+   - [Reading Data](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#reading-data-from-a-collection)
+      - [Read User](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-user)
+      - [Read List](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-list)
+      - [Read Task](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-task)
+   - [Editing Data](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#editing-values-in-the-database)
+      - [Update User](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-user)
+      - [Update List](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-list)
+      - [Update Task](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-task)
+
+
 # Getting Started with Database Server
 
 I believe you need to make a .env file in `database/bin` ... I don't know how to make it so it just auto works like the server *r i p*
@@ -143,12 +165,11 @@ In terminal
  &{a3a1hWUx5geKB8qeR6fbk5LZZGI2 max   [NIcoux7atd3A8Lv7guUO ahsdfhhf] }
 ```
 
+### Read List
+`http://localhost:10000/read/{uid}/task/{name}`
 
 ### Read Task
 `http://localhost:10000/read/{uid}/list/{name}`
-
-### Read List
-`http://localhost:10000/read/{uid}/task/{name}`
 
 ## Editing values in the database
 ### Edit User
