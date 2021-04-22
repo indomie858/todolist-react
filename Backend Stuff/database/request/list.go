@@ -2,7 +2,10 @@ package request
 
 import (
    "log"
+   "net/url"
    "context"
+   "strings"
+   "strconv"
 
    "google.golang.org/api/iterator"
    "cloud.google.com/go/firestore"
@@ -84,7 +87,20 @@ func (r *Request) GetListByName(listname string) {
 } // }}}
 
 // func Update {{{
-func (r *Request) Update(fields interface{}) error {
+func (r *Request) UpdateList(fields url.Values) error {
+   var data = make(map[string]interface{})
+
+   log.Printf("%v",fields)
+   for k, v := range fields {
+      val := strings.Join(v,"")
+      if k == "list_name" {
+         data[k] = val
+      }
+      if k == "lock" {
+         data[k], _ = strconv.ParseBool(val)
+      }
+   }
+   log.Printf("%v", data)
 
    ref := r.Client.Collection("lists").Doc(r.List.Id)
    err := r.Client.RunTransaction(r.Ctx, func(ctx context.Context, tx *firestore.Transaction) error {
@@ -97,7 +113,7 @@ func (r *Request) Update(fields interface{}) error {
       if err != nil {
          return err
       }*/
-      return tx.Set(ref, fields, firestore.MergeAll)
+      return tx.Set(ref, data, firestore.MergeAll)
    })
 
    return err

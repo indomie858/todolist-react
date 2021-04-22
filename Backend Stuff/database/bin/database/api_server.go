@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
    "context"
+
    "encoding/json"
 
 	"github.com/gorilla/mux"
@@ -86,18 +87,6 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func editUser(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func editList(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func editTask(w http.ResponseWriter, r *http.Request) {
-
-}
-
 func updateUser(w http.ResponseWriter, r *http.Request) {
 
 }
@@ -107,13 +96,16 @@ func updateList(w http.ResponseWriter, r *http.Request) {
 
    vars := mux.Vars(r)
    uid := vars["uid"]
+   listname := vars["list"]
+   fmt.Fprintf(w, "listname: %v\n", listname)
 
-   var list []*request.ListJSON
-   t := []byte(vars["list"])
-   json.Unmarshal(t, &list)
+   payload := r.URL.Query()
 
-   listname := list[0].Name
-   fmt.Printf(listname)
+   fmt.Fprintf(w, "PAYLOAD PARAMATERS\n")
+   for k, v := range payload {
+      s := fmt.Sprintf("%v => %v", k, v)
+      fmt.Fprintf(w, "%v\n", s)
+   }
 
    var req request.Request
    req.Type = "update"
@@ -122,7 +114,7 @@ func updateList(w http.ResponseWriter, r *http.Request) {
    req.GetClient()
 	req.GetListByName(listname)
 
-   //req.UpdateList(fields)
+   req.UpdateList(payload)
 
 }
 
@@ -137,7 +129,7 @@ func handleRequests() {
 	router.HandleFunc("/create/user/{name}", createUser)
    router.HandleFunc("/create/list/{uid}/{name}", createList)
    router.HandleFunc("/create/task/{uid}/{name}", createTask)
-   router.HandleFunc("/create/task/{uid}/{name}/", createSubtask)
+   router.HandleFunc("/create/subtask/{uid}/{name}", createSubtask)
 
    router.HandleFunc("/destroy/{uid}", destroyUser)
    router.HandleFunc("/destroy/list/{lists}", destroyList)
@@ -147,9 +139,10 @@ func handleRequests() {
    router.HandleFunc("/read/list/{uid}/{name}", getList)
    router.HandleFunc("/read/task/{uid}/{name}", getTask)
 
-   router.HandleFunc("/update/{uid}", editUser)
-   router.HandleFunc("/update/list/{uid}/{list}", editList)
-   router.HandleFunc("/update/task/{uid}/{task}", editTask)
+   router.HandleFunc("/update/{uid}", updateUser)
+   router.HandleFunc("/update/list/{uid}/{list}", updateList).Methods("GET", "POST")
+
+   router.HandleFunc("/update/task/{uid}/{task}", updateTask)
 
 	log.Fatal(http.ListenAndServe(":10000", router))
 }
