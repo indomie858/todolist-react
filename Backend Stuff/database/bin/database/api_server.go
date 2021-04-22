@@ -151,7 +151,32 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 
 // TO DO:
 func updateUser(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: updateUser")
 
+   vars := mux.Vars(r)
+   uid := vars["uid"]
+
+   payload := r.URL.Query()
+
+   fmt.Printf("\nPAYLOAD PARAMATERS\n")
+   for k, v := range payload {
+      s := fmt.Sprintf("%v => %v", k, v)
+      fmt.Printf("%v\n", s)
+   }
+
+   var req request.Request
+   req.Type = "update"
+   req.UserId = uid
+   req.Ctx = context.Background()
+   req.GetClient()
+
+   req.GetUser()
+   req.UpdateUser(payload)
+   req.GetUser()
+   
+	jsonUser, _ := json.MarshalIndent(req.User, "", "    ")
+	fmt.Fprintf(w, "%v", string(jsonUser[:]))
+	fmt.Println(req.User)
 }
 
 func updateList(w http.ResponseWriter, r *http.Request) {

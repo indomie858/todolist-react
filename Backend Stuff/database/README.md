@@ -62,7 +62,7 @@ Return
 (updated list)
 ```json
 {
-    "Id": "hpeOH5GDaYRelq51m4XP",
+    "Id": "MIUVfleqSkxAtzwNeW0W",
     "Name": "sabra",
     "Email": "",
     "Status": "",
@@ -75,7 +75,7 @@ In terminal
 
 ```bash
  Endpoint Hit: createUser
- New user's name: sabra
+ New users name: sabra
 
  PAYLOAD PARAMATERS
 ```
@@ -91,7 +91,7 @@ URL
 
 `http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/test_add_list?lock=false`
 
-Return 
+Return
 (updated list)
 
 ```json
@@ -129,7 +129,7 @@ In terminal
 ### Destory List
 `http://localhost:10000/destroy/list/{lists}`
 
-### Destroy Task 
+### Destroy Task
 `http://localhost:10000/destroy/task/{tasks}`
 
 ## Reading data from a Collection
@@ -174,6 +174,38 @@ In terminal
 ## Editing values in the database
 ### Edit User
 `http://localhost:10000/update/{uid}?<params>`
+
+**Example**
+Add list to list array
+
+URL
+`http://localhost:10000/update/MIUVfleqSkxAtzwNeW0W?lists=qqEkD06oFudIRrCVPAc5`
+
+Return
+(updated user)
+
+```json
+{
+    "Id": "MIUVfleqSkxAtzwNeW0W",
+    "Name": "sabra",
+    "Email": "",
+    "Status": "",
+    "Lists": [
+        "qqEkD06oFudIRrCVPAc5"
+    ],
+    "Settings": ""
+}
+```
+
+In terminal
+
+```bash
+Endpoint Hit: updateUser
+
+PAYLOAD PARAMATERS
+lists => [[33TPlBCXI1DhXksyWtdm]]
+&{g1tAZTJgfVOqTtDpvAAz    [[33TPlBCXI1DhXksyWtdm]] }s
+```
 
 ### Edit List
 `http://localhost:10000/update/{uid}/list/{list}?<params>`

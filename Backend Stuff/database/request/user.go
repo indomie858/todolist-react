@@ -4,7 +4,7 @@ import (
    "log"
    "fmt"
    "strings"
-   "strconv"
+   //"strconv"
    "net/url"
    "cloud.google.com/go/firestore"
 )
@@ -94,22 +94,29 @@ func (r *Request) AddUser(name string, fields url.Values) error {
 
    for k, v := range fields {
       k = strings.ToLower(k)
+      val := strings.Join(v, "")
       // We want to check the key to ensure we don't just add a bunch of new fields
       if k == "lists" {
+         var lists []string
+         lists = append(lists, val)
          data[k] = v
       }
       if k == "tasks" {
-         data[k] = v
+         var tasks []string
+         tasks = append(tasks, val)
+         data[k] = tasks
       }
    }
 
    if data["lists"] == nil {
       var lists []string
+      lists = append(lists, "")
       data["lists"] = lists
    }
 
    if data["tasks"] == nil {
       var tasks []string
+      tasks = append(tasks, "")
       data["tasks"] = tasks
    }
 
@@ -144,10 +151,14 @@ func (r *Request) UpdateUser(fields url.Values) error {
 
       val := strings.Join(v,"")
       if k == "lists" {
-         data[k] = val
+         var lists []string
+         lists = append(lists, val)
+         data[k] = lists
       }
       if k == "tasks" {
-         data[k], _ = strconv.ParseBool(val)
+         var tasks []string
+         tasks = append(tasks, val)
+         data[k] = tasks
       }
    }
 

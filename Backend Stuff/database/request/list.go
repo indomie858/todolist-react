@@ -137,6 +137,7 @@ func (r *Request) AddList(name string, fields url.Values) error {
 
    if data["tasks"] == nil {
       var tasks []string
+      tasks = append(tasks, "")
       data["tasks"] = tasks
    }
 
