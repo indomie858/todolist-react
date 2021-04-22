@@ -49,7 +49,7 @@ http://localhost:10000/
 **Read List**: http://localhost:10000/read/task/{uid}/{name}
 
 ## Editing values in the database
-**Edit User**: http://localhost:10000/update/{uid}
+**Edit User**: http://localhost:10000/update/{uid}?<params>
 
 **Edit List**: http://localhost:10000/update/list/{uid}/{list}?<params>
 
@@ -57,6 +57,6 @@ http://localhost:10000/
 
 `http://localhost:10000/update/list/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list1?list_name=list1updated&lock=false`
 
-> REMINDER: once you go to that URL once, it won't work again unless u edit the list name ;)
+> REMINDER: once you go to that URL once, it won't work again unless u edit the list name :)
 
-**Edit Task**: http://localhost:10000/update/task/{uid}/{task}
+**Edit Task**: http://localhost:10000/update/task/{uid}/{task}?<params>
