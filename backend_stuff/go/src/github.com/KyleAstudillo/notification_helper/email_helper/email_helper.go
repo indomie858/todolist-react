@@ -12,20 +12,20 @@ import (
 )
 
 func Init() {
-  EH_Sender = os.Getenv("EH_Sender")
-  EH_Recipient = os.Getenv("EH_Recipient")
-  EH_Subject = os.Getenv("EH_Subject")
-  EH_HtmlBody =  os.Getenv("EH_HtmlBody")
-  EH_TextBody = os.Getenv("EH_TextBody")
-  CustomInit(EH_Sender, EH_Recipient, EH_Subject, EH_HtmlBody)
+  EH_Sender := os.Getenv("EH_Sender")
+  EH_Recipient := os.Getenv("EH_Recipient")
+  EH_Subject := os.Getenv("EH_Subject")
+  EH_HtmlBody :=  os.Getenv("EH_HtmlBody")
+  EH_TextBody := os.Getenv("EH_TextBody")
+  CustomInit(EH_Sender, EH_Recipient, EH_Subject, EH_HtmlBody, EH_TextBody)
 }
 
-func CustomInit(sender String, recipient String, subject String, html_body String, text_body String) {
-  EH_Sender = sender
-  EH_Recipient = recipient
-  EH_Subject = subject
-  EH_HtmlBody =  html_body
-  EH_TextBody = text_body
+func CustomInit(sender string, recipient string, subject string, html_body string, text_body string) {
+  Sender = sender
+  Recipient = recipient
+  Subject = subject
+  HtmlBody =  html_body
+  TextBody = text_body
 
 
   sess, err := session.NewSession(&aws.Config{

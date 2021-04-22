@@ -4,11 +4,14 @@ import (
   "fmt"
   "time"
   "github.com/KyleAstudillo/notification_helper/email_helper"
-  _ "github.com/KyleAstudillo/notification_helper/discord_helper"
+  "github.com/KyleAstudillo/notification_helper/discord_helper"
 )
 
 func NotificationHelper() {
+
   email_helper.Init()
+  discord_helper.Init()
+
   for { //infinite loop
     go poll_notifications()
     time.Sleep(time.Second * 60)
@@ -18,4 +21,5 @@ func NotificationHelper() {
 func poll_notifications() {
   fmt.Println("Test ", time.Now())
   email_helper.SendEmail()
+  discord_helper.SendMesage()
 }
