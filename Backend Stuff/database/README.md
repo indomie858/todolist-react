@@ -36,13 +36,21 @@ URL
 
 Return
 
+```json
+{
+    "Id": "hpeOH5GDaYRelq51m4XP",
+    "Name": "sabra",
+    "Email": "",
+    "Status": "",
+    "Lists": null,
+    "Settings": ""
+}
 ```
-   New user's name: sabra
 
-   PAYLOAD PARAMATERS
+`Endpoint Hit: createUser
+ New user's name: sabra
 
-   New user ID: eQq07UmFE0PAhks3jwTt
-```
+ PAYLOAD PARAMATERS`
 
 **Add List**: http://localhost:10000/create/{uid}/list/{name}?<params>
 
@@ -52,19 +60,29 @@ URL
 
 `http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/testaddlist`
 
-`http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/testaddlist?lock=false`
+`http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/test_add_list?lock=false`
 
 Return
 
+```json
+{
+   "Id": "dcWbqvKvU3fUYzcCumbb",
+   "Name": "test_add_list",
+   "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
+   "Lock": false,
+   "Shared": false,
+   "SharedUsers": null,
+   "Tasks": null
+}
 ```
-   list_name: testaddlist
 
-   PAYLOAD PARAMATERS
+`Endpoint Hit: createList
+ list_name: test_add_list
 
-   lock => [false]
+ PAYLOAD PARAMATERS
 
-   New list ID: ELW6il13VZxWthDKy7lu
-```
+ lock => [false]
+ &{dcWbqvKvU3fUYzcCumbb test_add_list a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}`
 
 **Add Task**: http://localhost:10000/create/{uid}/task/{name}
 
@@ -79,6 +97,34 @@ Return
 
 ## Reading data from a Collection
 **Read User**: http://localhost:10000/read/{uid}
+
+*Example*
+
+URL
+
+`http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2`
+
+Return
+
+```json
+{
+    "Id": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
+    "Name": "max",
+    "Email": "",
+    "Status": "",
+    "Lists": [
+        "NIcoux7atd3A8Lv7guUO",
+        "ahsdfhhf"
+    ],
+    "Settings": ""
+}
+```
+
+In terminal
+
+`Endpoint Hit: getUser
+ &{a3a1hWUx5geKB8qeR6fbk5LZZGI2 max   [NIcoux7atd3A8Lv7guUO ahsdfhhf] }`
+
 
 **Read Task**: http://localhost:10000/read/{uid}/list/{name}
 
@@ -96,13 +142,57 @@ URL
 `http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/list1?list_name=list1updated&lock=false`
 
 Return
+(updated list)
 
+```json
+{
+    "Id": "NIcoux7atd3A8Lv7guUO",
+    "Name": "list1updated",
+    "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
+    "Lock": false,
+    "Shared": false,
+    "SharedUsers": null,
+    "Tasks": null
+}
 ```
-   listname: list1
-   PAYLOAD PARAMATERS
-   list_name => [list1updated]
-   lock => [false]
+
+In terminal
+
+`Endpoint Hit: updateList
+ listname: list1
+
+ PAYLOAD PARAMATERS
+ list_name => [list1updated]
+ lock => [false]
+ &{NIcoux7atd3A8Lv7guUO list1updated a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}
+`
+
+URL
+
+`http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/list1updated?list_name=list1`
+
+Return
+
+```json
+{
+    "Id": "NIcoux7atd3A8Lv7guUO",
+    "Name": "list1",
+    "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
+    "Lock": false,
+    "Shared": false,
+    "SharedUsers": null,
+    "Tasks": null
+}
 ```
+
+In terminal
+
+`Endpoint Hit: updateList
+listname: list1updated
+
+PAYLOAD PARAMATERS
+list_name => [list1]
+&{NIcoux7atd3A8Lv7guUO list1 a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}`
 
 > REMINDER: once you go to that URL once, it won't work again unless u edit the list name :)
 

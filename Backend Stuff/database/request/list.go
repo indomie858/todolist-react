@@ -72,7 +72,7 @@ func (r *Request) GetListByName(listname string) {
          break
       }
       if err != nil {
-         log.Fatalf("err: %v", err)
+         log.Printf("err: %v", err)
       }
 
       // Put data into our list structure
@@ -86,8 +86,36 @@ func (r *Request) GetListByName(listname string) {
    r.List = &list
 } // }}}
 
+func (r *Request) GetListByID() {
+   var list List
+
+   // Get the Firestore path for the user
+   listidpath := fmt.Sprintf("lists/%s", r.List.Id)
+
+   // Pass that to Firestore
+   doc := r.Client.Doc(listidpath)
+
+   // Get a snapshot of the user data
+   docsnap, err := doc.Get(r.Ctx)
+   if err != nil {
+      log.Printf("ERR: Cannot get list by id snapshot: %v", err)    // %v is to format error values
+   }
+
+   // Add the data to our structure
+   err = docsnap.DataTo(&list)
+   if err != nil {
+      log.Printf("ERR: Cannot put data to struct: %v", err)   // %v is to format error values
+   }
+
+   // Get & set the user ID
+   id := docsnap.Ref.ID
+   list.Id = id
+
+   r.List = &list
+} // }}}
+
 func (r *Request) AddList(name string, fields url.Values) error {
-   var l List
+   var list List
    var data = make(map[string]interface{})
 
    for k, v := range fields {
@@ -98,12 +126,12 @@ func (r *Request) AddList(name string, fields url.Values) error {
          if val != name {
             data[k] = val
          }
-
       }
       if k == "lock" {
          data[k], _ = strconv.ParseBool(val)
       }
    }
+
    data["list_name"] = name
    data["list_owner"] = r.UserId
 
@@ -112,11 +140,11 @@ func (r *Request) AddList(name string, fields url.Values) error {
       data["tasks"] = tasks
    }
 
-   fmt.Printf("%v\n", data)
+   //fmt.Printf("%v\n", data)
 
    ref := r.Client.Collection("lists").NewDoc()
-   l.Id = ref.ID
-   r.List = &l
+   list.Id = ref.ID
+   r.List = &list
 
    _, err := ref.Set(r.Ctx, data, firestore.MergeAll)
    if err != nil {
@@ -129,7 +157,7 @@ func (r *Request) AddList(name string, fields url.Values) error {
 // func Update {{{
 func (r *Request) UpdateList(fields url.Values) error {
    var data = make(map[string]interface{})
-   log.Printf("%v", fields)
+   //log.Printf("%v", fields)
 
    for k, v := range fields {
       k = strings.ToLower(k)
@@ -143,7 +171,7 @@ func (r *Request) UpdateList(fields url.Values) error {
       }
    }
 
-   log.Printf("%v", data)
+   //log.Printf("%v", data)
 
    ref := r.Client.Collection("lists").Doc(r.List.Id)
    _,err := ref.Set(r.Ctx, data, firestore.MergeAll)

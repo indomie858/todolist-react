@@ -19,19 +19,20 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func createUser(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: createUser")
    vars := mux.Vars(r)
 
    uid := vars["uid"]
    name := vars["name"]
 
-   fmt.Fprintf(w, "New user's name: %v\n\n", name)
+   fmt.Printf("New user's name: %v\n\n", name)
 
    payload := r.URL.Query()
 
-   fmt.Fprintf(w, "PAYLOAD PARAMATERS\n")
+   fmt.Printf("PAYLOAD PARAMATERS\n")
    for k, v := range payload {
       s := fmt.Sprintf("%v => %v", k, v)
-      fmt.Fprintf(w, "%v\n", s)
+      fmt.Printf("%v\n", s)
    }
 
    fmt.Fprintf(w,"\n")
@@ -43,25 +44,29 @@ func createUser(w http.ResponseWriter, r *http.Request) {
    req.GetClient()
 
    req.AddUser(name, payload)
-
-   fmt.Fprintf(w, "New user ID: %v", req.UserId)
+   req.GetUser()
+   
+   jsonUser, _ := json.MarshalIndent(req.User,  "", "    ")
+	fmt.Fprintf(w, "%v", string(jsonUser[:]))
 }
 
 func createList(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: createList")
    vars := mux.Vars(r)
 
    uid := vars["uid"]
    listname := vars["name"]
 
-   fmt.Fprintf(w, "list_name: %v\n", listname)
+   fmt.Printf("list_name: %v\n", listname)
 
    payload := r.URL.Query()
 
-   fmt.Fprintf(w, "\nPAYLOAD PARAMATERS\n")
+   fmt.Printf("\nPAYLOAD PARAMATERS\n")
    for k, v := range payload {
       s := fmt.Sprintf("%v => %v", k, v)
-      fmt.Fprintf(w, "\n%v\n", s)
+      fmt.Printf("\n%v\n", s)
    }
+
 
    var req request.Request
    req.Type = "create"
@@ -70,8 +75,11 @@ func createList(w http.ResponseWriter, r *http.Request) {
    req.GetClient()
 
    req.AddList(listname, payload)
+   req.GetListByName(listname)
 
-   fmt.Fprintf(w, "\nNew list ID: %v", req.List.Id)
+   jsonList, _ := json.MarshalIndent(req.List,  "", "    ")
+	fmt.Fprintf(w, "%v", string(jsonList[:]))
+	fmt.Println(req.List)
 }
 
 // TO DO:
@@ -140,6 +148,7 @@ func getList(w http.ResponseWriter, r *http.Request) {
 func getTask(w http.ResponseWriter, r *http.Request) {
 
 }
+
 // TO DO:
 func updateUser(w http.ResponseWriter, r *http.Request) {
 
@@ -151,14 +160,14 @@ func updateList(w http.ResponseWriter, r *http.Request) {
    vars := mux.Vars(r)
    uid := vars["uid"]
    listname := vars["list"]
-   fmt.Fprintf(w, "listname: %v\n", listname)
+   fmt.Printf("listname: %v\n", listname)
 
    payload := r.URL.Query()
 
-   fmt.Fprintf(w, "\nPAYLOAD PARAMATERS\n")
+   fmt.Printf("\nPAYLOAD PARAMATERS\n")
    for k, v := range payload {
       s := fmt.Sprintf("%v => %v", k, v)
-      fmt.Fprintf(w, "%v\n", s)
+      fmt.Printf("%v\n", s)
    }
 
    var req request.Request
@@ -166,10 +175,14 @@ func updateList(w http.ResponseWriter, r *http.Request) {
    req.UserId = uid
    req.Ctx = context.Background()
    req.GetClient()
+
 	req.GetListByName(listname)
-
    req.UpdateList(payload)
+   req.GetListByID()
+   jsonList, _ := json.MarshalIndent(req.List,  "", "    ")
 
+	fmt.Fprintf(w, "%v", string(jsonList[:]))
+	fmt.Println(req.List)
 }
 
 // TO DO:
