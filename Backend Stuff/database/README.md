@@ -27,22 +27,30 @@ http://localhost:10000/
 
 ## Adding data to a Collection
 **Add User**: http://localhost:10000/create/user/{name}
+
 **Add List**: http://localhost:10000/create/list/{uid}/{name}
+
 **Add Task**: http://localhost:10000/create/task/{uid}/{name}
+
 **Add Subtask**: http://localhost:10000/create/subtask/{uid}/{name}
 
 ## Removing data from a Collection
 **Destroy User**: http://localhost:10000/destroy/{uid}
+
 **Destory List**: http://localhost:10000/destroy/list/{lists}
+
 **Destroy Task**: http://localhost:10000/destroy/task/{tasks}
 
 ## Reading data from a Collection
 **Read User**: http://localhost:10000/read/{uid}
+
 **Read Task**: http://localhost:10000/read/list/{uid}/{name}
+
 **Read List**: http://localhost:10000/read/task/{uid}/{name}
 
 ## Editing values in the database
 **Edit User**: http://localhost:10000/update/{uid}
+
 **Edit List**: http://localhost:10000/update/list/{uid}/{list}?<params>
 
 *Example*
