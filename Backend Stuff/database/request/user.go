@@ -171,3 +171,13 @@ func (r *Request) UpdateUser(fields url.Values) error {
    r.GetUser()
    return err
 } // }}}
+
+func (r *Request) DestroyUser() error {
+   // Get the Firestore path for the user
+   useridpath := fmt.Sprintf("users/%s", r.UserId)
+
+   // Delete that list
+   _, err := r.Client.Doc(useridpath).Delete(r.Ctx)
+
+   return err
+} // }}}

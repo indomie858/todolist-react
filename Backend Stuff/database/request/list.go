@@ -179,3 +179,13 @@ func (r *Request) UpdateList(fields url.Values) error {
 
    return err
 } // }}}
+
+func (r *Request) DestroyList() error {
+   // Get the Firestore path for the user
+   listidpath := fmt.Sprintf("lists/%s", r.List.Id)
+
+   // Delete that list
+   _, err := r.Client.Doc(listidpath).Delete(r.Ctx)
+
+   return err
+} // }}}

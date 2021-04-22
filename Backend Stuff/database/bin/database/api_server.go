@@ -92,14 +92,50 @@ func createSubtask(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// TO DO:
 func destroyUser(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: destroyUser")
+
+	vars := mux.Vars(r)
+	uid := vars["uid"]
+
+	var req request.Request
+	req.Type = "destroy"
+	req.UserId = uid
+	req.Ctx = context.Background()
+	req.GetClient()
+
+   err := req.DestroyUser()
+   if err != nil {
+      fmt.Fprintf(w, "err deleting user: %v", err)
+      fmt.Printf("ERR deleting user: %v", err)
+   }
+   fmt.Printf("user successfully deleted")
+	fmt.Fprintf(w, "user successfully deleted")
 
 }
 
-// TO DO:
 func destroyList(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: destroyList")
 
+	vars := mux.Vars(r)
+	uid := vars["uid"]
+	name := vars["name"]
+
+	var req request.Request
+	req.Type = "destroy"
+	req.UserId = uid
+	req.Ctx = context.Background()
+	req.GetClient()
+
+	req.GetListByName(name)
+   err := req.DestroyList()
+   if err != nil {
+      fmt.Fprintf(w, "err deleting list: %v", err)
+      log.Printf("ERR deleting list: %v", err)
+   }
+
+   fmt.Printf("list successfully deleted")
+	fmt.Fprintf(w, "list successfully deleted")
 }
 
 // TO DO:
@@ -136,8 +172,8 @@ func getList(w http.ResponseWriter, r *http.Request) {
 	req.Type = "read"
 	req.UserId = uid
 	req.Ctx = context.Background()
-	req.GetClient()
 
+   req.GetClient()
 	req.GetListByName(name)
 	jsonList, _ := json.MarshalIndent(req.List, "", "    ")
 	fmt.Fprintf(w, "%v", string(jsonList[:]))
@@ -149,7 +185,6 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// TO DO:
 func updateUser(w http.ResponseWriter, r *http.Request) {
    fmt.Println("Endpoint Hit: updateUser")
 
@@ -173,7 +208,6 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
    req.GetUser()
    req.UpdateUser(payload)
    req.GetUser()
-   
 	jsonUser, _ := json.MarshalIndent(req.User, "", "    ")
 	fmt.Fprintf(w, "%v", string(jsonUser[:]))
 	fmt.Println(req.User)
@@ -225,8 +259,8 @@ func handleRequests() {
 	router.HandleFunc("/create/{uid}/subtask/{name}", createSubtask)
 
 	router.HandleFunc("/destroy/{uid}", destroyUser)
-	router.HandleFunc("/destroy/list/{lists}", destroyList)
-	router.HandleFunc("/destroy/task/{tasks}", destroyTask)
+	router.HandleFunc("/destroy/{uid}/list/{name}", destroyList)
+	router.HandleFunc("/destroy/{uid}/task/{name}", destroyTask)
 
 	router.HandleFunc("/read/{uid}", getUser)
 	router.HandleFunc("/read/{uid}/list/{name}", getList)

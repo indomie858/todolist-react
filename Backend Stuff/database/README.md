@@ -1,4 +1,4 @@
-TOC
+# TOC
 - [Getting Started with Database Server](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#getting-started-with-database-server)
 - [Datbase API Requests](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#database-api-requests)
    - [Adding Data to a Collection](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#adding-data-to-a-collection)
@@ -7,15 +7,15 @@ TOC
       - [Add Task](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-task)
       - [Add Subtask](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-subtask)
    - [Removing Data](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#removing-data-from-a-collection)
-      - [Destroy User](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-user)
-      - [Destroy List](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-list)
+      - [Destroy User w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-user)
+      - [Destroy List w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-list)
       - [Destroy Task](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-task)
    - [Reading Data](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#reading-data-from-a-collection)
       - [Read User w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-user)
       - [Read List](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-list)
       - [Read Task](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-task)
    - [Editing Data](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#editing-values-in-the-database)
-      - [Update User](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-user)
+      - [Update User w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-user)
       - [Update List w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-list)
       - [Update Task](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-task)
 
@@ -87,7 +87,7 @@ In terminal
 
 URL
 
-`http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/testaddlist`
+`http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/test_add_list`
 
 `http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/test_add_list?lock=false`
 
@@ -126,14 +126,39 @@ In terminal
 ### Destroy User
 `http://localhost:10000/destroy/{uid}`
 
-### Destory List
-`http://localhost:10000/destroy/list/{lists}`
+**Example**
+
+URL
+
+`http://localhost:10000/destroy/MIUVfleqSkxAtzwNeW0W`
+
+Return
+`user successfully deleted`
+
+In terminal
+```bash
+   Endpoint Hit: destroyUser
+   user successfully deleted
+```
+
+### Destroy List
+`http://localhost:10000/destroy/{uid}/list/{name}`
+
+**Example**
+
+URL
+
+`http://localhost:10000/destroy/MIUVfleqSkxAtzwNeW0W/list/first_list`
+
+Return (on webpage)
+`list successfully deleted`
 
 ### Destroy Task
-`http://localhost:10000/destroy/task/{tasks}`
+`http://localhost:10000/destroy/{uid}/task/{name}`
 
 ## Reading data from a Collection
-**Read User**: http://localhost:10000/read/{uid}
+### Read User
+`http://localhost:10000/read/{uid}`
 
 **Example**
 
