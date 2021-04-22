@@ -190,6 +190,8 @@ In terminal
  &{NIcoux7atd3A8Lv7guUO list1updated a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}
 ```
 
+> REMINDER: once you go to that URL once, it won't work again unless u edit the list name :)
+
 URL
 
 `http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/list1updated?list_name=list1`
@@ -220,6 +222,5 @@ list_name => [list1]
 &{NIcoux7atd3A8Lv7guUO list1 a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}
 ```
 
-> REMINDER: once you go to that URL once, it won't work again unless u edit the list name :)
-
-**Edit Task**: http://localhost:10000/update/{uid}/task/{task}?<params>
+### Edit Task
+`http://localhost:10000/update/{uid}/task/{task}?<params>`
