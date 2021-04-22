@@ -50,7 +50,7 @@ const TestComponent = () => {
                 break;
             case "read":
                 if(options===''){
-                    fetch('http://localhost:3003/api/userData/'+text,{
+                    fetch('http://localhost:3003/api/'+text,{
                         method: 'GET',
                 
                 
@@ -75,6 +75,16 @@ const TestComponent = () => {
                 }
             break;
             case "update":
+                fetch('http://localhost:3003/api/update/'+text+"/"+options,{
+                    method: 'GET',
+            
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response.json()}
+                }).then(data=>setOutput(JSON.stringify(data)));
             break;
             case "destroy":
             break;

@@ -126,9 +126,59 @@ app.get('/api/userData/:id/lists',(req,res)=>{
 
 })
 
+app.get('/api/update/:uid/list/:list_id',(req,res)=>{
+  updateAPI(req.params.uid,`/list/${req.params.list_id}`,req.query,(output)=>{
+    console.log(output)
+    res.send(JSON.stringify(output))
+  })
+  
+})
+
+
+
+function readAPI(uid,parameters,callback){
+  apiCall('http://localhost:10000/read/'+uid+parameters,(output)=>{
+    callback(output)
+  })
+}
+function updateAPI(uid,parameters,queries,callback){
+var url = 'http://localhost:10000/update/'+uid+parameters+"?"
+
+for (const query in queries){
+  url+=query+"="+queries[query]+"&"
+}
+
+url = url.substr(0,url.length-1)
+  apiCall(url,(output)=>{
+    callback(output)
+  })
+}
+
+function apiCall(url,callback){
+  http.get(url, (resp) => {
+    let data = ''
+  
+    // A chunk of data has been received.
+    resp.on('data', (chunk) => {
+      data += chunk
+    })
+  
+    // The whole response has been received. Print out the result.
+     resp.on('end', () => {
+      // console.log(JSON.parse(data).explanation)
+      callback(data)
+      // return output
+    });
+  
+  }).on("error", (err) => {
+    console.log("Error: " + err.message)
+  })
+}
+
+
 function getName(uid,callback){
   // var output =1
-  http.get('http://localhost:10000/userData/'+uid, (resp) => {
+  http.get('http://localhost:10000/read/'+uid, (resp) => {
     let data = ''
   
     // A chunk of data has been received.
