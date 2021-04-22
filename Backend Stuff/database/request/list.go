@@ -1,9 +1,9 @@
 package request
 
 import (
+   "fmt"
    "log"
    "net/url"
-   "context"
    "strings"
    "strconv"
 
@@ -86,12 +86,54 @@ func (r *Request) GetListByName(listname string) {
    r.List = &list
 } // }}}
 
+func (r *Request) AddList(name string, fields url.Values) error {
+   var l List
+   var data = make(map[string]interface{})
+
+   for k, v := range fields {
+      k = strings.ToLower(k)
+
+      val := strings.Join(v,"")
+      if k == "list_name" {
+         if val != name {
+            data[k] = val
+         }
+
+      }
+      if k == "lock" {
+         data[k], _ = strconv.ParseBool(val)
+      }
+   }
+   data["list_name"] = name
+   data["list_owner"] = r.UserId
+
+   if data["tasks"] == nil {
+      var tasks []string
+      data["tasks"] = tasks
+   }
+
+   fmt.Printf("%v\n", data)
+
+   ref := r.Client.Collection("lists").NewDoc()
+   l.Id = ref.ID
+   r.List = &l
+
+   _, err := ref.Set(r.Ctx, data, firestore.MergeAll)
+   if err != nil {
+      // Handle any errors in an appropriate way, such as returning them.
+      log.Printf("An error has occurred: %s", err)
+   }
+   return err
+}
+
 // func Update {{{
 func (r *Request) UpdateList(fields url.Values) error {
    var data = make(map[string]interface{})
+   log.Printf("%v", fields)
 
-   log.Printf("%v",fields)
    for k, v := range fields {
+      k = strings.ToLower(k)
+
       val := strings.Join(v,"")
       if k == "list_name" {
          data[k] = val
@@ -100,21 +142,11 @@ func (r *Request) UpdateList(fields url.Values) error {
          data[k], _ = strconv.ParseBool(val)
       }
    }
+
    log.Printf("%v", data)
 
    ref := r.Client.Collection("lists").Doc(r.List.Id)
-   err := r.Client.RunTransaction(r.Ctx, func(ctx context.Context, tx *firestore.Transaction) error {
-      /*doc, err := tx.Get(ref) // tx.Get, NOT ref.Get!
-      if err != nil {
-         return err
-      }
-
-      field, err := doc.DataAt(fieldname)
-      if err != nil {
-         return err
-      }*/
-      return tx.Set(ref, data, firestore.MergeAll)
-   })
+   _,err := ref.Set(r.Ctx, data, firestore.MergeAll)
 
    return err
 } // }}}

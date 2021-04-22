@@ -3,6 +3,10 @@ package request
 import (
    "log"
    "fmt"
+   "strings"
+   "strconv"
+   "net/url"
+   "cloud.google.com/go/firestore"
 )
 
 // Status setting constants
@@ -69,13 +73,13 @@ func (r *Request) GetUser() {
    // Get a snapshot of the user data
    docsnap, err := doc.Get(r.Ctx)
    if err != nil {
-      log.Fatalf("Cannot get user snapshot: %v", err)    // %v is to format error values
+      log.Fatalf("ERR: Cannot get user snapshot: %v", err)    // %v is to format error values
    }
 
    // Add the data to our structure
    err = docsnap.DataTo(&user)
    if err != nil {
-      log.Fatalf("Cannot put data to struct: %v", err)   // %v is to format error values
+      log.Fatalf("ERR: Cannot put data to struct: %v", err)   // %v is to format error values
    }
 
    // Get & set the user ID
@@ -83,4 +87,72 @@ func (r *Request) GetUser() {
    user.Id = id
 
    r.User = &user
+} // }}}
+
+func (r *Request) AddUser(name string, fields url.Values) error {
+   var u User
+   var data = make(map[string]interface{})
+
+   for k, v := range fields {
+      k = strings.ToLower(k)
+      // We want to check the key to ensure we don't just add a bunch of new fields
+      if k == "lists" {
+         data[k] = v
+      }
+      if k == "tasks" {
+         data[k] = v
+      }
+   }
+
+   if data["lists"] == nil {
+      var lists []string
+      data["lists"] = lists
+   }
+
+   if data["tasks"] == nil {
+      var tasks []string
+      data["tasks"] = tasks
+   }
+
+   if data["name"] == nil {
+      data["name"] = name
+   }
+
+   fmt.Printf("%v\n", data)
+
+   ref := r.Client.Collection("users").NewDoc()
+   u.Id = ref.ID
+   r.UserId = ref.ID
+   r.User = &u
+
+   _, err := ref.Set(r.Ctx, data, firestore.MergeAll)
+   if err != nil {
+      // Handle any errors in an appropriate way, such as returning them.
+      log.Printf("An error has occurred: %s", err)
+   }
+   return err
+}
+
+// func Update {{{
+func (r *Request) UpdateUser(fields url.Values) error {
+   var data = make(map[string]interface{})
+   log.Printf("%v", fields)
+
+   for k, v := range fields {
+      k = strings.ToLower(k)
+
+      val := strings.Join(v,"")
+      if k == "lists" {
+         data[k] = val
+      }
+      if k == "tasks" {
+         data[k], _ = strconv.ParseBool(val)
+      }
+   }
+
+   log.Printf("%v", data)
+
+   ref := r.Client.Collection("users").Doc(r.User.Id)
+   _, err := ref.Set(r.Ctx, data, firestore.MergeAll)
+   return err
 } // }}}
