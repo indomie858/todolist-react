@@ -30,8 +30,8 @@ In terminal navigate to `database/bin` and run `go run api_server.go`
 ### Add User
 `http://localhost:10000/create/user/{name}`
 
-Example
---------
+**Example**
+
 URL
 
 `http://localhost:10000/create/user/sabra`
@@ -61,7 +61,7 @@ In terminal
 ### Add List
 `http://localhost:10000/create/{uid}/list/{name}?<params>`
 
-*Example*
+**Example**
 
 URL
 
@@ -113,8 +113,8 @@ In terminal
 ## Reading data from a Collection
 **Read User**: http://localhost:10000/read/{uid}
 
-Example
---------
+**Example**
+
 URL
 
 `http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2`
@@ -157,8 +157,8 @@ In terminal
 ### Edit List
 `http://localhost:10000/update/{uid}/list/{list}?<params>`
 
-Example
--------
+**Example**
+
 URL
 
 `http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/list1?list_name=list1updated&lock=false`
