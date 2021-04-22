@@ -23,13 +23,15 @@ In terminal navigate to `database/bin` and run `go run api_server.go`
 
 # Database API Requests
 
-http://localhost:10000/
+`http://localhost:10000/`
 
 ## Adding data to a Collection
-**Add User**: http://localhost:10000/create/user/{name}
 
-*Example*
+### Add User
+`http://localhost:10000/create/user/{name}`
 
+Example
+--------
 URL
 
 `http://localhost:10000/create/user/sabra`
@@ -47,12 +49,15 @@ Return
 }
 ```
 
-`Endpoint Hit: createUser
+```bash
+ Endpoint Hit: createUser
  New user's name: sabra
 
- PAYLOAD PARAMATERS`
+ PAYLOAD PARAMATERS
+```
 
-**Add List**: http://localhost:10000/create/{uid}/list/{name}?<params>
+### Add List
+`http://localhost:10000/create/{uid}/list/{name}?<params>`
 
 *Example*
 
@@ -76,35 +81,42 @@ Return
 }
 ```
 
-`Endpoint Hit: createList
+```bash
+ Endpoint Hit: createList
  list_name: test_add_list
 
  PAYLOAD PARAMATERS
-
  lock => [false]
- &{dcWbqvKvU3fUYzcCumbb test_add_list a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}`
+ &{dcWbqvKvU3fUYzcCumbb test_add_list a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}
+```
 
-**Add Task**: http://localhost:10000/create/{uid}/task/{name}
+### Add Task
+`http://localhost:10000/create/{uid}/task/{name}`
 
-**Add Subtask**: http://localhost:10000/create/{uid}/subtask/{name}
+### Add Subtask
+`http://localhost:10000/create/{uid}/subtask/{name}`
 
 ## Removing data from a Collection
-**Destroy User**: http://localhost:10000/destroy/{uid}
+### Destroy User
+`http://localhost:10000/destroy/{uid}`
 
-**Destory List**: http://localhost:10000/destroy/list/{lists}
+### Destory List
+`http://localhost:10000/destroy/list/{lists}`
 
-**Destroy Task**: http://localhost:10000/destroy/task/{tasks}
+### Destroy Task 
+`http://localhost:10000/destroy/task/{tasks}`
 
 ## Reading data from a Collection
 **Read User**: http://localhost:10000/read/{uid}
 
-*Example*
-
+Example
+--------
 URL
 
 `http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2`
 
 Return
+(updated list)
 
 ```json
 {
@@ -122,21 +134,27 @@ Return
 
 In terminal
 
-`Endpoint Hit: getUser
- &{a3a1hWUx5geKB8qeR6fbk5LZZGI2 max   [NIcoux7atd3A8Lv7guUO ahsdfhhf] }`
+```bash
+ Endpoint Hit: getUser
+ &{a3a1hWUx5geKB8qeR6fbk5LZZGI2 max   [NIcoux7atd3A8Lv7guUO ahsdfhhf] }
+```
 
 
-**Read Task**: http://localhost:10000/read/{uid}/list/{name}
+### Read Task
+`http://localhost:10000/read/{uid}/list/{name}`
 
-**Read List**: http://localhost:10000/read/{uid}/task/{name}
+### Read List
+`http://localhost:10000/read/{uid}/task/{name}`
 
 ## Editing values in the database
-**Edit User**: http://localhost:10000/update/{uid}?<params>
+### Edit User
+`http://localhost:10000/update/{uid}?<params>`
 
-**Edit List**: http://localhost:10000/update/{uid}/list/{list}?<params>
+### Edit List
+`http://localhost:10000/update/{uid}/list/{list}?<params>`
 
-*Example*
-
+Example
+-------
 URL
 
 `http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/list1?list_name=list1updated&lock=false`
@@ -158,20 +176,22 @@ Return
 
 In terminal
 
-`Endpoint Hit: updateList
+```bash
+ Endpoint Hit: updateList
  listname: list1
 
  PAYLOAD PARAMATERS
  list_name => [list1updated]
  lock => [false]
  &{NIcoux7atd3A8Lv7guUO list1updated a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}
-`
+```
 
 URL
 
 `http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/list1updated?list_name=list1`
 
 Return
+(updated list)
 
 ```json
 {
@@ -187,12 +207,14 @@ Return
 
 In terminal
 
-`Endpoint Hit: updateList
+```bash
+Endpoint Hit: updateList
 listname: list1updated
 
 PAYLOAD PARAMATERS
 list_name => [list1]
-&{NIcoux7atd3A8Lv7guUO list1 a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}`
+&{NIcoux7atd3A8Lv7guUO list1 a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}
+```
 
 > REMINDER: once you go to that URL once, it won't work again unless u edit the list name :)
 
