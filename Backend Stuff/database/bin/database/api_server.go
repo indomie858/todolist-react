@@ -14,7 +14,7 @@ import (
 )
 
 func homePage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Welcome to the HomePage!")
+    fmt.Fprintf(w, "Welcome to the HomePage!")
 	fmt.Println("Endpoint Hit: homePage")
 }
 
@@ -24,36 +24,36 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 // http://localhost:10000/create/user/{name}
 // http://localhost:10000/create/user/sabra
 func createUser(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: createUser")
+    fmt.Println("Endpoint Hit: createUser")
 
-   // Read the variables passed
-   vars := mux.Vars(r)
+    // Read the variables passed
+    vars := mux.Vars(r)
 	uid := vars["uid"]
 	name := vars["name"]
-   fmt.Println("New user's name: %v\n", name)
+    fmt.Println("New user's name: %v\n", name)
 
-   // Get the payload params and display them to the terminal
+    // Get the payload params and display them to the terminal
 	payload := r.URL.Query()
 
-   fmt.Printf("PAYLOAD PARAMATERS\n")
-   for k, v := range payload {
-      s := fmt.Sprintf("%v => %v", k, v)
-      fmt.Println("%v\n", s)
-   }
+    fmt.Printf("PAYLOAD PARAMATERS\n")
+    for k, v := range payload {
+        s := fmt.Sprintf("%v => %v", k, v)
+        fmt.Println("%v\n", s)
+    }
 
-   // Create a new request
+    // Create a new request
 	var req request.Request
 	req.Type = "create"
 	req.UserId = uid
 	req.Ctx = context.Background()
 	req.GetClient()
 
-   // Perform the requested action
-   req.AddUser(name, payload)
+    // Perform the requested action
+    req.AddUser(name, payload)
 
-   // Return the new user
-   req.GetUser()
-   jsonUser, _ := json.MarshalIndent(req.User,  "", "    ")
+    // Return the new user
+    req.GetUser()
+    jsonUser, _ := json.MarshalIndent(req.User,  "", "    ")
 	fmt.Fprintf(w, "%v", string(jsonUser[:]))
 }
 
@@ -65,36 +65,36 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 //
 // TO DO : Add code to update users lists array after this
 func createList(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: createList")
+    fmt.Println("Endpoint Hit: createList")
 
-   // Read the variables passed
-   vars := mux.Vars(r)
+    // Read the variables passed
+    vars := mux.Vars(r)
 	uid := vars["uid"]
 	listname := vars["name"]
-   fmt.Printf("list_name: %v\n", listname)
+    fmt.Printf("list_name: %v\n", listname)
 
-   // Get the payload params and display them to the terminal
+    // Get the payload params and display them to the terminal
 	payload := r.URL.Query()
 
-   fmt.Printf("\nPAYLOAD PARAMATERS\n")
-   for k, v := range payload {
-      s := fmt.Sprintf("%v => %v", k, v)
-      fmt.Printf("\n%v\n", s)
-   }
+    fmt.Printf("\nPAYLOAD PARAMATERS\n")
+    for k, v := range payload {
+        s := fmt.Sprintf("%v => %v", k, v)
+        fmt.Printf("\n%v\n", s)
+    }
 
-   // Create a new request
-   var req request.Request
-   req.Type = "create"
-   req.UserId = uid
-   req.Ctx = context.Background()
-   req.GetClient()
+    // Create a new request
+    var req request.Request
+    req.Type = "create"
+    req.UserId = uid
+    req.Ctx = context.Background()
+    req.GetClient()
 
-   // Perform the requested action
-   req.AddList(listname, payload)
+    // Perform the requested action
+    req.AddList(listname, payload)
 
-   // Return the new list
-   req.GetListByName(listname)
-   jsonList, _ := json.MarshalIndent(req.List,  "", "    ")
+    // Return the new list
+    req.GetListByName(listname)
+    jsonList, _ := json.MarshalIndent(req.List,  "", "    ")
 	fmt.Fprintf(w, "%v", string(jsonList[:]))
 	fmt.Println(req.List)
 }
@@ -107,37 +107,37 @@ func createList(w http.ResponseWriter, r *http.Request) {
 //
 // TO DO : Change to require list id so we can add task to user and list as well.
 func createTask(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: createList")
+    fmt.Println("Endpoint Hit: createList")
 
-   // Read the variables passed
-   vars := mux.Vars(r)
+    // Read the variables passed
+    vars := mux.Vars(r)
 	uid := vars["uid"]
 	//listname := vars["list_name"]
-   taskname := vars["name"]
-   fmt.Printf("task_name: %v", taskname)
+    taskname := vars["name"]
+    fmt.Printf("task_name: %v", taskname)
 
-   // Get the payload params and display them to the terminal
+    // Get the payload params and display them to the terminal
 	payload := r.URL.Query()
 
-   fmt.Printf("\nPAYLOAD PARAMATERS\n")
-   for k, v := range payload {
-      s := fmt.Sprintf("%v => %v", k, v)
-      fmt.Printf("\n%v\n", s)
-   }
+    fmt.Printf("\nPAYLOAD PARAMATERS\n")
+    for k, v := range payload {
+        s := fmt.Sprintf("%v => %v", k, v)
+        fmt.Printf("\n%v\n", s)
+    }
 
-   // Create a new request
-   var req request.Request
-   req.Type = "create"
-   req.UserId = uid
-   req.Ctx = context.Background()
-   req.GetClient()
+    // Create a new request
+    var req request.Request
+    req.Type = "create"
+    req.UserId = uid
+    req.Ctx = context.Background()
+    req.GetClient()
 
-   // Perform the requested action
-   req.AddTask(taskname, payload)
+    // Perform the requested action
+    req.AddTask(taskname, payload)
 
-   // Return the new task
-   req.GetTaskByName(taskname)
-   jsonList, _ := json.MarshalIndent(req.Task,  "", "    ")
+    // Return the new task
+    req.GetTaskByName(taskname)
+    jsonList, _ := json.MarshalIndent(req.Task,  "", "    ")
 	fmt.Fprintf(w, "%v", string(jsonList[:]))
 	fmt.Println(req.Task)
 }
@@ -159,28 +159,29 @@ func createSubtask(w http.ResponseWriter, r *http.Request) {
 // http://localhost:10000/destroy/MIUVfleqSkxAtzwNeW0W
 //
 func destroyUser(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: destroyUser")
+    fmt.Println("Endpoint Hit: destroyUser")
 
-   // Read the variables passed
+    // Read the variables passed
 	vars := mux.Vars(r)
 	uid := vars["uid"]
 
-   // Create a new request
+    // Create a new request
 	var req request.Request
 	req.Type = "destroy"
 	req.UserId = uid
 	req.Ctx = context.Background()
 	req.GetClient()
 
-   // Perform the requested action
-   err := req.DestroyUser()
+    // Perform the requested action
+    err := req.DestroyUser()
 
-   // Return the result of the delete
-   if err != nil {
-      fmt.Fprintf(w, "err deleting user: %v", err)
-      fmt.Printf("ERR deleting user: %v", err)
-   }
-   fmt.Printf("user successfully deleted")
+    // Return the result of the delete
+    if err != nil {
+        fmt.Fprintf(w, "err deleting user: %v", err)
+        fmt.Printf("ERR deleting user: %v", err)
+    }
+
+    fmt.Printf("user successfully deleted")
 	fmt.Fprintf(w, "user successfully deleted")
 
 }
@@ -193,31 +194,31 @@ func destroyUser(w http.ResponseWriter, r *http.Request) {
 //
 // TO DO : Add code to delete all tasks and subtasks
 func destroyList(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: destroyList")
+    fmt.Println("Endpoint Hit: destroyList")
 
-   // Read the variables passed
+    // Read the variables passed
 	vars := mux.Vars(r)
 	uid := vars["uid"]
 	name := vars["name"]
 
-   // Create a new request
+    // Create a new request
 	var req request.Request
 	req.Type = "destroy"
 	req.UserId = uid
 	req.Ctx = context.Background()
 	req.GetClient()
 
-   // Perform the requested action
+    // Perform the requested action
 	req.GetListByName(name)
-   err := req.DestroyList()
+    err := req.DestroyList()
 
-   // Return the result of the delete
-   if err != nil {
-      fmt.Fprintf(w, "err deleting list: %v", err)
-      log.Printf("ERR deleting list: %v", err)
-   }
+    // Return the result of the delete
+    if err != nil {
+        fmt.Fprintf(w, "err deleting list: %v", err)
+        log.Printf("ERR deleting list: %v", err)
+    }
 
-   fmt.Printf("list successfully deleted")
+    fmt.Printf("list successfully deleted")
 	fmt.Fprintf(w, "list successfully deleted")
 }
 
@@ -230,31 +231,31 @@ func destroyList(w http.ResponseWriter, r *http.Request) {
 //
 // TO DO : Add code to delete all sub tasks + to filter by parent id
 func destroyTask(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: destroyTask")
+    fmt.Println("Endpoint Hit: destroyTask")
 
-   // Read the variables passed
+    // Read the variables passed
 	vars := mux.Vars(r)
 	uid := vars["uid"]
 	name := vars["name"]
 
-   // Create a new request
+    // Create a new request
 	var req request.Request
 	req.Type = "destroy"
 	req.UserId = uid
 	req.Ctx = context.Background()
 	req.GetClient()
 
-   // Perform the requested action
+    // Perform the requested action
 	req.GetTaskByName(name)
-   err := req.DestroyTask()
+    err := req.DestroyTask()
 
-   // Return the result of the delete
-   if err != nil {
-      fmt.Fprintf(w, "err deleting task: %v", err)
-      log.Printf("ERR deleting task: %v", err)
-   }
+    // Return the result of the delete
+    if err != nil {
+       fmt.Fprintf(w, "err deleting task: %v", err)
+       log.Printf("ERR deleting task: %v", err)
+    }
 
-   fmt.Printf("task successfully deleted")
+    fmt.Printf("task successfully deleted")
 	fmt.Fprintf(w, "task successfully deleted")
 }
 
@@ -267,21 +268,21 @@ func destroyTask(w http.ResponseWriter, r *http.Request) {
 func getUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: getUser")
 
-   // Read the variables passed
+    // Read the variables passed
 	vars := mux.Vars(r)
 	uid := vars["uid"]
 
-   // Create a new request
+    // Create a new request
 	var req request.Request
 	req.Type = "read"
 	req.UserId = uid
 	req.Ctx = context.Background()
 	req.GetClient()
 
-   // Perform the requested action
+    // Perform the requested action
 	req.GetUser()
 
-   // Return the user
+    // Return the user
 	jsonUser, _ := json.MarshalIndent(req.User, "", "    ")
 	fmt.Fprintf(w, "%v", string(jsonUser[:]))
 	fmt.Println(req.User)
@@ -296,21 +297,21 @@ func getUser(w http.ResponseWriter, r *http.Request) {
 func getList(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: getList")
 
-   // Read the variables passed
+    // Read the variables passed
 	vars := mux.Vars(r)
 	uid := vars["uid"]
 	name := vars["name"]
 
-   // Create a new request
+    // Create a new request
 	var req request.Request
 	req.Type = "read"
 	req.UserId = uid
 	req.Ctx = context.Background()
 
-   // Perform the requested action
-   req.GetClient()
+    // Perform the requested action
+    req.GetClient()
 
-   // Return the list
+    // Return the list
 	req.GetListByName(name)
 	jsonList, _ := json.MarshalIndent(req.List, "", "    ")
 	fmt.Fprintf(w, "%v", string(jsonList[:]))
@@ -325,25 +326,25 @@ func getList(w http.ResponseWriter, r *http.Request) {
 // http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/lists
 //
 func getLists(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: getLists")
+    fmt.Println("Endpoint Hit: getLists")
 
-   // Read the variables passed
-   vars := mux.Vars(r)
-   uid := vars["uid"]
+    // Read the variables passed
+    vars := mux.Vars(r)
+    uid := vars["uid"]
 
-   // Create a new request
-   var req request.Request
-   req.Type = "read"
-   req.UserId = uid
-   req.Ctx = context.Background()
-   req.GetClient()
+    // Create a new request
+    var req request.Request
+    req.Type = "read"
+    req.UserId = uid
+    req.Ctx = context.Background()
+    req.GetClient()
 
-   // Perform the requested action
-   lists := req.GetLists()
+    // Perform the requested action
+    lists := req.GetLists()
 
-   // Return the lists
-   jsonLists, _ := json.MarshalIndent(lists, "", "    ")
-   fmt.Fprintf(w, "%v", string(jsonLists[:]))
+    // Return the lists
+    jsonLists, _ := json.MarshalIndent(lists, "", "    ")
+    fmt.Fprintf(w, "%v", string(jsonLists[:]))
 }
 
 // Get a task from the Firstore database with the specified task name
@@ -356,27 +357,27 @@ func getLists(w http.ResponseWriter, r *http.Request) {
 // http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/task/task1
 //
 func getTask(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: getTask")
+    fmt.Println("Endpoint Hit: getTask")
 
-   // Read the variables passed
-   vars := mux.Vars(r)
-   uid := vars["uid"]
-   name := vars["name"]
+    // Read the variables passed
+    vars := mux.Vars(r)
+    uid := vars["uid"]
+    name := vars["name"]
 
-   // Create a new request
-   var req request.Request
-   req.Type = "read"
-   req.UserId = uid
-   req.Ctx = context.Background()
+    // Create a new request
+    var req request.Request
+    req.Type = "read"
+    req.UserId = uid
+    req.Ctx = context.Background()
 
-   // Perform the requested action
-   req.GetClient()
+    // Perform the requested action
+    req.GetClient()
 
-   // Return the task
-   req.GetTaskByName(name)
-   jsonList, _ := json.MarshalIndent(req.Task, "", "    ")
-   fmt.Fprintf(w, "%v", string(jsonList[:]))
-   fmt.Println(req.List)
+    // Return the task
+    req.GetTaskByName(name)
+    jsonList, _ := json.MarshalIndent(req.Task, "", "    ")
+    fmt.Fprintf(w, "%v", string(jsonList[:]))
+    fmt.Println(req.List)
 }
 
 // Get ALL tasks from the Firestore database with the provided UID
@@ -387,26 +388,26 @@ func getTask(w http.ResponseWriter, r *http.Request) {
 // http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/tasks/NIcoux7atd3A8Lv7guUO
 //
 func getTasks(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: getTasks")
+    fmt.Println("Endpoint Hit: getTasks")
 
-   // Read the variables passed
-   vars := mux.Vars(r)
-   uid := vars["uid"]
-   parent := vars["parent_id"]
+    // Read the variables passed
+    vars := mux.Vars(r)
+    uid := vars["uid"]
+    parent := vars["parent_id"]
 
-   // Create a new request
-   var req request.Request
-   req.Type = "read"
-   req.UserId = uid
-   req.Ctx = context.Background()
-   req.GetClient()
+    // Create a new request
+    var req request.Request
+    req.Type = "read"
+    req.UserId = uid
+    req.Ctx = context.Background()
+    req.GetClient()
 
-   // Perform the requested action
-   tasks := req.GetTasks(parent)
+    // Perform the requested action
+    tasks := req.GetTasks(parent)
 
-   // Return the task
-   jsonLists, _ := json.MarshalIndent(tasks, "", "    ")
-   fmt.Fprintf(w, "%v", string(jsonLists[:]))
+    // Return the task
+    jsonLists, _ := json.MarshalIndent(tasks, "", "    ")
+    fmt.Fprintf(w, "%v", string(jsonLists[:]))
 }
 
 // Update a Firestore user data
@@ -416,34 +417,34 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 // http://localhost:10000/update/MIUVfleqSkxAtzwNeW0W?lists=qqEkD06oFudIRrCVPAc5
 //
 func updateUser(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: updateUser")
+    fmt.Println("Endpoint Hit: updateUser")
 
-   // Read the variables passed
-   vars := mux.Vars(r)
-   uid := vars["uid"]
+    // Read the variables passed
+    vars := mux.Vars(r)
+    uid := vars["uid"]
 
-   // Get the payload params and display them to the terminal
-   payload := r.URL.Query()
+    // Get the payload params and display them to the terminal
+    payload := r.URL.Query()
 
-   fmt.Printf("\nPAYLOAD PARAMATERS\n")
-   for k, v := range payload {
-      s := fmt.Sprintf("%v => %v", k, v)
-      fmt.Printf("%v\n", s)
-   }
+    fmt.Printf("\nPAYLOAD PARAMATERS\n")
+    for k, v := range payload {
+        s := fmt.Sprintf("%v => %v", k, v)
+        fmt.Printf("%v\n", s)
+    }
 
-   // Create a new request
-   var req request.Request
-   req.Type = "update"
-   req.UserId = uid
-   req.Ctx = context.Background()
-   req.GetClient()
+    // Create a new request
+    var req request.Request
+    req.Type = "update"
+    req.UserId = uid
+    req.Ctx = context.Background()
+    req.GetClient()
 
-   // Perform the requested action
-   req.GetUser()
-   req.UpdateUser(payload)
+    // Perform the requested action
+    req.GetUser()
+    req.UpdateUser(payload)
 
-   // Return the updated user
-   req.GetUser()
+    // Return the updated user
+    req.GetUser()
 	jsonUser, _ := json.MarshalIndent(req.User, "", "    ")
 	fmt.Fprintf(w, "%v", string(jsonUser[:]))
 	fmt.Println(req.User)
@@ -456,37 +457,37 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 // http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/list1?list_name=list1updated&lock=false
 //
 func updateList(w http.ResponseWriter, r *http.Request) {
-   fmt.Println("Endpoint Hit: updateList")
+    fmt.Println("Endpoint Hit: updateList")
 
-   // Read the variables passed
-   vars := mux.Vars(r)
-   uid := vars["uid"]
-   listname := vars["list"]
-   fmt.Printf("listname: %v\n", listname)
+    // Read the variables passed
+    vars := mux.Vars(r)
+    uid := vars["uid"]
+    listname := vars["list"]
+    fmt.Printf("listname: %v\n", listname)
 
-   // Get the payload params and display them to the terminal
-   payload := r.URL.Query()
+    // Get the payload params and display them to the terminal
+    payload := r.URL.Query()
 
-   fmt.Printf("\nPAYLOAD PARAMATERS\n")
-   for k, v := range payload {
-      s := fmt.Sprintf("%v => %v", k, v)
-      fmt.Printf("%v\n", s)
-   }
+    fmt.Printf("\nPAYLOAD PARAMATERS\n")
+    for k, v := range payload {
+       s := fmt.Sprintf("%v => %v", k, v)
+        fmt.Printf("%v\n", s)
+    }
 
-   // Create a new request
-   var req request.Request
-   req.Type = "update"
-   req.UserId = uid
-   req.Ctx = context.Background()
-   req.GetClient()
+    // Create a new request
+    var req request.Request
+    req.Type = "update"
+    req.UserId = uid
+    req.Ctx = context.Background()
+    req.GetClient()
 
-   // Perform the requested action
+    // Perform the requested action
 	req.GetListByName(listname)
-   req.UpdateList(payload)
+    req.UpdateList(payload)
 
-   // Return the updated list
-   req.GetListByID()
-   jsonList, _ := json.MarshalIndent(req.List,  "", "    ")
+    // Return the updated list
+    req.GetListByID()
+    jsonList, _ := json.MarshalIndent(req.List,  "", "    ")
 	fmt.Fprintf(w, "%v", string(jsonList[:]))
 	fmt.Println(req.List)
 }
@@ -496,7 +497,7 @@ func updateList(w http.ResponseWriter, r *http.Request) {
 // Example :
 // http://localhost:10000/update/{uid}/task/{task}?<params>
 //
-// TO DO: ALL 
+// TO DO: ALL
 func updateTask(w http.ResponseWriter, r *http.Request) {
 
 }
@@ -517,11 +518,11 @@ func handleRequests() {
 
 	router.HandleFunc("/read/{uid}", getUser).Methods("GET", "POST")
 
-   router.HandleFunc("/read/{uid}/list/{name}", getList).Methods("GET", "POST")
-   router.HandleFunc("/read/{uid}/lists", getLists).Methods("GET", "POST")
+    router.HandleFunc("/read/{uid}/list/{name}", getList).Methods("GET", "POST")
+    router.HandleFunc("/read/{uid}/lists", getLists).Methods("GET", "POST")
 
-   router.HandleFunc("/read/{uid}/task/{name}", getTask).Methods("GET", "POST")
-   router.HandleFunc("/read/{uid}/tasks/{parent_id}", getTasks).Methods("GET", "POST")
+    router.HandleFunc("/read/{uid}/task/{name}", getTask).Methods("GET", "POST")
+    router.HandleFunc("/read/{uid}/tasks/{parent_id}", getTasks).Methods("GET", "POST")
 
 	router.HandleFunc("/update/{uid}", updateUser).Methods("GET", "POST")
 	router.HandleFunc("/update/{uid}/list/{list}", updateList).Methods("GET", "POST")
