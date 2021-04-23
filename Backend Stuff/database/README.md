@@ -134,7 +134,7 @@ In terminal
 ```
 
 ### Add Task
-`http://localhost:10000/create/{uid}/task/{name}`
+`http://localhost:10000/create/{uid}/task/{name}?<params>`
 
 Will eventually be changed to so we can add the task to the list and the user at the same time
 `http://localhost:10000/create/{uid}/list/{name}/task/{name}`
@@ -257,12 +257,12 @@ In terminal
 ```
 
 ### Read List
-`http://localhost:10000/read/{uid}/task/{name}`
+`http://localhost:10000/read/{uid}/list/{name}`
 
 ### Read Lists
 ( emphasis on the s )
 
-`http://localhost:10000/read/{uid}/task/{name}`
+`http://localhost:10000/read/{uid}/lists`
 
 **Example**
 
