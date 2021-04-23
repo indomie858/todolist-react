@@ -259,7 +259,7 @@ In terminal
 ### Read List
 `http://localhost:10000/read/{uid}/list/{name}`
 
-### Read Lists
+### Read List*s*
 ( emphasis on the s )
 
 `http://localhost:10000/read/{uid}/lists`
@@ -346,7 +346,7 @@ Return
 }
 ```
 
-### Read Tasks
+### Read Task*s*
 ( emphasis on the s )
 
 `http://localhost:10000/read/{uid}/tasks/{parent_id}`
