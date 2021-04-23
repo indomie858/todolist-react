@@ -50,6 +50,7 @@ func createUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%v", string(jsonUser[:]))
 }
 
+// TO DO : Add code to update users lists array after this
 func createList(w http.ResponseWriter, r *http.Request) {
    fmt.Println("Endpoint Hit: createList")
    vars := mux.Vars(r)
@@ -82,9 +83,37 @@ func createList(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(req.List)
 }
 
-// TO DO:
+// TO DO : Change to require list id so we can add task to user and list as well.
 func createTask(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: createList")
+   vars := mux.Vars(r)
 
+	uid := vars["uid"]
+	//listname := vars["list_name"]
+   taskname := vars["name"]
+
+   //fmt.Printf("list_name: %v\ntask_name: %v", listname, taskname)
+
+	payload := r.URL.Query()
+
+   fmt.Printf("\nPAYLOAD PARAMATERS\n")
+   for k, v := range payload {
+      s := fmt.Sprintf("%v => %v", k, v)
+      fmt.Printf("\n%v\n", s)
+   }
+
+   var req request.Request
+   req.Type = "create"
+   req.UserId = uid
+   req.Ctx = context.Background()
+   req.GetClient()
+
+   req.AddTask(taskname, payload)
+   req.GetTaskByName(taskname)
+
+   jsonList, _ := json.MarshalIndent(req.Task,  "", "    ")
+	fmt.Fprintf(w, "%v", string(jsonList[:]))
+	fmt.Println(req.Task)
 }
 
 // TO DO:
@@ -114,6 +143,7 @@ func destroyUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// TO DO : Add code to delete all tasks and subtasks
 func destroyList(w http.ResponseWriter, r *http.Request) {
    fmt.Println("Endpoint Hit: destroyList")
 
@@ -138,9 +168,29 @@ func destroyList(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "list successfully deleted")
 }
 
-// TO DO:
+// TO DO : Add code to delete all sub tasks
 func destroyTask(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: destroyTask")
 
+	vars := mux.Vars(r)
+	uid := vars["uid"]
+	name := vars["name"]
+
+	var req request.Request
+	req.Type = "destroy"
+	req.UserId = uid
+	req.Ctx = context.Background()
+	req.GetClient()
+
+	req.GetTaskByName(name)
+   err := req.DestroyTask()
+   if err != nil {
+      fmt.Fprintf(w, "err deleting task: %v", err)
+      log.Printf("ERR deleting task: %v", err)
+   }
+
+   fmt.Printf("task successfully deleted")
+	fmt.Fprintf(w, "task successfully deleted")
 }
 
 func getUser(w http.ResponseWriter, r *http.Request) {
@@ -180,9 +230,58 @@ func getList(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(req.List)
 }
 
-// TO DO:
-func getTask(w http.ResponseWriter, r *http.Request) {
+func getLists(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: getLists")
 
+   vars := mux.Vars(r)
+   uid := vars["uid"]
+
+   var req request.Request
+   req.Type = "read"
+   req.UserId = uid
+   req.Ctx = context.Background()
+   req.GetClient()
+
+   lists := req.GetLists()
+   jsonLists, _ := json.MarshalIndent(lists, "", "    ")
+   fmt.Fprintf(w, "%v", string(jsonLists[:]))
+}
+
+func getTask(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: getTask")
+
+   vars := mux.Vars(r)
+   uid := vars["uid"]
+   name := vars["name"]
+
+   var req request.Request
+   req.Type = "read"
+   req.UserId = uid
+   req.Ctx = context.Background()
+
+   req.GetClient()
+   req.GetTaskByName(name)
+   jsonList, _ := json.MarshalIndent(req.Task, "", "    ")
+   fmt.Fprintf(w, "%v", string(jsonList[:]))
+   fmt.Println(req.List)
+}
+
+func getTasks(w http.ResponseWriter, r *http.Request) {
+   fmt.Println("Endpoint Hit: getTasks")
+
+   vars := mux.Vars(r)
+   uid := vars["uid"]
+   parent := vars["parent_id"]
+
+   var req request.Request
+   req.Type = "read"
+   req.UserId = uid
+   req.Ctx = context.Background()
+   req.GetClient()
+
+   tasks := req.GetTasks(parent)
+   jsonLists, _ := json.MarshalIndent(tasks, "", "    ")
+   fmt.Fprintf(w, "%v", string(jsonLists[:]))
 }
 
 func updateUser(w http.ResponseWriter, r *http.Request) {
@@ -253,23 +352,27 @@ func handleRequests() {
 	router := mux.NewRouter().StrictSlash(true)
 
 	router.HandleFunc("/", homePage)
-	router.HandleFunc("/create/user/{name}", createUser)
+
+	router.HandleFunc("/create/user/{name}", createUser).Methods("GET", "POST")
 	router.HandleFunc("/create/{uid}/list/{name}", createList).Methods("GET", "POST")
-	router.HandleFunc("/create/{uid}/task/{name}", createTask)
-	router.HandleFunc("/create/{uid}/subtask/{name}", createSubtask)
+	router.HandleFunc("/create/{uid}/task/{name}", createTask).Methods("GET", "POST")
+	router.HandleFunc("/create/{uid}/subtask/{name}", createSubtask).Methods("GET", "POST")
 
-	router.HandleFunc("/destroy/{uid}", destroyUser)
-	router.HandleFunc("/destroy/{uid}/list/{name}", destroyList)
-	router.HandleFunc("/destroy/{uid}/task/{name}", destroyTask)
+	router.HandleFunc("/destroy/{uid}", destroyUser).Methods("GET", "POST")
+	router.HandleFunc("/destroy/{uid}/list/{name}", destroyList).Methods("GET", "POST")
+	router.HandleFunc("/destroy/{uid}/task/{name}", destroyTask).Methods("GET", "POST")
 
-	router.HandleFunc("/read/{uid}", getUser)
-	router.HandleFunc("/read/{uid}/list/{name}", getList)
-	router.HandleFunc("/read/{uid}/task/{name}", getTask)
+	router.HandleFunc("/read/{uid}", getUser).Methods("GET", "POST")
 
-	router.HandleFunc("/update/{uid}", updateUser)
+   router.HandleFunc("/read/{uid}/list/{name}", getList).Methods("GET", "POST")
+   router.HandleFunc("/read/{uid}/lists", getLists).Methods("GET", "POST")
+
+   router.HandleFunc("/read/{uid}/task/{name}", getTask).Methods("GET", "POST")
+   router.HandleFunc("/read/{uid}/tasks/{parent_id}", getTasks).Methods("GET", "POST")
+
+	router.HandleFunc("/update/{uid}", updateUser).Methods("GET", "POST")
 	router.HandleFunc("/update/{uid}/list/{list}", updateList).Methods("GET", "POST")
-
-	router.HandleFunc("/update/{uid}/task/{task}", updateTask)
+	router.HandleFunc("/update/{uid}/task/{task}", updateTask).Methods("GET", "POST")
 
 	log.Fatal(http.ListenAndServe(":10000", router))
 }

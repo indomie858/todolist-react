@@ -21,42 +21,22 @@ const (
    USER = "user"
 )
 
-/*switch (req.Type) {
-case "delete":
-   // Get each item in the payload and delete it
-case "update":
-   // Get each item in the payload
-   // if any value != database_value && value != null
-   //    change value
-   //    return true if all successful
-case "read":
-   // Get each item in the payload and return any field that was not omitted
-case "create":
-   // Create new object in firestore, return new object & its id
-}*/
-
 // Structure for the request
 type Request struct {
-   // Pointer to a struct representing the user the request is targeting
+   // ID of the user requesting database access
    UserId  string
 
+   // Pointers to structure for the various documents we might need
    User *User
    List *List
+   Task *Task
 
    // The action to be performed : add, edit, delete
    Type    string
-
-   Payload Payload
 
    // Firestore client for the session
    Client  *firestore.Client
 
    // Context for the session
    Ctx     context.Context
-}
-
-type Payload struct {
-   Users []*User
-   Lists []*List
-   Tasks []*Task
 }

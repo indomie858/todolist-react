@@ -59,6 +59,35 @@ type ListJSON struct {
    Tasks       []string `json:"tasks,omitempty"`
 }
 
+func (r *Request) GetLists() []*List {
+   var lists []*List
+
+   iter := r.Client.Collection("lists").Where("list_owner", "==", r.UserId).Documents(r.Ctx)
+   for {
+      docsnap, err := iter.Next()
+      if err == iterator.Done {
+         break
+      }
+      if err != nil {
+         log.Printf("err: %v", err)
+      }
+
+      // create a new list
+      var list List
+
+      // Put data into our list structure
+      docsnap.DataTo(&list)
+
+      // Get & set the list ID
+      id := docsnap.Ref.ID
+      list.Id = id
+
+      lists = append(lists, &list)
+   }
+
+   return lists
+} // }}}
+
 // func GetListByName {{{
 //
 // Returns a list using the list name
@@ -150,7 +179,7 @@ func (r *Request) AddList(name string, fields url.Values) error {
    _, err := ref.Set(r.Ctx, data, firestore.MergeAll)
    if err != nil {
       // Handle any errors in an appropriate way, such as returning them.
-      log.Printf("An error has occurred: %s", err)
+      log.Printf("ERR adding new list: %v", err)
    }
    return err
 }
