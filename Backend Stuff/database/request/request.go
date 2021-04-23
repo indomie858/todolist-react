@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-   "context"
-   "github.com/joho/godotenv"
+    "context"
+    "github.com/joho/godotenv"
 
 	"cloud.google.com/go/firestore"
 	"google.golang.org/api/option"
@@ -13,39 +13,39 @@ import (
 
 // Actions that can be performed
 const (
-   CREATE = "create"
-   READ = "read"
-   UPDATE = "update"
-   DESTROY = "destroy"
+    CREATE  = "create"
+    READ    = "read"
+    UPDATE  = "update"
+    DESTROY = "destroy"
 )
 
 // Items that can be modified/retrieved
 const (
-   CLIENT = "client"
-   LIST = "list"
-   SETTINGS = "settings"
-   TASK = "task"
-   USER = "user"
+    CLIENT   = "client"
+    LIST     = "list"
+    SETTINGS = "settings"
+    TASK     = "task"
+    USER     = "user"
 )
 
 // Structure for the request
 type Request struct {
-   // ID of the user requesting database access
-   UserId  string
+    // ID of the user requesting database access
+    UserId  string
 
-   // Pointers to structure for the various documents we might need
-   User *User
-   List *List
-   Task *Task
+    // Pointers to structure for the various documents we might need
+    User    *User
+    List    *List
+    Task    *Task
 
-   // The action to be performed : add, edit, delete
-   Type    string
+    // The action to be performed : add, edit, delete
+    Type    string
 
-   // Firestore client for the session
-   Client  *firestore.Client
+    // Firestore client for the session
+    Client  *firestore.Client
 
-   // Context for the session
-   Ctx     context.Context
+    // Context for the session
+    Ctx     context.Context
 }
 
 // func GetCredentials {{{
@@ -54,7 +54,7 @@ type Request struct {
 // proper JSON format
 // Returns that as an array of bytes to passed to Google's option.WithCredentialsJSON
 func GetCredentials() []byte {
-	t := os.Getenv("TYPE")
+    t := os.Getenv("TYPE")
 	pid := os.Getenv("PROJECT_ID")
 	pkid := os.Getenv("PRIVATE_KEY_ID")
 	pk := os.Getenv("PRIVATE_KEY")
@@ -86,8 +86,10 @@ func GetCredentials() []byte {
 //
 // Returns a firestore client so we can communicate to the database.
 func (r *Request) GetClient() {
-   ctx := context.Background()
-	// Load .env file
+    // Set the context of the session
+    ctx := context.Background()
+
+    // Load .env file
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatalf("Error load env file: %v", err)
@@ -103,5 +105,7 @@ func (r *Request) GetClient() {
 	if err != nil {
 		log.Fatalf("Cannot create client: %v", err) // %v is to format error values
 	}
+
+    // Set our request client to be this client
 	r.Client = client
 } // }}}
