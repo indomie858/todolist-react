@@ -5,6 +5,8 @@ import (
     "errors"
     "strings"
     "net/url"
+
+    "google.golang.org/api/iterator"
     "cloud.google.com/go/firestore"
 )
 
@@ -31,6 +33,7 @@ type User struct {
     // Array of list ids
     Lists  []string `firestore:"lists,omitempty"`
 
+    // Client settings
     Settings string `firestore:"settings,omitempty"`
 }
 
@@ -68,7 +71,6 @@ func (r *Request) AddUser(name string, fields url.Values) (*UserJSON, error) {
     if data["lists"] == nil {
         // f is a url.Values variable, which is required for r.AddList
         f := url.Values{}
-        f.Add("list_name", "first_list")
         r.AddList("first_list", f)
         r.GetListByName("first_list")
 
@@ -142,7 +144,6 @@ func (r *Request) UpdateUser(fields url.Values) (*UserJSON, error) {
     // Parse the url fields into a map for Firestore
     data := ParseUserFields(fields)
 
-    // Uncomment to seee how the data to firestore is formatted
     //fmt.Printf("%v", data)
 
     // Get a reference to our user document
@@ -156,23 +157,67 @@ func (r *Request) UpdateUser(fields url.Values) (*UserJSON, error) {
     }
 
     // Update the user data in the request struct
-    r.GetUser()
-    ujson = r.UserToJSON()
-    return ujson, nil
+    ujson, err = r.GetUser()
+    return ujson, err
 }  // }}}
 
 // func DestroyUser {{{
 //
-// TODO: Delete all lists and tasks as well
 func (r *Request) DestroyUser() error {
     // Get the Firestore path for the user
     useridpath := fmt.Sprintf("users/%s", r.UserId)
 
+    user, _ := r.GetUser()
+    if len(user.Lists) > 0 {
+        // src: https://github.com/GoogleCloudPlatform/golang-samples/blob/810112812f3699d1cf9ad62ba3abf39f8ea99d7d/firestore/firestore_snippets/save.go#L295-L334
+        // Retrieve all documents that have this list as their parent
+        iter := r.Client.Collection("lists").Where("parent_id", "==", user.Id).Documents(r.Ctx)
+        numDeleted := 0
+
+        // Iterate through the documents, adding
+        // a delete operation for each one to a
+        // WriteBatch.
+        batch := r.Client.Batch()
+        for {
+            doc, err := iter.Next()
+            if err == iterator.Done {
+				break
+			}
+			if err != nil {
+                e := fmt.Sprintf("err getting snapshot of list for delete: %v", err)
+                return errors.New(e)
+			}
+
+            // create a new list struct to see if we have any
+            // lists to remove as well
+            var list List
+
+            // Put doc data into our list structure
+            doc.DataTo(&list)
+            if len(list.Tasks) > 0 {
+                r.DestroyTaskById(list.Id)
+            }
+			batch.Delete(doc.Ref)
+			numDeleted++
+        }
+
+        // If there are no documents to delete,
+        // the process is over.
+        if numDeleted == 0 {
+            return nil
+    	}
+
+    	_, err := batch.Commit(r.Ctx)
+    	if err != nil {
+    		return err
+    	}
+    }
+
     // Delete that list
     _, err := r.Client.Doc(useridpath).Delete(r.Ctx)
     if err != nil {
-        e := fmt.Sprintf("err deleting list: %v", err)
-        errors.New(e)
+        e := fmt.Sprintf("err deleting user: %v", err)
+        return errors.New(e)
     }
     return nil
 } // }}}
@@ -217,3 +262,36 @@ func (r *Request) UserToJSON() *UserJSON {
 
     return &userjson
 } // }}}
+
+func (r *Request) UpdateUserList(id string) {
+    var user User
+
+    // Get the Firestore path for the user
+    useridpath := fmt.Sprintf("users/%s", r.UserId)
+
+    // Pass that to Firestore
+    doc := r.Client.Doc(useridpath)
+
+    // Get a snapshot of the user data
+    docsnap, err := doc.Get(r.Ctx)
+    if err != nil {
+        fmt.Printf("err getting user snapshot: %v\n", err)
+        return
+    }
+
+    // Add the data to our structure
+    err = docsnap.DataTo(&user)
+    if err != nil {
+        fmt.Printf("err putting user data to struct: %v\n", err)
+        return
+    }
+
+    user.Lists = append(user.Lists, id)
+    d := make(map[string]interface{})
+    d["lists"] = user.Lists
+    // Send update to Firestore
+    _, err = doc.Set(r.Ctx, d, firestore.MergeAll)
+    if err != nil {
+        fmt.Printf("err setting new user data: %v\n", err)
+    }
+}

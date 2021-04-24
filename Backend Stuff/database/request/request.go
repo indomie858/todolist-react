@@ -48,6 +48,17 @@ type Request struct {
     Ctx     context.Context
 }
 
+func NewRequest(rtype, uid string) *Request {
+    var r Request
+
+    r.Type = rtype
+	r.UserId = uid
+	r.Ctx = context.Background()
+	r.GetClient()
+
+    return &r
+}
+
 // func GetCredentials {{{
 //
 // Reads the credential variables from the env file, formatting them into the
@@ -109,3 +120,17 @@ func (r *Request) GetClient() {
     // Set our request client to be this client
 	r.Client = client
 } // }}}
+
+
+// func CheckIfShared
+//
+// Checks if a given array of shared users contains the
+// current users id
+func (r *Request) CheckIfShared(shared []string) bool {
+    for _, v := range shared {
+        if v == r.UserId {
+            return true
+        }
+    }
+    return false
+}

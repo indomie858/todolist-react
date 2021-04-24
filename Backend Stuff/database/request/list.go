@@ -10,7 +10,10 @@ import (
     "cloud.google.com/go/firestore"
 )
 
-// Structure for list data
+// Structure of the documents in the lists collection
+// encoding (`firestore:"..."`) is firestore so we can
+// easily dump requested data into this structure for
+// easy access later.
 type List struct {
     // Firestore generated list ID
     Id          string   `firestore:"id,omitempty"`
@@ -34,7 +37,10 @@ type List struct {
     Tasks       []string `firestore:"tasks,omitempty"`
 }
 
-// Structure for list data
+// Structure of the documents in the list collection
+// encoding (`json:"..."`) is json so we can pass the
+// structure to the server in the correct json format.
+// List data will be transferred over from List struct.
 type ListJSON struct {
     // Firestore generated list ID
     Id          string   `json:"id,omitempty"`
@@ -59,10 +65,13 @@ type ListJSON struct {
 }
 
 // func AddList {{{
-//
+// Adds a list to the list collection, setting any fields provided
+// Returns the newly added list in JSON format and nil if no errors
+// occurs, returns the error and null ListJSON if an error occurss
 func (r *Request) AddList(name string, fields url.Values) (*ListJSON, error) {
     var ljson *ListJSON
     var list List
+
     // Create a new document
     ref := r.Client.Collection("lists").NewDoc()
     list.Id = ref.ID
@@ -76,9 +85,6 @@ func (r *Request) AddList(name string, fields url.Values) (*ListJSON, error) {
     // If our tasks array is empty, lets create a default one
     if data["tasks"] == nil {
         f := url.Values{}
-        f.Add("parent_id", list.Id)
-        f.Add("sub_task", "false")
-
         r.AddTask("first_task", f)
         r.GetTaskByName("first_task")
 
@@ -96,8 +102,12 @@ func (r *Request) AddList(name string, fields url.Values) (*ListJSON, error) {
         return ljson, errors.New(e)
     }
 
-    r.GetListByID()
+    r.GetListByID(ref.ID)
     ljson = r.ListToJSON()
+    if name != "first_list" {
+        r.UpdateUserList(ref.ID)
+    }    
+
     return ljson, nil
 } // }}}
 
@@ -134,10 +144,9 @@ func (r *Request) GetListByName(listname string) (*ListJSON, error) {
         // Get & set the list ID
         id := docsnap.Ref.ID
         list.Id = id
+        // Set our request list to be this list
+        r.List = &list
     }
-
-    // Set our request list to be this list
-    r.List = &list
 
     ljson = r.ListToJSON()
     return ljson, nil
@@ -145,12 +154,12 @@ func (r *Request) GetListByName(listname string) (*ListJSON, error) {
 
 // func GetListByID {{{
 //
-func (r *Request) GetListByID() (*ListJSON, error) {
+func (r *Request) GetListByID(lid string) (*ListJSON, error) {
     var ljson *ListJSON
     var list List
 
     // Get the Firestore path for the user
-    listidpath := fmt.Sprintf("lists/%s", r.List.Id)
+    listidpath := fmt.Sprintf("lists/%s", lid)
 
     // Pass that to Firestore
     doc := r.Client.Doc(listidpath)
@@ -158,7 +167,7 @@ func (r *Request) GetListByID() (*ListJSON, error) {
     // Get a snapshot of the user data
     docsnap, err := doc.Get(r.Ctx)
     if err != nil {
-        e := fmt.Sprintf("err gtting list snapshot: %v", err)
+        e := fmt.Sprintf("err getting list snapshot: %v", err)
         return ljson, errors.New(e)
     }
 
@@ -173,6 +182,12 @@ func (r *Request) GetListByID() (*ListJSON, error) {
     id := docsnap.Ref.ID
     list.Id = id
 
+    if list.Owner != r.UserId {
+        if list.SharedUsers == nil || !r.CheckIfShared(list.SharedUsers){
+            return ljson, errors.New("err getting list: requestor does not have permission")
+        }
+    }
+
     // Set our request list to be this list
     r.List = &list
     ljson = r.ListToJSON()
@@ -183,6 +198,7 @@ func (r *Request) GetListByID() (*ListJSON, error) {
 //
 func (r *Request) GetLists() ([]*ListJSON, error) {
     var lists []*ListJSON
+
     // Get all lists from Firestore where the owner is the requesting user
     iter := r.Client.Collection("lists").Where("list_owner", "==", r.UserId).Documents(r.Ctx)
 
@@ -207,7 +223,51 @@ func (r *Request) GetLists() ([]*ListJSON, error) {
 
         // Put data into our list structure
         docsnap.DataTo(&list)
+        // Get & set the list ID
+        id := docsnap.Ref.ID
+        list.Id = id
+        r.List = &list
 
+        // Add list to the lists array
+        lists = append(lists, r.ListToJSON())
+    }
+
+    return lists, nil
+} // }}}
+
+// func GetSharedLists {{{
+//
+// Returns all lists shared with the current user
+func (r *Request) GetSharedLists() ([]*ListJSON, error) {
+    var lists []*ListJSON
+
+    // Get all lists from Firestore where the shared is true and owner != requestor
+    iter := r.Client.Collection("lists").Where("shared", "==", true).Where("list_owner", "!=", r.UserId).Documents(r.Ctx)
+
+    // For each document
+    for {
+        // Get a snapshot of the data
+        docsnap, err := iter.Next()
+
+        // Check if we're done with our loop
+        if err == iterator.Done {
+            break
+        }
+
+         // Check if we have some other error
+        if err != nil {
+            e := fmt.Sprintf("err geting snapshot of list: %v", err)
+            return lists, errors.New(e)
+        }
+
+        // Create a new list
+        var list List
+
+        // Put data into our list structure
+        docsnap.DataTo(&list)
+        if list.SharedUsers == nil || !r.CheckIfShared(list.SharedUsers) {
+            continue
+        }
         // Get & set the list ID
         id := docsnap.Ref.ID
         list.Id = id
@@ -222,39 +282,180 @@ func (r *Request) GetLists() ([]*ListJSON, error) {
 
 // func UpdateList {{{
 //
-func (r *Request) UpdateList(fields url.Values) (*ListJSON, error) {
-    var ljson *ListJSON
+func (r *Request) UpdateList(name string, fields url.Values) (*ListJSON, error) {
+    ljson, err := r.GetListByName(name)
+    if err != nil {
+        e := fmt.Sprintf("err getting list for update: %v", err)
+        return ljson, errors.New(e)
+    }
+    if ljson.Owner != r.UserId {
+        if ljson.SharedUsers == nil || !r.CheckIfShared(ljson.SharedUsers)  {
+            return ljson, errors.New("err updating list: requestor does not have permission")
+        }
+    }
+
     //log.Printf("%v", fields)
     // Parse the url fields into a map for Firestore
     data := ParseListFields(fields)
     //log.Printf("%v", data)
 
     // Get a reference to our
-    ref := r.Client.Collection("lists").Doc(r.List.Id)
+    ref := r.Client.Collection("lists").Doc(ljson.Id)
 
     // Send update to Firestore
-    _,err := ref.Set(r.Ctx, data, firestore.MergeAll)
+    _,err = ref.Set(r.Ctx, data, firestore.MergeAll)
     if err != nil {
         e := fmt.Sprintf("err updating list data: %v", err)
         return ljson, errors.New(e)
     }
-    ljson, _ = r.GetListByID()
-    return ljson, nil
+    ljson, err = r.GetListByID(ljson.Id)
+    return ljson, err
 } // }}}
 
 // func DestroyList {{{
 //
-// TODO: Delete all tasks as well
-func (r *Request) DestroyList() error {
-    // Get the Firestore path for the user
-    listidpath := fmt.Sprintf("lists/%s", r.List.Id)
+func (r *Request) DestroyList(name string) error {
+    // Get the list by name
+    list, err := r.GetListByName(name)
+    if err != nil {
+        e := fmt.Sprintf("err getting list for delete: %v", err)
+        return errors.New(e)
+    }
+    if list.Owner != r.UserId {
+        if list.SharedUsers == nil || !r.CheckIfShared(list.SharedUsers) {
+            return errors.New("err deleting list: requestor does not have permission")
+        }
+    }
 
-    // Delete that list
-    _, err := r.Client.Doc(listidpath).Delete(r.Ctx)
+    // Get the Firestore path for the user
+    listidpath := fmt.Sprintf("lists/%s", list.Id)
+
+    // Check if the list has any tasks
+    if len(list.Tasks) > 0 {
+        // src: https://github.com/GoogleCloudPlatform/golang-samples/blob/810112812f3699d1cf9ad62ba3abf39f8ea99d7d/firestore/firestore_snippets/save.go#L295-L334
+        // Retrieve all documents that have this list as their parent
+        iter := r.Client.Collection("tasks").Where("parent", "==", list.Id).Documents(r.Ctx)
+        numDeleted := 0
+
+        // Iterate through the documents, adding
+        // a delete operation for each one to a
+        // WriteBatch.
+        batch := r.Client.Batch()
+        for {
+            doc, err := iter.Next()
+            if err == iterator.Done {
+				break
+			}
+			if err != nil {
+                e := fmt.Sprintf("err getting snapshot of task for delete: %v", err)
+                return errors.New(e)
+			}
+
+            // create a new task struct
+            var task Task
+
+            // Put doc data into our task structure
+            doc.DataTo(&task)
+            if task.Owner != r.UserId {
+                if task.SharedUsers == nil || !r.CheckIfShared(task.SharedUsers) {
+                    continue
+                }
+            }
+            if len(task.Subtasks) > 0 {
+                r.DestroyTaskById(task.Id)
+            }
+			batch.Delete(doc.Ref)
+			numDeleted++
+        }
+
+        // If there are no documents to delete,
+        // the process is over.
+        if numDeleted == 0 {
+            return nil
+    	}
+
+    	_, err := batch.Commit(r.Ctx)
+    	if err != nil {
+    		return err
+    	}
+    }
+
+    // Now we can delete the list
+    _, err = r.Client.Doc(listidpath).Delete(r.Ctx)
     if err != nil {
         e := fmt.Sprintf("err deleting list: %v", err)
         return errors.New(e)
     }
+    return nil
+} // }}}
+
+// func DestroyList {{{
+//
+func (r *Request) DestroyListById(name string) error {
+    list, err := r.GetListByName(name)
+    if err != nil {
+        e := fmt.Sprintf("err getting list for delete: %v", err)
+        return errors.New(e)
+    }
+    if list.Owner != r.UserId {
+        if list.SharedUsers == nil || !r.CheckIfShared(list.SharedUsers) {
+            return errors.New("err deleting list: requestor does not have permission")
+        }
+    }
+
+    // Check if the list has any tasks
+    if len(list.Tasks) > 0 {
+        // src: https://github.com/GoogleCloudPlatform/golang-samples/blob/810112812f3699d1cf9ad62ba3abf39f8ea99d7d/firestore/firestore_snippets/save.go#L295-L334
+        // Retrieve all documents that have this list as their parent
+        iter := r.Client.Collection("tasks").Where("parent", "==", list.Id).Documents(r.Ctx)
+        numDeleted := 0
+
+        // Iterate through the documents, adding
+        // a delete operation for each one to a
+        // WriteBatch.
+        batch := r.Client.Batch()
+        for {
+            doc, err := iter.Next()
+            if err == iterator.Done {
+				break
+			}
+			if err != nil {
+                e := fmt.Sprintf("err getting snapshot of task for delete: %v", err)
+                return errors.New(e)
+			}
+
+            // create a new task struct
+            var task Task
+
+            // Put doc data into our task structure
+            doc.DataTo(&task)
+
+            if task.Owner != r.UserId {
+                if task.SharedUsers == nil || !r.CheckIfShared(task.SharedUsers) {
+                    continue
+                }
+            }
+            if len(task.Subtasks) > 0 {
+                r.DestroyTaskById(task.Id)
+            }
+			batch.Delete(doc.Ref)
+			numDeleted++
+        }
+
+        // If there are no documents to delete,
+        // the process is over.
+        if numDeleted == 0 {
+            return nil
+    	}
+
+    	_, err := batch.Commit(r.Ctx)
+    	if err != nil {
+    		return err
+    	}
+    }
+    // We aren't going to be destroying the list here.
+    // It will be deleted during the batch delete, which
+    // is the only place this function is called
     return nil
 } // }}}
 
@@ -304,3 +505,37 @@ func (r *Request) ListToJSON() *ListJSON {
 
     return &listjson
 } // }}}
+
+
+func (r *Request) UpdateListTask(listid, id string) {
+    var list List
+
+    // Get the Firestore path for the user
+    listidpath := fmt.Sprintf("lists/%s", listid)
+
+    // Pass that to Firestore
+    doc := r.Client.Doc(listidpath)
+
+    // Get a snapshot of the user data
+    docsnap, err := doc.Get(r.Ctx)
+    if err != nil {
+        fmt.Printf("err getting list snapshot: %v\n", err)
+        return
+    }
+
+    // Add the data to our structure
+    err = docsnap.DataTo(&list)
+    if err != nil {
+        fmt.Printf("err putting list data to struct: %v\n", err)
+        return
+    }
+
+    list.Tasks = append(list.Tasks, id)
+    d := make(map[string]interface{})
+    d["tasks"] = list.Tasks
+    // Send update to Firestore
+    _, err = doc.Set(r.Ctx, d, firestore.MergeAll)
+    if err != nil {
+        fmt.Printf("err setting new list data: %v\n", err)
+    }
+}
