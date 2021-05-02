@@ -16,7 +16,7 @@ const useStyles = makeStyles({
     },
 });
 
-const BottomNavBar = () => {
+const BottomNavBar = (props) => {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
@@ -31,7 +31,7 @@ const BottomNavBar = () => {
         >
             <BottomNavigationAction label="" icon={<VisibilityIcon />} />
             <BottomNavigationAction label="" icon={<SettingsIcon />} />
-            <BottomNavigationAction label="" icon={<ControlPointIcon />} />
+            <BottomNavigationAction label="" icon={<ControlPointIcon />} onClick={props.onAddTask}/>
         </BottomNavigation>
     );
 }

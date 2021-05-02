@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Header from '../Header';
 import Tasks from '../Tasks';
 import BottomNavBar from '../BottomNavBar';
+import AddTask from '../AddTask.js'
 import Container from '@material-ui/core/Container';
 
 const Home = () => {
@@ -48,7 +49,8 @@ const Home = () => {
       },
     ]
   )
-
+  
+  const [showAddTask, setAddTask] = useState(false);
   return (
     <>
       {/* <Container maxWidth="xs"> */}
@@ -57,7 +59,8 @@ const Home = () => {
           {/* displays placeholder list and title "Today" */}
           {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' />) : ('No tasks to show')}
         </div>
-        <BottomNavBar />
+        {showAddTask && <AddTask onAdd={() => setAddTask(false)}/>}
+        <BottomNavBar onAddTask={() => setAddTask(true)} />
       {/* </Container> */}
     </>
   )
