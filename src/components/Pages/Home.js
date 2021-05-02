@@ -1,10 +1,10 @@
-import TestComponent from './components/TestComponent'
+import TestComponent from '../TestComponent'
 
 import { useState } from 'react'
-import Header from './components/Header'
-import Tasks from './components/Tasks'
-import BottomNavBar from './components/BottomNavBar'
-import AddTask from './components/AddTask.js'
+import Header from '../Header'
+import Tasks from '../Tasks'
+import BottomNavBar from '../BottomNavBar'
+import AddTask from '../AddTask.js'
 
 import Container from '@material-ui/core/Container';
 import { SettingsApplications } from '@material-ui/icons'
