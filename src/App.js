@@ -4,8 +4,10 @@ import { useState } from 'react'
 import Header from './components/Header'
 import Tasks from './components/Tasks'
 import BottomNavBar from './components/BottomNavBar'
+import AddTask from './components/AddTask.js'
 
 import Container from '@material-ui/core/Container';
+import { SettingsApplications } from '@material-ui/icons'
 
 const App = () => {
   //state for displaying tasks. currently has placeholder objects. will replace with tasks from database
@@ -50,6 +52,8 @@ const App = () => {
     ]
   )
 
+  const [showAddTask, setAddTask] = useState(true);
+
   return (
     <>
     <TestComponent />
@@ -61,7 +65,8 @@ const App = () => {
         {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' />) : ('No tasks to show')}
       </div>
     </Container>
-    <BottomNavBar />
+    {showAddTask && <AddTask onAdd={() => setAddTask(false)}/>}
+    <BottomNavBar onAddTask={() => setAddTask(true)} />
     </>
   );
 }

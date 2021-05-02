@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap");
 
 * {
   box-sizing: border-box;
@@ -7,7 +7,7 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 /* task list container sizing */
@@ -20,7 +20,8 @@ body {
   border-radius: 5px;
 }
 
-h1, h2 {
+h1,
+h2 {
   text-decoration: underline;
 }
 
@@ -36,4 +37,53 @@ h1, h2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* window views that pop up over the current view, such as adding a new task */
+.popover {
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  background: #444444;
+  width: 250px;
+  position: absolute;
+  top: 75%;
+  left: 50%;
+  padding: 10px 20px;
+  transform: translate(-50%, -50%);
+}
+
+.addTaskInput {
+  margin: 5px;
+  color: rgb(221, 221, 221);
+  margin-left: 100%;
+  margin-right: 100%;
+}
+
+.addTaskButton {
+  border: solid rgb(221, 221, 221) 1px;
+  background-color: #444444;
+  padding: 2px 5px 2px 5px;
+}
+
+.addTaskButton:active {
+  background-color: black;
+}
+
+.numberInput {
+  width: 3em;
+}
+
+.react-date-picker__inputGroup__input,
+.react-time-picker__inputGroup__input {
+  color: rgb(221, 221, 221);
+}
+
+.react-date-picker__button svg,
+.react-time-picker__button svg {
+  display: inherit;
+  stroke: rgb(221, 221, 221);
 }
