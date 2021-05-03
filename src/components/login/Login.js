@@ -32,22 +32,44 @@ async function registerUser(credentials) {
 }
 
 const Login = ({ setToken }) => {
-    //states for username and password
-    const [username, setUsername] = useState();
-    const [password, setPassword] = useState();
+    //states for sign in username and password
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     //boolean to track which form needs to be displayed
     const [isRegistered, setIsRegistered] = useState(true);
 
-    const handleSubmit = async e => {
+    //states for signup form
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+
+    //function for handling login submission
+    const handleSubmitLogin = async e => {
         //stops page from reloading on form submission
         e.preventDefault();
-
-        // TODO: handle registration info
 
         //gets response from api
         const token = await loginUser({
             username,
-            password
+            password,
+            isRegistered
+        });
+        setToken(token);
+        console.log(token);
+        //once token is set, home page renders
+    }
+
+    //function for handling registration submission
+    const handleSubmitRegister = async e => {
+        //stops page from reloading on form submission
+        e.preventDefault();
+
+        //gets response from api
+        const token = await registerUser({
+            username,
+            password,
+            firstName,
+            lastName,
+            isRegistered
         });
         setToken(token);
         console.log(token);
@@ -58,14 +80,13 @@ const Login = ({ setToken }) => {
     if (isRegistered) {
         return (
             <>
-                <LoginForm handleSubmit={handleSubmit} setUsername={setUsername} setPassword={setPassword} setIsRegistered={setIsRegistered} />
+                <LoginForm handleSubmit={handleSubmitLogin} setUsername={setUsername} setPassword={setPassword} setIsRegistered={setIsRegistered} />
             </>
         )
     } else {
         return (
-            //TODO: work on registration form. there's nothing handling form entries atm
             <>
-                <RegisterForm setIsRegistered={setIsRegistered} />
+                <RegisterForm handleSubmit={handleSubmitRegister} setUsername={setUsername} setPassword={setPassword} setFirstName={setFirstName} setLastName={setLastName} setIsRegistered={setIsRegistered} />
             </>
         )
     }
