@@ -10,7 +10,7 @@ import ControlPointIcon from '@material-ui/icons/ControlPoint';
 const useStyles = makeStyles({
     root: {
         width: '100%',
-        position: 'fixed',
+        position: 'sticky',
         bottom: 0,
         left: 0,
     },

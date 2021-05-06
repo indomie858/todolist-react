@@ -16,40 +16,38 @@ const Home = () => {
         text: 'Doctors appt',
         day: 'Feb 5th at 2:30pm',
         reminder: true,
+        subTasks: [
+          'Get in car',
+          'Drive to doctor'
+        ],
       },
       {
         id: 2,
         text: 'School meeting',
         day: 'Feb 6th at 1:30pm',
         reminder: true,
+        subTasks: [
+          'Take two shots',
+          'Put on some pants',
+          'Get a ride to school'
+        ],
       },
       {
         id: 3,
         text: 'Food shopping',
         day: 'Feb 5th at 5:30pm',
         reminder: false,
-      },
-      {
-        id: 1,
-        text: 'Doctors appt',
-        day: 'Feb 5th at 2:30pm',
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: 'School meeting',
-        day: 'Feb 6th at 1:30pm',
-        reminder: true,
-      },
-      {
-        id: 3,
-        text: 'Food shopping',
-        day: 'Feb 5th at 5:30pm',
-        reminder: false,
+        subTasks: [
+          'Make shopping list',
+          'Drive to Costco',
+          'Buy some shit'
+        ],
       },
     ]
   )
   
+  
+
   const [showAddTask, setAddTask] = useState(false);
   return (
     <>
@@ -58,6 +56,10 @@ const Home = () => {
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
           {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' />) : ('No tasks to show')}
+        </div>
+        <div className='listContainer'>
+          {/* displays same placeholder list except with title "Tomorrow" */}
+          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Tomorrow' />) : ('No tasks to show')}
         </div>
         {showAddTask && <AddTask onAdd={() => setAddTask(false)}/>}
         <BottomNavBar onAddTask={() => setAddTask(true)} />

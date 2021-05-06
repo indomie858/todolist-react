@@ -24,7 +24,7 @@ h2 {
   text-decoration: underline;
 }
 
-/* styling for tasks */
+/* styling for individual tasks */
 .task {
   background: #f4f4f4;
   margin: 5px;
@@ -36,6 +36,13 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* styling for individual subtasks */
+.subtask {
+  background: #f4f4f4;
+  margin: 0px 5px 2px 50px;
+  padding: 10px 20px;
 }
 
 /* window views that pop up over the current view, such as adding a new task */
