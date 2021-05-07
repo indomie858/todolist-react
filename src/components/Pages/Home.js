@@ -45,13 +45,14 @@ const Home = () => {
       },
     ]
   )
-  
-  
+
+
 
   const [showAddTask, setAddTask] = useState(false);
   return (
     <>
       {/* <Container maxWidth="xs"> */}
+      <div className="mainContainer">
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
@@ -61,8 +62,9 @@ const Home = () => {
           {/* displays same placeholder list except with title "Tomorrow" */}
           {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Tomorrow' />) : ('No tasks to show')}
         </div>
-        {showAddTask && <AddTask onAdd={() => setAddTask(false)}/>}
-        <BottomNavBar onAddTask={() => setAddTask(true)} />
+        {showAddTask && <AddTask onAdd={() => setAddTask(false)} />}
+      </div>
+      <BottomNavBar onAddTask={() => setAddTask(true)} />
       {/* </Container> */}
     </>
   )
