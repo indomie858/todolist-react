@@ -35,13 +35,19 @@ const Home = () => {
       {
         id: 3,
         text: 'Food shopping',
-        day: 'Feb 5th at 5:30pm',
+        day: 'Feb 7th at 5:30pm',
         reminder: false,
         subTasks: [
           'Make shopping list',
           'Drive to Costco',
           'Buy some shit'
         ],
+      },
+      {
+        id: 4,
+        text: 'something something darkside',
+        day: 'Feb 8th at 2:30pm',
+        reminder: true,
       },
     ]
   )

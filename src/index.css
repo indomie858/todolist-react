@@ -53,9 +53,24 @@ h2 {
 /* styling for individual subtasks */
 .subtask {
   background: #f4f4f4;
-  margin: 0px 5px 2px 50px;
+  margin: 0px 20px 2px 50px;
   padding: 10px 20px;
 }
+
+.addsubtask {
+  margin: 0px 20px 2px 50px;
+  padding: 10px 20px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+}
+
+.addsubtaskicon {
+  border: none;
+  cursor: pointer;
+  background: none;
+}
+
 
 /* window views that pop up over the current view, such as adding a new task */
 .popover {
