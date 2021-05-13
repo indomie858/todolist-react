@@ -26,16 +26,7 @@ const App = () => {
       <TestComponent />
       {/* main container for ui */}
       <Container maxWidth="xs">
-        <BrowserRouter>
-          <Switch>
-            <Route path="/">
-              <Home />
-            </Route>
-            <Route path="/preferences">
-              <Preferences />
-            </Route>
-          </Switch>
-        </BrowserRouter>
+        <Home />
       </Container>
     </>
   );

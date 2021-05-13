@@ -8,6 +8,9 @@
 
 body {
   font-family: 'Roboto', sans-serif;
+  background: linear-gradient(#f6f0ea, #f1dfd1);
+  min-height: 100vh;
+  overflow: auto;
 }
 
 h1,
@@ -17,24 +20,27 @@ h2 {
 
 /* container for all lists */
 .mainContainer {
+  padding: 10px 0;
   /* bottom margin to make sure contents aren't covered by bottom nav bar */
   margin-bottom: 40px;
 }
 
 /* task list container sizing */
 .listContainer {
-  margin: 0px auto;
+  /* background: linear-gradient(#7c98b3 , #637081  ); */
+  margin: 10px auto;
   overflow: auto;
   min-height: 300px;
   padding: 15px;
-  border-radius: 5px;
+  border-radius: 15px;
 }
 
 /* styling for individual tasks */
 .task {
-  background: #f4f4f4;
+  background: linear-gradient(#f5f7fa, #b8c6db);
   margin: 5px;
   padding: 10px 20px;
+  border-radius: 25px;
   cursor: pointer;
 }
 
