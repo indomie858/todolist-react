@@ -66,6 +66,11 @@ h2 {
   justify-content: flex-start;
 }
 
+.subtaskform {
+  display: inline-flex;
+  justify-content: space-between;
+}
+
 
 /* window views that pop up over the current view, such as adding a new task */
 .popover {

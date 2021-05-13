@@ -5,6 +5,13 @@ import { useState } from 'react';
 
 const Task = ({ task }) => {
     const [showSubTasks, setShowSubTasks] = useState(false);
+    const [subTasks, setSubTasks] = useState(task.subTasks);
+
+    //function for adding subtasks. currently pushing subtask to array in task object
+    //need to handle sending subtask to the backend
+    const addSubTask = (subTask) => {
+        setSubTasks([...subTasks, subTask]);
+    }
 
     return (
         <>
@@ -13,7 +20,7 @@ const Task = ({ task }) => {
                 <p>{task.day}</p>
             </div>
             {/* displays list of subtasks when individual task is clicked */}
-            {showSubTasks && <SubTasks subTasks={task.subTasks}/>}
+            {showSubTasks && <SubTasks subTasks={subTasks} addSubTask={addSubTask} />}
         </>
     )
 }

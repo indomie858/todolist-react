@@ -48,6 +48,8 @@ const Home = () => {
         text: 'something something darkside',
         day: 'Feb 8th at 2:30pm',
         reminder: true,
+        subTasks: [
+        ],
       },
     ]
   )
