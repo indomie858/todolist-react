@@ -17,7 +17,7 @@ const App = () => {
     //if there is no user token, then render login page
 
     // NOTE: COMMENT THIS LINE TO HIDE LOGIN PAGE
-    // return <Login setToken={setToken} />
+    //return <Login setToken={setToken} />
   }
 
 

@@ -2,6 +2,8 @@
 
 import SubTasks from './SubTasks'
 import { useState } from 'react';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 const Task = ({ task }) => {
     const [showSubTasks, setShowSubTasks] = useState(false);
@@ -16,8 +18,13 @@ const Task = ({ task }) => {
     return (
         <>
             <div className='task' onClick={() => setShowSubTasks(!showSubTasks)}>
-                <h3>{task.text}{' '}</h3>
-                <p>{task.day}</p>
+                <div className="task-flex-left">
+                    <h3>{task.text}{' '}</h3>
+                    <p>{task.day}</p>
+                </div>
+                <div className="task-flex-right">
+                    {!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                </div>
             </div>
             {/* displays list of subtasks when individual task is clicked */}
             {showSubTasks && <SubTasks subTasks={subTasks} addSubTask={addSubTask} />}

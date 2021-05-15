@@ -13,10 +13,6 @@ body {
   overflow: auto;
 }
 
-h1,
-h2 {
-  text-decoration: underline;
-}
 
 /* container for all lists */
 .mainContainer {
@@ -42,6 +38,8 @@ h2 {
   padding: 10px 20px;
   border-radius: 25px;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
 }
 
 .task h3 {
@@ -49,6 +47,7 @@ h2 {
   align-items: center;
   justify-content: space-between;
 }
+
 
 /* styling for individual subtasks */
 .subtask {
