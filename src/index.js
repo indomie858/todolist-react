@@ -29,10 +29,10 @@ function handleGoogleAuth(callback){
     .signInWithPopup(provider)
     .then((result) => {
       /** @type {firebase.auth.OAuthCredential} */
-      var credential = result.credential;
+      //var credential = result.credential;
 
       // This gives you a Google Access Token. You can use it to access the Google API.
-      token = credential.accessToken;
+      token = result.credential.accessToken;
       sessionStorage.setItem('token', JSON.stringify(token));
       // The signed-in user info.
       email = result.user.email;
@@ -40,12 +40,12 @@ function handleGoogleAuth(callback){
       // ...
     }).catch((error) => {
       // Handle Errors here.
-      var errorCode = error.code;
+      //var errorCode = error.code;
       err = error.message;
       // The email of the user's account used.
       email = error.email;
       // The firebase.auth.AuthCredential type that was used.
-      var credential = error.credential;
+      //var credential = error.credential;
       // ...
     });
 }

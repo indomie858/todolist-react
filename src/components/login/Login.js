@@ -1,10 +1,9 @@
 //component for login page. feel free to change anything
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
-import Home from '../Pages/Home';
 
 
 
@@ -103,8 +102,8 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
             if(email){
               if(token){
                 sessionStorage.setItem('token', token);
+                sessionStorage.setItem('email', email);
                 console.log('Everything worked');
-                this.props.history.push('/home');
               } else {
                 console.log('auth token failed: ' + token);
               }
@@ -123,11 +122,9 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
     // form rendered depends on if user is registered (login or register form)
     if (getToken()){
       console.log('Used this home oute login.usename = true');
-      this.history.push('/home');
+      //this.history.push('/home');
       return (
-        <>
-          <Home />
-        </>
+         <Redirect to="/home" />
       );
     }
     if (isRegistered) {
