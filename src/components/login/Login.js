@@ -1,8 +1,12 @@
 //component for login page. feel free to change anything
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
+import Home from '../Pages/Home';
+
+
 
 //passes user login info to backend
 async function loginUser(credentials) {
@@ -21,6 +25,8 @@ async function loginUser(credentials) {
 //haven't done anything with this yet - gaven
 async function registerUser(credentials) {
     //replace url with correct endpoint
+
+
     return fetch('http://localhost:3003/', {
         method: 'POST',
         headers: {
@@ -31,7 +37,7 @@ async function registerUser(credentials) {
         .then(data => data.json())
 }
 
-const Login = ({ setToken }) => {
+const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/ }) => {
     //states for sign in username and password
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -41,6 +47,12 @@ const Login = ({ setToken }) => {
     //states for signup form
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+
+    const getToken = () => {
+      //tokens are stored locally so user doesn't have to keep logging in
+      const token = sessionStorage.getItem('token');
+      return token
+    };
 
     //function for handling login submission
     const handleSubmitLogin = async e => {
@@ -76,11 +88,52 @@ const Login = ({ setToken }) => {
         //once token is set, home page renders
     }
 
+    const handleGoogleSignIn = async e => {
+      //stops page from reloading on form submission
+      e.preventDefault();
+
+
+      //Popup googleAuth on login render
+      if(!getToken()) {
+        handleGoogleAuth( (err, email, token) => {
+          console.log("err: " + err);
+          console.log("email: " + email);
+          console.log("token: " + token);
+          if(!err){ //if no errors on auth
+            if(email){
+              if(token){
+                sessionStorage.setItem('token', token);
+                console.log('Everything worked');
+                this.props.history.push('/home');
+              } else {
+                console.log('auth token failed: ' + token);
+              }
+            } else {
+              console.log('auth email failed: ' + email);
+            }
+          } else {
+            console.log('auth failed: ' + err);
+          }
+        });
+      } else {
+        console.log('token was registered');
+      }
+    }
+
     // form rendered depends on if user is registered (login or register form)
+    if (getToken()){
+      console.log('Used this home oute login.usename = true');
+      this.history.push('/home');
+      return (
+        <>
+          <Home />
+        </>
+      );
+    }
     if (isRegistered) {
         return (
             <>
-                <LoginForm handleSubmit={handleSubmitLogin} setUsername={setUsername} setPassword={setPassword} setIsRegistered={setIsRegistered} />
+                <LoginForm handleSubmit={handleGoogleSignIn} setUsername={setUsername} setPassword={setPassword} setIsRegistered={setIsRegistered} />
             </>
         )
     } else {
