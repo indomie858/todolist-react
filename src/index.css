@@ -111,7 +111,7 @@ body {
   background:black;
   width: 250px;
   position: absolute;
-  bottom: 120px;
+  bottom: 95px;
   left: 50%;
   transform: translate(-50%);
   padding: 25px;
@@ -135,7 +135,7 @@ body {
   background-color: black;
   position: fixed;
   display: block;
-  bottom: 90px;
+  bottom: 70px;
   box-shadow: 5px 5px lightblue;
 }
 
@@ -154,7 +154,7 @@ body {
   background-color: black;
   position: fixed;
   display: block;
-  bottom: 60px;
+  bottom: 55px;
   box-shadow: 5px 5px lightblue;
 }
 
