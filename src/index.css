@@ -13,10 +13,6 @@ body {
   overflow: auto;
 }
 
-h1,
-h2 {
-  text-decoration: underline;
-}
 
 /* container for all lists */
 .mainContainer {
@@ -42,6 +38,8 @@ h2 {
   padding: 10px 20px;
   border-radius: 25px;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
 }
 
 .task h3 {
@@ -49,6 +47,7 @@ h2 {
   align-items: center;
   justify-content: space-between;
 }
+
 
 /* styling for individual subtasks */
 .subtask {
@@ -71,29 +70,9 @@ h2 {
   justify-content: space-between;
 }
 
-
-/* window views that pop up over the current view, such as adding a new task */
-.popover {
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  color: white;
-  justify-content: center;
-  align-items: center;
-  background: #444444;
-  width: 250px;
-  position: fixed;
-  top: 75%;
-  left: 50%;
-  padding: 10px 20px;
-  transform: translate(-50%, -50%);
-}
-
 .addTaskInput {
-  margin: 5px;
+  margin: 10px;
   color: rgb(221, 221, 221);
-  margin-left: 100%;
-  margin-right: 100%;
 }
 
 .addTaskButton {
@@ -119,4 +98,139 @@ h2 {
 .react-time-picker__button svg {
   display: inherit;
   stroke: rgb(221, 221, 221);
+}
+
+/* window views that pop up over the current view, such as adding a new task */
+.popover {
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  background:black;
+  width: 250px;
+  position: absolute;
+  bottom: 95px;
+  left: 50%;
+  transform: translate(-50%);
+  padding: 25px;
+  border-radius: 11px;
+  box-shadow: 10px 10px lightblue;
+}
+
+/* Modified from: https://codepen.io/kirstenallen/pen/MWwPYYm */
+.popoverTag1 {
+  z-index: 1;
+  background:black;
+  box-shadow: 10px 10px lightblue;
+  content: ".";
+  -webkit-text-fill-color: black;
+  text-shadow: 5px 5px lightblue;
+  font-size: 55px;
+  width: 55px;
+  height: 11px;
+  line-height: 30px;
+  border-radius: 11px;
+  background-color: black;
+  position: fixed;
+  display: block;
+  bottom: 70px;
+  box-shadow: 5px 5px lightblue;
+}
+
+.popoverTag2 {
+  z-index: 1;
+  background:black;
+  box-shadow: 10px 10px lightblue;
+  content: ".";
+  -webkit-text-fill-color: black;
+  text-shadow: 5px 5px lightblue;
+  font-size: 55px;
+  width: 23px;
+  height: 11px;
+  line-height: 30px;
+  border-radius: 11px;
+  background-color: black;
+  position: fixed;
+  display: block;
+  bottom: 55px;
+  box-shadow: 5px 5px lightblue;
+}
+
+.popoverRight1 {
+  text-align: right;
+  right: 50%;
+  transform: translate(145px);
+}
+
+.popoverRight2 {
+  text-align: right;
+  right: 50%;
+  transform: translate(160px);
+}
+
+.popoverLeft1 {
+  text-align: left;
+  left: 50%;
+  transform: translate(-145px);
+}
+
+.popoverLeft2 {
+  text-align: left;
+  left: 50%;
+  transform: translate(-160px);
+}
+
+.popoverCenter1 {
+  text-align: center;
+  right: 50%;
+  transform: translate(25px);
+}
+
+.popoverCenter2 {
+  text-align: center;
+  right: 50%;
+  transform: translate(10px);
+}
+
+.listDisplay {
+  text-align: center;
+  width: 100%;
+  border: 2px solid white;
+  margin: 10px;
+}
+
+.listDisplay:hover {
+  border: 2px solid lightblue;
+  color: lightblue;
+  cursor: pointer;
+}
+
+.listDisplay:active {
+  transform: translate(0, 2px);
+}
+
+@media only screen and (max-width: 500px) {
+  
+  .popoverRight1 {
+    right: 23vw;
+    transform: translate(0);
+  }
+
+  .popoverRight2 {
+    right: 20vw;
+    transform: translate(0);
+  }
+
+  .popoverLeft1 {
+    left: 23vw;
+    transform: translate(0);
+  }
+
+  .popoverLeft2 {
+    left: 20vw;
+    transform: translate(0);
+  }
+
 }
