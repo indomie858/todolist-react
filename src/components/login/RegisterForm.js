@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered }) => {
+const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered, setFirstName, setLastName }) => {
   const classes = useStyles();
 
   return (
@@ -54,6 +54,7 @@ const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered 
                 id="firstName"
                 label="First Name"
                 autoFocus
+                onChange={e => setFirstName(e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -65,6 +66,7 @@ const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered 
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                onChange={e => setLastName(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -76,6 +78,7 @@ const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered 
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange={e => setUsername(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -88,6 +91,7 @@ const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered 
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange={e => setPassword(e.target.value)}
               />
             </Grid>
           </Grid>

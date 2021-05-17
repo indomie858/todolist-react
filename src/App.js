@@ -1,41 +1,44 @@
-import TestComponent from './components/TestComponent';
-
-import { useState } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+//import { useState } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Home from './components/Pages/Home';
-import Preferences from './components/Pages/Preferences';
-import Login from './components/login/Login'
-import useToken from './components/login/useToken'
+//import Preferences from './components/Pages/Preferences';
+import Login from './components/login/Login';
+import useToken from './components/login/useToken';
+//import firebase from 'firebase/app';
+import "firebase/auth";
+//import { FirebaseAuthProvider, FirebaseAuthConsumer} from "@react-firebase/auth";
 
-
-const App = () => {
+const App = ({ handleGoogleAuth }) => {
   //login token with custom hook:  /components/login/useToken
-  const { token, setToken } = useToken();
+  const { setToken } = useToken();
 
-  if (!token) {
-    //if there is no user token, then render login page
-
-    // NOTE: COMMENT THIS LINE TO HIDE LOGIN PAGE
-    return <Login setToken={setToken} />
-  }
-
+  //comment out if connected to firebase auth
+  sessionStorage.setItem('token', 'cool token');
+  sessionStorage.setItem('email', 'test@gmail.com');
 
   return (
     <>
-      <TestComponent />
-      {/* main container for ui */}
       <Container maxWidth="xs">
-        <BrowserRouter>
+        <Router>
           <Switch>
-            <Route path="/">
-              <Home />
-            </Route>
-            <Route path="/preferences">
-              <Preferences />
-            </Route>
+            <Route
+              exact
+              path="/login"
+              render={() => (<Login setToken={setToken} handleGoogleAuth={handleGoogleAuth} />)}
+            />
+            <Route
+              exact
+              path="/home"
+              render={() => (<Home />)}
+            />
+            <Route
+              exact
+              path="/"
+              render={() => (<Home />)}
+            />
           </Switch>
-        </BrowserRouter>
+        </Router>
       </Container>
     </>
   );

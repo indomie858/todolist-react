@@ -9,6 +9,7 @@ import ControlPointIcon from '@material-ui/icons/ControlPoint';
 
 const useStyles = makeStyles({
     root: {
+        background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
         width: '100%',
         position: 'fixed',
         bottom: 0,
@@ -16,7 +17,7 @@ const useStyles = makeStyles({
     },
 });
 
-const BottomNavBar = () => {
+const BottomNavBar = (props) => {
     const classes = useStyles();
     const [value, setValue] = React.useState(0);
 
@@ -29,9 +30,9 @@ const BottomNavBar = () => {
             showLabels
             className={classes.root}
         >
-            <BottomNavigationAction label="" icon={<VisibilityIcon />} />
+            <BottomNavigationAction label="" icon={<VisibilityIcon />} onClick={props.onListNav}/>
             <BottomNavigationAction label="" icon={<SettingsIcon />} />
-            <BottomNavigationAction label="" icon={<ControlPointIcon />} />
+            <BottomNavigationAction label="" icon={<ControlPointIcon />} onClick={props.onAddTask}/>
         </BottomNavigation>
     );
 }
