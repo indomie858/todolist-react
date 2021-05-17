@@ -64,12 +64,12 @@ func TestMain(m *testing.M) {
 
 func TestCreateUser(t *testing.T) {
     req, _ := http.NewRequest("POST", "/create/user/testing_user_1", nil)
-    //fmt.Printf("req: %v", req)
+    //fmt.Printf("Create User Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Create User Response: %v\n",response)
 
-    //fmt.Printf("%v",response)
     var m map[string]request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
@@ -83,9 +83,11 @@ func TestCreateUser(t *testing.T) {
 func TestCreateList(t *testing.T) {
     url := fmt.Sprintf("/create/%s/list/test_list_1", testuid)
     req, _ := http.NewRequest("POST", url, nil)
+    //fmt.Printf("Create List Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Create List Response: %v\n",response)
 
     var m map[string]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -111,11 +113,13 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 }
 
 func TestCreateListWithPayload(t *testing.T) {
-    url := fmt.Sprintf("/create/%s/list/test_list_2?lock=false&shared=false", testuid)
+    url := fmt.Sprintf("/create/%s/list/test_list_2?lock=true&shared=false", testuid)
     req, _ := http.NewRequest("POST", url, nil)
+    //fmt.Printf("Create List with Payload Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Create List with Payload Response: %v\n",response)
 
     var m map[string]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -126,8 +130,8 @@ func TestCreateListWithPayload(t *testing.T) {
         t.Errorf("Expected the name to be set to 'test_list_2'. Got '%v' instead.", list.Name)
     }
 
-    if list.Lock {
-        t.Errorf("Expected lock field to be 'false'. Got '%v' instead.", list.Lock)
+    if !list.Lock {
+        t.Errorf("Expected lock field to be 'true'. Got '%v' instead.", list.Lock)
     }
 
     if list.Shared {
@@ -136,11 +140,14 @@ func TestCreateListWithPayload(t *testing.T) {
 }
 
 func TestCreateTaskWithPaylod(t *testing.T) {
-    url := fmt.Sprintf("/create/%s/task/test_task_1?parent_id=%s&sub_task=false&lock=false", testuid, testlid1)
+    date_due := "01/02/2006 3:04:05 PM"
+    url := fmt.Sprintf("/create/%s/task/test_task_1/parent/%s?sub_task=false&lock=false&date_due=%s", testuid, testlid1, date_due)
     req, _ := http.NewRequest("POST", url, nil)
+    //fmt.Printf("Create Task with Payload Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Create Task with Payload Response: %v\n",response)
 
     var m map[string]request.TaskJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -163,11 +170,13 @@ func TestCreateTaskWithPaylod(t *testing.T) {
 }
 
 func TestCreateSubTask(t *testing.T) {
-    url := fmt.Sprintf("/create/%s/task/sub_task_1?parent_id=%s&sub_task=true", testuid, testtid)
+    url := fmt.Sprintf("/create/%s/subtask/sub_task_1/parent/%s", testuid, testtid)
     req, _ := http.NewRequest("POST", url, nil)
+    //fmt.Printf("Create Subtask Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Create Subtask Response: %v\n",response)
 
     var m map[string]request.TaskJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -190,9 +199,11 @@ func TestCreateSubTask(t *testing.T) {
 func TestGetUser(t *testing.T) {
     url := fmt.Sprintf("/read/%s", testuid)
     req, _ := http.NewRequest("GET", url, nil)
+    //fmt.Printf("Get User Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Get User Response: %v\n",response)
 
     var m map[string]request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -206,9 +217,11 @@ func TestGetUser(t *testing.T) {
 func TestGetList(t *testing.T) {
     url := fmt.Sprintf("/read/%s/list/test_list_1", testuid)
     req, _ := http.NewRequest("GET", url, nil)
+    //fmt.Printf("Get List Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Get List Response: %v\n",response)
 
     var m map[string]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -222,9 +235,11 @@ func TestGetList(t *testing.T) {
 func TestGetLists(t *testing.T) {
     url := fmt.Sprintf("/read/%s/lists", testuid)
     req, _ := http.NewRequest("GET", url, nil)
+    //fmt.Printf("Get Lists Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Get Lists Response: %v\n",response)
 
     var m map[string][]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -235,13 +250,53 @@ func TestGetLists(t *testing.T) {
     }
 }
 
+func TestGetTask(t *testing.T) {
+    url := fmt.Sprintf("/read/%s/task/test_task_1/parent/%s", testuid, testlid1)
+    req, _ := http.NewRequest("GET", url, nil)
+    //fmt.Printf("Get Task Request: %v\n", req)
+
+    response := executeRequest(req)
+    checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Get Task Response: %v\n",response)
+
+    var m map[string]request.TaskJSON
+    json.Unmarshal(response.Body.Bytes(), &m)
+
+    task := m["result"]
+    if task.Name != "test_task_1" {
+        t.Errorf("Expected the name to be set to 'test_task_1'. Got '%v' instead.", task.Name)
+    }
+
+    if task.Parent != testlid1 {
+        t.Errorf("Expected the parent_id to be set to '%s'. Got '%v' instead.", testlid1, task.Parent)
+    }
+}
+
+func TestGetTasks(t *testing.T) {
+    url := fmt.Sprintf("/read/%s/tasks/%s", testuid, testlid1)
+    req, _ := http.NewRequest("GET", url, nil)
+    //fmt.Printf("Get Task Request: %v\n", req)
+
+    response := executeRequest(req)
+    checkResponseCode(t, http.StatusOK, response.Code)
+    //fmt.Printf("Get Tasks Response: %v\n",response)
+
+    var m map[string][]request.TaskJSON
+    json.Unmarshal(response.Body.Bytes(), &m)
+
+    tasks := m["result"]
+    if len(tasks) == 0 {
+        t.Errorf("Expected data to be in result. Got '%v' instead.", tasks)
+    }
+}
 
 func TestDestroyUser(t *testing.T) {
     // delete the user
     url := fmt.Sprintf("/destroy/%s", testuid)
     req, _ := http.NewRequest("DELETE", url, nil)
+    //fmt.Printf("Destroy User Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-
+    //fmt.Printf("Destroy User Response: %v\n",response)
 }

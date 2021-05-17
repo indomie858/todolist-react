@@ -116,8 +116,8 @@ func (a *App) createList(w http.ResponseWriter, r *http.Request) {
 // Create a new task in the Firstore database
 //
 // Example:
-// http://localhost:10000/create/{uid}/task/{name}?<params>
-// http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/task/test_task_1
+// http://localhost:10000/create/{uid}/task/{name}/parent/{pid}?<params>
+// http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/task/test_task_1/parent/asdjfasdlfja;ldfj
 //
 // TODO: Change to require list id so we can add task to user and list as well.
 func (a *App) createTask(w http.ResponseWriter, r *http.Request) {
@@ -126,6 +126,7 @@ func (a *App) createTask(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
     vars := mux.Vars(r)
 	uid := vars["uid"]
+    pid := vars["pid"]
     taskname := vars["name"]
     //fmt.Printf("task_name: %v", taskname)
 
@@ -142,7 +143,7 @@ func (a *App) createTask(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Perform the requested action
-    task, err := req.AddTask(taskname, payload)
+    task, err := req.AddTask(taskname, pid, payload)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
@@ -153,7 +154,7 @@ func (a *App) createTask(w http.ResponseWriter, r *http.Request) {
 // Create a new sub task in the Firstore database with the provided name
 //
 // Example:
-// http://localhost:10000/create/{uid}/subtask/{name}?<params>
+// http://localhost:10000/create/{uid}/subtask/{name}/parent/{pid}?<params>
 //
 func (a *App) createSubtask(w http.ResponseWriter, r *http.Request) {
     //fmt.Println("Endpoint Hit: createSubtask")
@@ -161,6 +162,7 @@ func (a *App) createSubtask(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
     vars := mux.Vars(r)
 	uid := vars["uid"]
+    pid := vars["pid"]
     taskname := vars["name"]
     //fmt.Printf("task_name: %v", taskname)
 
@@ -178,7 +180,7 @@ func (a *App) createSubtask(w http.ResponseWriter, r *http.Request) {
     payload.Add("sub_task", "true")
 
     // Perform the requested action
-    task, err := req.AddTask(taskname, payload)
+    task, err := req.AddTask(taskname, pid, payload)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
@@ -240,8 +242,8 @@ func (a *App) destroyList(w http.ResponseWriter, r *http.Request) {
 // AND parent_list id <-- TO DO
 //
 // Example :
-// http://localhost:10000/destroy/{uid}/task/{name}
-// http://localhost:10000/destroy/a3a1hWUx5geKB8qeR6fbk5LZZGI2/task/test_task_1
+// http://localhost:10000/destroy/{uid}/task/{name}/parent/{pid}
+// http://localhost:10000/destroy/f9oXnGYUlUADNIDambFG/task/test_task_1/parent/hsHYrOZeeAAuIAOSWaLk/
 //
 // TODO: Add code to delete all sub tasks + to filter by parent id
 func (a *App) destroyTask(w http.ResponseWriter, r *http.Request) {
@@ -250,13 +252,14 @@ func (a *App) destroyTask(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
 	vars := mux.Vars(r)
 	uid := vars["uid"]
+    pid := vars["pid"]
 	name := vars["name"]
 
     // Create a new request for the app
     req := request.NewRequest("destroy", uid)
 
     // Perform the requested action
-    if err := req.DestroyTask(name); err != nil {
+    if err := req.DestroyTask(name, pid); err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
@@ -372,8 +375,8 @@ func (a *App) getSharedLists(w http.ResponseWriter, r *http.Request) {
 // in case user names a bunch of tasks the same thing just in diff. lists
 //
 // Example :
-// http://localhost:10000/read/{uid}/task/{name}
-// http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/task/task1
+// http://localhost:10000/read/{uid}/task/{name}/parent/{pid}
+// http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/task/task1/list/thgvhhcyresjc
 //
 func (a *App) getTask(w http.ResponseWriter, r *http.Request) {
     //fmt.Println("Endpoint Hit: getTask")
@@ -381,6 +384,7 @@ func (a *App) getTask(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
     vars := mux.Vars(r)
     uid := vars["uid"]
+    pid := vars["pid"]
     name := vars["name"]
 
     // Create a new request for the app
@@ -389,7 +393,7 @@ func (a *App) getTask(w http.ResponseWriter, r *http.Request) {
     // Perform the requested action
 
     // Return the task
-    task, err := req.GetTaskByName(name)
+    task, err := req.GetTaskByName(name, pid)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
@@ -497,7 +501,7 @@ func (a *App) updateList(w http.ResponseWriter, r *http.Request) {
 // Update a Firestore task data
 //
 // Example :
-// http://localhost:10000/update/{uid}/task/{name}/{parent_id}?<params>
+// http://localhost:10000/update/{uid}/task/{name}/parent/{pid}?<params>
 //
 func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
     //fmt.Println("Endpoint Hit: updateTask")
@@ -505,6 +509,7 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
     vars := mux.Vars(r)
     uid := vars["uid"]
+    pid := vars["pid"]
     taskname := vars["name"]
     //fmt.Printf("taskname: %v\n", taskname)
 
@@ -521,7 +526,7 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
     req := request.NewRequest("update", uid)
 
     // Perform the requested action
-    task, err := req.UpdateTask(taskname, payload)
+    task, err := req.UpdateTask(taskname, pid, payload)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
@@ -531,28 +536,32 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
 
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/", a.homePage)
+
+    // Create functions
 	a.Router.HandleFunc("/create/user/{name}", a.createUser).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/list/{name}", a.createList).Methods("GET", "POST")
-	a.Router.HandleFunc("/create/{uid}/task/{name}", a.createTask).Methods("GET", "POST")
-	a.Router.HandleFunc("/create/{uid}/subtask/{name}", a.createSubtask).Methods("GET", "POST")
+	a.Router.HandleFunc("/create/{uid}/task/{name}/parent/{pid}", a.createTask).Methods("GET", "POST")
+	a.Router.HandleFunc("/create/{uid}/subtask/{name}/parent/{pid}", a.createSubtask).Methods("GET", "POST")
 
-	a.Router.HandleFunc("/destroy/{uid}", a.destroyUser).Methods("DELETE")
-	a.Router.HandleFunc("/destroy/{uid}/list/{name}", a.destroyList).Methods("DELETE")
-	a.Router.HandleFunc("/destroy/{uid}/task/{name}", a.destroyTask).Methods("DELETE")
+    // Destroy functions
+    // We can use one for destroying both tasks and subtasks due to requiring the parent id
+	a.Router.HandleFunc("/destroy/{uid}", a.destroyUser).Methods("GET","DELETE")
+	a.Router.HandleFunc("/destroy/{uid}/list/{name}", a.destroyList).Methods("GET", "DELETE")
+    a.Router.HandleFunc("/destroy/{uid}/task/{name}/parent/{pid}", a.destroyTask).Methods("GET", "DELETE")
 
+    // Read functions
+    // Only one for tasks & subtaks, as we get both using just the parent id, not user id
     a.Router.HandleFunc("/read/{uid}", a.getUser).Methods("GET", "POST")
     a.Router.HandleFunc("/read/{uid}/list/{name}", a.getList).Methods("GET", "POST")
     a.Router.HandleFunc("/read/{uid}/lists", a.getLists).Methods("GET", "POST")
     a.Router.HandleFunc("/read/{uid}/shared_lists", a.getLists).Methods("GET", "POST")
-
-    // don't need a shared_tasks function cos tasks just checks by parent.
-    // list needs a shared function cos lists are user bound
-    a.Router.HandleFunc("/read/{uid}/task/{name}", a.getTask).Methods("GET", "POST")
+    a.Router.HandleFunc("/read/{uid}/task/{name}/parent/{pid}", a.getTask).Methods("GET", "POST")
     a.Router.HandleFunc("/read/{uid}/tasks/{parent_id}", a.getTasks).Methods("GET", "POST")
 
-    a.Router.HandleFunc("/update/{uid}", a.updateUser).Methods("PUT")
-	a.Router.HandleFunc("/update/{uid}/list/{name}", a.updateList).Methods("PUT")
-	a.Router.HandleFunc("/update/{uid}/task/{name}/{parent_id}", a.updateTask).Methods("PUT")
+    // Update functions
+    a.Router.HandleFunc("/update/{uid}", a.updateUser).Methods("GET", "PUT")
+	a.Router.HandleFunc("/update/{uid}/list/{name}", a.updateList).Methods("GET", "PUT")
+	a.Router.HandleFunc("/update/{uid}/task/{name}/parent/{pid}", a.updateTask).Methods("GET", "PUT")
 }
 
 func main() {
