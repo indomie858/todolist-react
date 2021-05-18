@@ -6,7 +6,6 @@ import (
     "strings"
     "net/url"
 
-    "google.golang.org/api/iterator"
     "cloud.google.com/go/firestore"
 )
 
@@ -53,6 +52,7 @@ type UserJSON struct {
     // Array of list ids
     Lists  []string `json:"lists,omitempty"`
 
+    // Client settings
     Settings string `json:"settings,omitempty"`
 }
 
@@ -71,11 +71,10 @@ func (r *Request) AddUser(name string, fields url.Values) (*UserJSON, error) {
     if data["lists"] == nil {
         // f is a url.Values variable, which is required for r.AddList
         f := url.Values{}
-        r.AddList("first_list", f)
-        r.GetListByName("first_list")
+        list, _ := r.AddList("first_list", f)
 
         var lists []string
-        lists = append(lists, r.List.Id)
+        lists = append(lists, list.Id)
         data["lists"] = lists
     }
 
@@ -169,48 +168,9 @@ func (r *Request) DestroyUser() error {
 
     user, _ := r.GetUser()
     if len(user.Lists) > 0 {
-        // src: https://github.com/GoogleCloudPlatform/golang-samples/blob/810112812f3699d1cf9ad62ba3abf39f8ea99d7d/firestore/firestore_snippets/save.go#L295-L334
-        // Retrieve all documents that have this list as their parent
-        iter := r.Client.Collection("lists").Where("parent_id", "==", user.Id).Documents(r.Ctx)
-        numDeleted := 0
-
-        // Iterate through the documents, adding
-        // a delete operation for each one to a
-        // WriteBatch.
-        batch := r.Client.Batch()
-        for {
-            doc, err := iter.Next()
-            if err == iterator.Done {
-				break
-			}
-			if err != nil {
-                e := fmt.Sprintf("err getting snapshot of list for delete: %v", err)
-                return errors.New(e)
-			}
-
-            // create a new list struct to see if we have any
-            // lists to remove as well
-            var list List
-
-            // Put doc data into our list structure
-            doc.DataTo(&list)
-            if len(list.Tasks) > 0 {
-                r.DestroyTaskById(list.Id)
-            }
-			batch.Delete(doc.Ref)
-			numDeleted++
+        for _, list := range user.Lists {
+            r.DestroyListById(list)
         }
-
-        // If there are no documents to delete,
-        // the process is over.
-        if numDeleted == 0 {
-            return nil
-    	}
-
-    	_, err := batch.Commit(r.Ctx)
-    	if err != nil {
-    		return err
-    	}
     }
 
     // Delete that list

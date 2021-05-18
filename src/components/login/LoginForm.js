@@ -75,7 +75,7 @@ const LoginForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered }) 
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Sign In With Google
           </Button>
           <Grid container>
             <Grid item>

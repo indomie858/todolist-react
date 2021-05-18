@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import Header from '../Header';
 import Tasks from '../Tasks';
 import BottomNavBar from '../BottomNavBar';
@@ -10,6 +10,13 @@ import Options from '../Options.js'
 import Container from '@material-ui/core/Container';
 
 const Home = () => {
+
+  const getToken = () => {
+    //tokens are stored locally so user doesn't have to keep logging in
+    const token = sessionStorage.getItem('token');
+    return token
+  };
+
   //state for displaying tasks. currently has placeholder objects. will replace with tasks from database
   const [tasks, setTasks] = useState(
     [
@@ -57,13 +64,24 @@ const Home = () => {
   )
 
 
-
-  const [showAddTask, setAddTask] = useState(false);
   const [showListNav, setListNav] = useState(false);
   const [showOptions, setOptions] = useState(false);
+  const [showAddTask, setAddTask] = useState(false);
+  const [email, setEmail] = useState('');
+
+  if (!getToken()){
+    console.log('/home token does not exist');
+    return (<Redirect to="/login" />);
+  } else {
+    console.log('/home token exists');
+    if(email === ''){
+      setEmail(sessionStorage.getItem('email'));
+    }
+  }
   return (
     <>
       {/* <Container maxWidth="xs"> */}
+      <p>Welcome {email}</p>
       <div className="mainContainer">
       {showAddTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{"discord": true, "email": false}}/>}
       {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{name: "Main List"}, {name: "Some Shared List"}, {name: "Some Other List"}]}/>}

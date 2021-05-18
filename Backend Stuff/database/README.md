@@ -5,20 +5,20 @@
       - [Add User w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-user)
       - [Add List w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-list)
       - [Add Task w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-task)
-      - [Add Subtask](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-subtask)
+      - [Add Subtask w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#add-subtask)
    - [Removing Data From a Collection](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#removing-data-from-a-collection)
       - [Destroy User w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-user)
       - [Destroy List w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-list)
       - [Destroy Task w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#destroy-task)
    - [Reading Data From a Collection](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#reading-data-from-a-collection)
       - [Read User w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-user)
-      - [Read List](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-list)
+      - [Read List w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-list)
       - [Read Lists w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-lists)
       - [Read Task w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-task)
       - [Read Tasks w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-tasks)
    - [Editing Data](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#editing-values-in-the-database)
-      - [Edit User w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-user)
-      - [Edit List w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-list)
+      - [Edit User](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-user)
+      - [Edit List](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-list)
       - [Edit Task](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-task)
 
 
@@ -74,29 +74,20 @@ In terminal navigate to `database/bin` and run `go run api_server.go`
 
 URL
 
-`http://localhost:10000/create/user/sabra`
+`http://localhost:10000/create/user/testing_user_1`
 
 Return (new user)
 
 ```json
-{
-    "Id": "MIUVfleqSkxAtzwNeW0W",
-    "Name": "sabra",
-    "Email": "",
-    "Status": "",
-    "Lists": null,
-    "Settings": ""
+"result": {
+    "id": "8MFkaIrLbLjkxpzGMCwH",
+    "name": "testing_user_1",
+    "lists": [
+        "tcJQcK8bnLCfzE12p6BJ"
+    ]
 }
 ```
 
-In terminal
-
-```bash
- Endpoint Hit: createUser
- New users name: sabra
-
- PAYLOAD PARAMATERS
-```
 
 ### Add List
 `http://localhost:10000/create/{uid}/list/{name}?<params>`
@@ -105,78 +96,98 @@ In terminal
 
 URL
 
-`http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/test_add_list`
+`http://localhost:10000/create/8MFkaIrLbLjkxpzGMCwH/list/test_list_1`
 
-`http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/test_add_list?lock=false`
-
-Return (updated list)
+Return (new list)
 
 ```json
-{
-   "Id": "dcWbqvKvU3fUYzcCumbb",
-   "Name": "test_add_list",
-   "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-   "Lock": false,
-   "Shared": false,
-   "SharedUsers": null,
-   "Tasks": null
-}
-```
-
-In terminal
-```bash
- Endpoint Hit: createList
- list_name: test_add_list
-
- PAYLOAD PARAMATERS
- lock => [false]
- &{dcWbqvKvU3fUYzcCumbb test_add_list a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}
-```
-
-### Add Task
-`http://localhost:10000/create/{uid}/task/{name}?<params>`
-
-Will eventually be changed to so we can add the task to the list and the user at the same time
-`http://localhost:10000/create/{uid}/list/{name}/task/{name}`
-
-**Example**
-
-URL
-`http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/task/test_task_1`
-
-
-Return
-```json
-{
-    "Id": "ykyMNNOAU9RWF2NBgghQ",
-    "Name": "test_task_1",
-    "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-    "Parent": "",
-    "Lock": false,
-    "DueDate": "0001-01-01T00: 00: 00Z",
-    "IdealStart": "0001-01-01T00: 00: 00Z",
-    "StartDate": "0001-01-01T00: 00: 00Z",
-    "Repeating": false,
-    "Repeat": "",
-    "Remind": false,
-    "Reminder": "",
-    "TimeFrame": 0,
-    "Location": "",
-    "Description": "",
-    "Url": "",
-    "Subtasks": [
+"result": {
+    "id": "EneLiFY9NSqUZXMrz6n4",
+    "list_name": "test_list_1",
+    "list_owner": "8MFkaIrLbLjkxpzGMCwH",
+    "shared_users": [
         ""
+    ],
+    "tasks": [
+        "hsyJEeUcLxfNEMReHig8"
     ]
 }
 ```
 
-Eventual URL to test ..
+URL
 
-`http://localhost:10000/create/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/test_add_list/task/test_task_1`
+`http://localhost:10000/create/8MFkaIrLbLjkxpzGMCwH/list/test_list_2?lock=true&shared=false`
 
+Return (new list)
+
+```json
+"result": {
+    "id": "pT3MWftv7KMYRYdOAsGl",
+    "list_name": "test_list_2",
+    "list_owner": "8MFkaIrLbLjkxpzGMCwH",
+    "lock": true,
+    "shared_users": [
+        ""
+    ],
+    "tasks": [
+        "XPPbqt4j9DlUziKG0opK"
+    ]
+}
+```
+
+### Add Task
+`http://localhost:10000/create/{uid}/task/{name}/parents/{pid}?<params>`
+
+**Example**
+
+URL
+
+`http://localhost:10000/create/8MFkaIrLbLjkxpzGMCwH/task/test_task_1/parent/EneLiFY9NSqUZXMrz6n4?sub_task=false&lock=false&date_due=01/02/2006 3:04:05 PM`
+
+
+Return (new task)
+
+```json
+"result": {
+    "id": "WALBFFAGJBbDYycqF1g7",
+    "task_name": "test_task_1",
+    "task_owner": "8MFkaIrLbLjkxpzGMCwH",
+    "parent_id": "EneLiFY9NSqUZXMrz6n4",
+    "date_due": "2006-01-02T15:04:05Z",
+    "repeat": "never",
+    "end_repeat": "0001-01-01T00:00:00Z",
+    "reminder": "none",
+    "reminder_time": "0001-01-01T00:00:00Z",
+    "priority": "none"
+}
+```
 
 ### Add Subtask
-`http://localhost:10000/create/{uid}/subtask/{name}`
+`http://localhost:10000/create/{uid}/subtask/{name}/parent/{pid}`
+
+**Example**
+
+URL
+
+`http://localhost:10000/create/8MFkaIrLbLjkxpzGMCwH/subtask/sub_task_1/parent/WALBFFAGJBbDYycqF1g7`
+
+Return (new subtask)
+
+```json
+"result": {
+    "id": "8PNXOJBOBBAvcCexKt8Q",
+    "task_name": "sub_task_1",
+    "task_owner": "8MFkaIrLbLjkxpzGMCwH",
+    "parent_id": "WALBFFAGJBbDYycqF1g7",
+    "date_due": "0001-01-01T00:00:00Z",
+    "repeat": "never",
+    "end_repeat": "0001-01-01T00:00:00Z",
+    "reminder": "none",
+    "reminder_time": "0001-01-01T00:00:00Z",
+    "priority": "none",
+    "sub_task": true    
+}
+```
 
 ## Removing Data From a Collection
 ### Destroy User
@@ -186,15 +197,12 @@ Eventual URL to test ..
 
 URL
 
-`http://localhost:10000/destroy/MIUVfleqSkxAtzwNeW0W`
+`http://localhost:10000/destroy/8MFkaIrLbLjkxpzGMCwH`
 
 Return
-`user successfully deleted`
 
-In terminal
-```bash
-   Endpoint Hit: destroyUser
-   user successfully deleted
+```json
+"result": "user successfully deleted"
 ```
 
 ### Destroy List
@@ -208,7 +216,9 @@ URL
 
 Return
 
-`list successfully deleted`
+```json
+"result": "list successfully deleted"
+```
 
 ### Destroy Task
 `http://localhost:10000/destroy/{uid}/task/{name}`
@@ -221,7 +231,9 @@ URL
 
 Return
 
-`task successfully deleted`
+```json
+"result": "task successfully deleted"
+```
 
 ## Reading Data From a Collection
 ### Read User
@@ -231,33 +243,47 @@ Return
 
 URL
 
-`http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2`
+`http://localhost:10000/read/8MFkaIrLbLjkxpzGMCwH`
 
 Return (user)
 
 ```json
-{
-    "Id": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-    "Name": "max",
-    "Email": "",
-    "Status": "",
-    "Lists": [
-        "NIcoux7atd3A8Lv7guUO",
-        "ahsdfhhf"
-    ],
-    "Settings": ""
-}
-```
-
-In terminal
-
-```bash
- Endpoint Hit: getUser
- &{a3a1hWUx5geKB8qeR6fbk5LZZGI2 max   [NIcoux7atd3A8Lv7guUO ahsdfhhf] }
+"result": {
+    "id": "8MFkaIrLbLjkxpzGMCwH",
+    "name": "testing_user_1",
+    "lists": [
+        "tcJQcK8bnLCfzE12p6BJ",
+        "EneLiFY9NSqUZXMrz6n4",
+        "pT3MWftv7KMYRYdOAsGl"
+    ]
+ }
 ```
 
 ### Read List
 `http://localhost:10000/read/{uid}/list/{name}`
+
+**Example**
+
+URL
+
+`http://localhost:10000/read/8MFkaIrLbLjkxpzGMCwH/list/test_list_1`
+
+Return (list)
+
+```json
+"result": {
+    "id": "EneLiFY9NSqUZXMrz6n4",
+    "list_name": "test_list_1",
+    "list_owner": "8MFkaIrLbLjkxpzGMCwH",
+    "shared_users": [
+        ""
+    ],
+    "tasks": [
+        "hsyJEeUcLxfNEMReHig8",
+        "WALBFFAGJBbDYycqF1g7"
+    ]
+}
+```
 
 ### Read List*s*
 ( emphasis on the s )
@@ -268,82 +294,77 @@ In terminal
 
 URL
 
-`http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/lists`
+`http://localhost:10000/read/8MFkaIrLbLjkxpzGMCwH/lists`
 
 Return (all users lists)
 ```json
-[
+"result": [
     {
-        "Id": "NIcoux7atd3A8Lv7guUO",
-        "Name": "list1",
-        "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-        "Lock": false,
-        "Shared": false,
-        "SharedUsers": null,
-        "Tasks": null
+        "id": "EneLiFY9NSqUZXMrz6n4",
+        "list_name": "test_list_1",
+        "list_owner": "8MFkaIrLbLjkxpzGMCwH",
+        "shared_users": [
+            ""
+        ],
+        "tasks": [
+            "hsyJEeUcLxfNEMReHig8",
+            "WALBFFAGJBbDYycqF1g7"
+        ]
     },
     {
-        "Id": "WBZgf5dM2YEi2V6aDspd",
-        "Name": "list2",
-        "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-        "Lock": false,
-        "Shared": false,
-        "SharedUsers": null,
-        "Tasks": null
+        "id": "pT3MWftv7KMYRYdOAsGl",
+        "list_name": "test_list_2",
+        "list_owner": "8MFkaIrLbLjkxpzGMCwH",
+        "lock": true,
+        "shared_users": [
+            ""
+        ],
+        "tasks": [
+            "XPPbqt4j9DlUziKG0opK"
+        ]
     },
     {
-        "Id": "dcWbqvKvU3fUYzcCumbb",
-        "Name": "test_add_list",
-        "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-        "Lock": false,
-        "Shared": false,
-        "SharedUsers": null,
-        "Tasks": null
-    },
-    {
-        "Id": "nlk0zDpnuatUU7bIHhms",
-        "Name": "test_add_list",
-        "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-        "Lock": false,
-        "Shared": false,
-        "SharedUsers": null,
-        "Tasks": null
+        "id": "tcJQcK8bnLCfzE12p6BJ",
+        "list_name": "first_list",
+        "list_owner": "8MFkaIrLbLjkxpzGMCwH",
+        "shared_users": [
+            ""
+        ],
+        "tasks": [
+            "kCqFAdMNeSmi9zRcTmWb"
+        ]
     }
 ]
-
 ```
 
 ### Read Task
-`http://localhost:10000/read/{uid}/task/{name}`
+`http://localhost:10000/read/{uid}/task/{name}/parent/{pid}`
 
 **Example**
 
 URL
 
-`http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/task/task1`
+`http://localhost:10000//read/8MFkaIrLbLjkxpzGMCwH/task/test_task_1/parent/EneLiFY9NSqUZXMrz6n4s`
 
-Return
+Return (task)
 
 ```json
-{
-    "Id": "RfQWRaILs6LhFg2PgUJq",
-    "Name": "task1",
-    "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-    "Parent": "NIcoux7atd3A8Lv7guUO",
-    "Lock": false,
-    "DueDate": "0001-01-01T00:00:00Z",
-    "IdealStart": "0001-01-01T00:00:00Z",
-    "StartDate": "0001-01-01T00:00:00Z",
-    "Repeating": false,
-    "Repeat": "",
-    "Remind": false,
-    "Reminder": "",
-    "TimeFrame": 0,
-    "Location": "",
-    "Description": "",
-    "Url": "",
-    "Subtasks": null
+"result": {
+    "id": "WALBFFAGJBbDYycqF1g7",
+    "task_name": "test_task_1",
+    "task_owner": "8MFkaIrLbLjkxpzGMCwH",
+    "parent_id": "EneLiFY9NSqUZXMrz6n4",
+    "date_due": "2006-01-02T15:04:05Z",
+    "repeat": "never",
+    "end_repeat": "0001-01-01T00:00:00Z",
+    "reminder": "none",
+    "reminder_time": "0001-01-01T00:00:00Z",
+    "priority": "none",
+    "sub_tasks": [
+        "8PNXOJBOBBAvcCexKt8Q"
+    ]
 }
+
 ```
 
 ### Read Task*s*
@@ -355,30 +376,38 @@ Return
 
 URL
 
-`http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/tasks/NIcoux7atd3A8Lv7guUO`
+`http://localhost:10000/read/8MFkaIrLbLjkxpzGMCwH/tasks/EneLiFY9NSqUZXMrz6n4`
 
 Return (all tasks in the list)
 
 ```json
-[
+"result": [
     {
-        "Id": "RfQWRaILs6LhFg2PgUJq",
-        "Name": "task1",
-        "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-        "Parent": "NIcoux7atd3A8Lv7guUO",
-        "Lock": false,
-        "DueDate": "0001-01-01T00:00:00Z",
-        "IdealStart": "0001-01-01T00:00:00Z",
-        "StartDate": "0001-01-01T00:00:00Z",
-        "Repeating": false,
-        "Repeat": "",
-        "Remind": false,
-        "Reminder": "",
-        "TimeFrame": 0,
-        "Location": "",
-        "Description": "",
-        "Url": "",
-        "Subtasks": null
+        "id": "WALBFFAGJBbDYycqF1g7",
+        "task_name": "test_task_1",
+        "task_owner": "8MFkaIrLbLjkxpzGMCwH",
+        "parent_id": "EneLiFY9NSqUZXMrz6n4",
+        "date_due": "2006-01-02T15:04:05Z",
+        "repeat": "never",
+        "end_repeat": "0001-01-01T00:00:00Z",
+        "reminder": "none",
+        "reminder_time": "0001-01-01T00:00:00Z",
+        "priority": "none",
+        "sub_tasks": [
+            "8PNXOJBOBBAvcCexKt8Q"
+        ]
+    },
+    {
+        "id": "hsyJEeUcLxfNEMReHig8",
+        "task_name": "first_task",
+        "task_owner": "8MFkaIrLbLjkxpzGMCwH",
+        "parent_id": "EneLiFY9NSqUZXMrz6n4",
+        "date_due": "0001-01-01T00:00:00Z",
+        "repeat": "never",
+        "end_repeat": "0001-01-01T00:00:00Z",
+        "reminder": "none",
+        "reminder_time": "0001-01-01T00:00:00Z",
+        "priority": "none"
     }
 ]
 ```
@@ -398,26 +427,7 @@ URL
 Return (updated user)
 
 ```json
-{
-    "Id": "MIUVfleqSkxAtzwNeW0W",
-    "Name": "sabra",
-    "Email": "",
-    "Status": "",
-    "Lists": [
-        "qqEkD06oFudIRrCVPAc5"
-    ],
-    "Settings": ""
-}
-```
 
-In terminal
-
-```bash
-Endpoint Hit: updateUser
-
-PAYLOAD PARAMATERS
-lists => [[33TPlBCXI1DhXksyWtdm]]
-&{g1tAZTJgfVOqTtDpvAAz    [[33TPlBCXI1DhXksyWtdm]] }s
 ```
 
 ### Edit List
@@ -432,28 +442,9 @@ URL
 Return (updated list)
 
 ```json
-{
-    "Id": "NIcoux7atd3A8Lv7guUO",
-    "Name": "list1updated",
-    "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-    "Lock": false,
-    "Shared": false,
-    "SharedUsers": null,
-    "Tasks": null
-}
+
 ```
 
-In terminal
-
-```bash
- Endpoint Hit: updateList
- listname: list1
-
- PAYLOAD PARAMATERS
- list_name => [list1updated]
- lock => [false]
- &{NIcoux7atd3A8Lv7guUO list1updated a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}
-```
 
 > REMINDER: once you go to that URL once, it won't work again unless u edit the list name :)
 
@@ -464,26 +455,7 @@ URL
 Return (updated list)
 
 ```json
-{
-    "Id": "NIcoux7atd3A8Lv7guUO",
-    "Name": "list1",
-    "Owner": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-    "Lock": false,
-    "Shared": false,
-    "SharedUsers": null,
-    "Tasks": null
-}
-```
 
-In terminal
-
-```bash
-Endpoint Hit: updateList
-listname: list1updated
-
-PAYLOAD PARAMATERS
-list_name => [list1]
-&{NIcoux7atd3A8Lv7guUO list1 a3a1hWUx5geKB8qeR6fbk5LZZGI2 false false [] []}
 ```
 
 ### Edit Task

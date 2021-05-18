@@ -75,21 +75,31 @@ func (r *Request) AddList(name string, fields url.Values) (*ListJSON, error) {
     // Create a new document
     ref := r.Client.Collection("lists").NewDoc()
     list.Id = ref.ID
-    r.List = &list
+    //fmt.Printf("listId: %s\n", list.Id)
 
-    data := ParseListFields(fields)
+    // Create a new map for the list data
+    var data = make(map[string]interface{})
+
+    // Let's set some default values real quick -
+    var sharedUsers []string
+    sharedUsers = append(sharedUsers, "")
 
     data["list_name"] = name
     data["list_owner"] = r.UserId
+    data["lock"] = false
+    data["shared"] = false
+    data["shared_users"] = sharedUsers
+
+    // Now let's update our map to reflect the values we were given
+    data = ParseListFields(fields, data)
 
     // If our tasks array is empty, lets create a default one
     if data["tasks"] == nil {
         f := url.Values{}
-        r.AddTask("first_task", f)
-        r.GetTaskByName("first_task")
+        task, _ := r.AddTask("first_task", list.Id, f)
 
         var tasks []string
-        tasks = append(tasks, r.Task.Id)
+        tasks = append(tasks, task.Id)
         data["tasks"] = tasks
     }
 
@@ -102,11 +112,11 @@ func (r *Request) AddList(name string, fields url.Values) (*ListJSON, error) {
         return ljson, errors.New(e)
     }
 
-    r.GetListByID(ref.ID)
+    r.GetListByName(name)
     ljson = r.ListToJSON()
     if name != "first_list" {
         r.UpdateUserList(ref.ID)
-    }    
+    }
 
     return ljson, nil
 } // }}}
@@ -134,7 +144,7 @@ func (r *Request) GetListByName(listname string) (*ListJSON, error) {
 
         // Check if we have some other error
         if err != nil {
-            e := fmt.Sprintf("err getting list snapshot: %v", err)
+            e := fmt.Sprintf("GetListByName: err getting list snapshot: %v", err)
             return ljson, errors.New(e)
         }
 
@@ -167,7 +177,7 @@ func (r *Request) GetListByID(lid string) (*ListJSON, error) {
     // Get a snapshot of the user data
     docsnap, err := doc.Get(r.Ctx)
     if err != nil {
-        e := fmt.Sprintf("err getting list snapshot: %v", err)
+        e := fmt.Sprintf("GetListByID: err getting list snapshot: %v", err)
         return ljson, errors.New(e)
     }
 
@@ -214,7 +224,7 @@ func (r *Request) GetLists() ([]*ListJSON, error) {
 
          // Check if we have some other error
         if err != nil {
-            e := fmt.Sprintf("err geting snapshot of list: %v", err)
+            e := fmt.Sprintf("GetLists: err geting snapshot of list: %v", err)
             return lists, errors.New(e)
         }
 
@@ -256,7 +266,7 @@ func (r *Request) GetSharedLists() ([]*ListJSON, error) {
 
          // Check if we have some other error
         if err != nil {
-            e := fmt.Sprintf("err geting snapshot of list: %v", err)
+            e := fmt.Sprintf("GetSharedLists: err geting snapshot of list: %v", err)
             return lists, errors.New(e)
         }
 
@@ -296,7 +306,9 @@ func (r *Request) UpdateList(name string, fields url.Values) (*ListJSON, error) 
 
     //log.Printf("%v", fields)
     // Parse the url fields into a map for Firestore
-    data := ParseListFields(fields)
+    var data = make(map[string]interface{})
+    data = ParseListFields(fields, data)
+
     //log.Printf("%v", data)
 
     // Get a reference to our
@@ -327,76 +339,44 @@ func (r *Request) DestroyList(name string) error {
         }
     }
 
+    // Check if the list has any tasks
+    if len(list.Tasks) > 0 {
+        for _, task := range list.Tasks {
+            //fmt.Printf("Task to Delete: %s\n", task)
+            r.DestroyTaskById(task)
+        }
+    }
+
+    batch := r.Client.Batch()
+
     // Get the Firestore path for the user
     listidpath := fmt.Sprintf("lists/%s", list.Id)
 
-    // Check if the list has any tasks
-    if len(list.Tasks) > 0 {
-        // src: https://github.com/GoogleCloudPlatform/golang-samples/blob/810112812f3699d1cf9ad62ba3abf39f8ea99d7d/firestore/firestore_snippets/save.go#L295-L334
-        // Retrieve all documents that have this list as their parent
-        iter := r.Client.Collection("tasks").Where("parent", "==", list.Id).Documents(r.Ctx)
-        numDeleted := 0
-
-        // Iterate through the documents, adding
-        // a delete operation for each one to a
-        // WriteBatch.
-        batch := r.Client.Batch()
-        for {
-            doc, err := iter.Next()
-            if err == iterator.Done {
-				break
-			}
-			if err != nil {
-                e := fmt.Sprintf("err getting snapshot of task for delete: %v", err)
-                return errors.New(e)
-			}
-
-            // create a new task struct
-            var task Task
-
-            // Put doc data into our task structure
-            doc.DataTo(&task)
-            if task.Owner != r.UserId {
-                if task.SharedUsers == nil || !r.CheckIfShared(task.SharedUsers) {
-                    continue
-                }
-            }
-            if len(task.Subtasks) > 0 {
-                r.DestroyTaskById(task.Id)
-            }
-			batch.Delete(doc.Ref)
-			numDeleted++
-        }
-
-        // If there are no documents to delete,
-        // the process is over.
-        if numDeleted == 0 {
-            return nil
-    	}
-
-    	_, err := batch.Commit(r.Ctx)
-    	if err != nil {
-    		return err
-    	}
-    }
-
-    // Now we can delete the list
-    _, err = r.Client.Doc(listidpath).Delete(r.Ctx)
+    listDoc := r.Client.Doc(listidpath)
+    ldoc, err := listDoc.Get(r.Ctx)
     if err != nil {
-        e := fmt.Sprintf("err deleting list: %v", err)
+        e := fmt.Sprintf("DestroyList: err getting list snapshot: %v", err)
         return errors.New(e)
     }
+
+    batch.Delete(ldoc.Ref)
+    _, err = batch.Commit(r.Ctx)
+    if err != nil {
+        return err
+    }
+
     return nil
 } // }}}
 
-// func DestroyList {{{
+// func DestroyListById {{{
 //
-func (r *Request) DestroyListById(name string) error {
-    list, err := r.GetListByName(name)
+func (r *Request) DestroyListById(id string) error {
+    list, err := r.GetListByID(id)
     if err != nil {
         e := fmt.Sprintf("err getting list for delete: %v", err)
         return errors.New(e)
     }
+
     if list.Owner != r.UserId {
         if list.SharedUsers == nil || !r.CheckIfShared(list.SharedUsers) {
             return errors.New("err deleting list: requestor does not have permission")
@@ -405,65 +385,35 @@ func (r *Request) DestroyListById(name string) error {
 
     // Check if the list has any tasks
     if len(list.Tasks) > 0 {
-        // src: https://github.com/GoogleCloudPlatform/golang-samples/blob/810112812f3699d1cf9ad62ba3abf39f8ea99d7d/firestore/firestore_snippets/save.go#L295-L334
-        // Retrieve all documents that have this list as their parent
-        iter := r.Client.Collection("tasks").Where("parent", "==", list.Id).Documents(r.Ctx)
-        numDeleted := 0
-
-        // Iterate through the documents, adding
-        // a delete operation for each one to a
-        // WriteBatch.
-        batch := r.Client.Batch()
-        for {
-            doc, err := iter.Next()
-            if err == iterator.Done {
-				break
-			}
-			if err != nil {
-                e := fmt.Sprintf("err getting snapshot of task for delete: %v", err)
-                return errors.New(e)
-			}
-
-            // create a new task struct
-            var task Task
-
-            // Put doc data into our task structure
-            doc.DataTo(&task)
-
-            if task.Owner != r.UserId {
-                if task.SharedUsers == nil || !r.CheckIfShared(task.SharedUsers) {
-                    continue
-                }
-            }
-            if len(task.Subtasks) > 0 {
-                r.DestroyTaskById(task.Id)
-            }
-			batch.Delete(doc.Ref)
-			numDeleted++
+        for _, task := range list.Tasks {
+            //fmt.Printf("Task to Delete: %s\n", task)
+            r.DestroyTaskById(task)
         }
-
-        // If there are no documents to delete,
-        // the process is over.
-        if numDeleted == 0 {
-            return nil
-    	}
-
-    	_, err := batch.Commit(r.Ctx)
-    	if err != nil {
-    		return err
-    	}
     }
-    // We aren't going to be destroying the list here.
-    // It will be deleted during the batch delete, which
-    // is the only place this function is called
+
+    batch := r.Client.Batch()
+
+    // Get the Firestore path for the user
+    listidpath := fmt.Sprintf("lists/%s", list.Id)
+
+    listDoc := r.Client.Doc(listidpath)
+    ldoc, err := listDoc.Get(r.Ctx)
+    if err != nil {
+        e := fmt.Sprintf("DestroyListById: err getting list snapshot: %v", err)
+        return errors.New(e)
+    }
+    batch.Delete(ldoc.Ref)
+    _, err = batch.Commit(r.Ctx)
+    if err != nil {
+        return err
+    }
+
     return nil
 } // }}}
 
 // func ParseListFields {{{
 //
-func ParseListFields(fields url.Values) map[string]interface{} {
-    var data = make(map[string]interface{})
-
+func ParseListFields(fields url.Values, data map[string]interface{}) map[string]interface{} {
     // Parse the url fields into a map for Firestore
     for k, v := range fields {
         // Ensure the key is lower case
@@ -507,7 +457,7 @@ func (r *Request) ListToJSON() *ListJSON {
 } // }}}
 
 
-func (r *Request) UpdateListTask(listid, id string) {
+func (r *Request) UpdateListTasks(listid, id string) {
     var list List
 
     // Get the Firestore path for the user
@@ -519,7 +469,7 @@ func (r *Request) UpdateListTask(listid, id string) {
     // Get a snapshot of the user data
     docsnap, err := doc.Get(r.Ctx)
     if err != nil {
-        fmt.Printf("err getting list snapshot: %v\n", err)
+        fmt.Printf("UpdateListTasks: err getting list snapshot: %v\n", err)
         return
     }
 
