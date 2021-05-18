@@ -35,36 +35,58 @@ const Home = () => {
           'Get in car',
           'Drive to doctor'
         ],
+        isCompleted: false,
       },
       {
         id: 2,
         text: 'School meeting',
-        day: 'Feb 6th at 1:30pm',
+        date: '2021-02-05T14:00',
+        list: 'Main',
+        willRepeat: true,
+        repeatFrequency: "Every",
+        repeatNumDays: 1,
+        emailSelected: true,
+        discordSelected: false,
         reminder: true,
         subTasks: [
           'Take two shots',
           'Put on some pants',
           'Get a ride to school'
         ],
+        isCompleted: false,
       },
       {
         id: 3,
         text: 'Food shopping',
-        day: 'Feb 7th at 5:30pm',
-        reminder: false,
+        date: '2021-02-05T14:00',
+        list: 'Main',
+        willRepeat: true,
+        repeatFrequency: "Every",
+        repeatNumDays: 1,
+        emailSelected: true,
+        discordSelected: false,
+        reminder: true,
         subTasks: [
           'Make shopping list',
           'Drive to Costco',
           'Buy some shit'
         ],
+        isCompleted: true,
       },
       {
         id: 4,
         text: 'something something darkside',
-        day: 'Feb 8th at 2:30pm',
+        date: '2021-02-05T14:00',
+        list: 'Main',
+        willRepeat: true,
+        repeatFrequency: "Every",
+        repeatNumDays: 1,
+        emailSelected: true,
+        discordSelected: false,
         reminder: true,
         subTasks: [
         ],
+        isCompleted: false,
       },
     ]
   )
