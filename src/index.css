@@ -37,7 +37,6 @@ body {
   margin: 5px;
   padding: 10px 20px;
   border-radius: 25px;
-  cursor: pointer;
   display: flex;
   justify-content: space-between;
 }
@@ -48,12 +47,25 @@ body {
   justify-content: space-between;
 }
 
+.task-flex-left {
+  cursor: pointer;
+}
+
+.task-flex-mid {
+  cursor: pointer;
+}
+
+.task-flex-right {
+  cursor: pointer;
+}
 
 /* styling for individual subtasks */
 .subtask {
   background: #f4f4f4;
   margin: 0px 20px 2px 50px;
   padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .addsubtask {
