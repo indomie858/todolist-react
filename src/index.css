@@ -37,7 +37,6 @@ body {
   margin: 5px;
   padding: 10px 20px;
   border-radius: 25px;
-  cursor: pointer;
   display: flex;
   justify-content: space-between;
 }
@@ -48,12 +47,25 @@ body {
   justify-content: space-between;
 }
 
+.task-flex-left {
+  cursor: pointer;
+}
+
+.task-flex-mid {
+  cursor: pointer;
+}
+
+.task-flex-right {
+  cursor: pointer;
+}
 
 /* styling for individual subtasks */
 .subtask {
   background: #f4f4f4;
   margin: 0px 20px 2px 50px;
   padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .addsubtask {
@@ -110,11 +122,11 @@ body {
   align-items: center;
   background:black;
   width: 250px;
-  position: absolute;
+  position: fixed;
   bottom: 95px;
-  left: 50%;
-  transform: translate(-50%);
   padding: 25px;
+  left: 50%;
+  margin-left: -125px;
   border-radius: 11px;
   box-shadow: 10px 10px lightblue;
 }
@@ -196,9 +208,10 @@ body {
 
 .listDisplay {
   text-align: center;
+  /* padding: 0px 5px 0 5px; */
+  vertical-align: middle;
   width: 100%;
-  border: 2px solid white;
-  margin: 10px;
+  border: 2px solid black;
 }
 
 .listDisplay:hover {
@@ -209,6 +222,77 @@ body {
 
 .listDisplay:active {
   transform: translate(0, 2px);
+}
+
+.listNavContainer {
+  display: flex;
+  align-items: center;
+}
+
+.listHeader {
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 1.3em;
+}
+
+.listOfLists {
+  list-style: none;
+  position: relative;
+}
+
+.listOfLists li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.discord {
+  width: 25px;
+  margin-left: 10px;
+}
+
+.outlined {
+  border: solid lightblue 2px;
+}
+
+.icon {
+  padding: 2px;
+  border-radius: 50%;
+}
+
+.optionsOption {
+  text-align: left;
+  margin-left: 10px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.remindersContainer {
+  display: flex;
+  justify-content: center;
+  margin: 10px 10px 0px 0px;
+  width: 100%;
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.blue {
+  color: blue;
+}
+
+.clickableText:hover {
+  color: lightblue;
+  cursor: pointer;
+}
+
+.moveDown {
+  transform: rotate(180deg);
 }
 
 @media only screen and (max-width: 500px) {

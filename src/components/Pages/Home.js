@@ -6,6 +6,7 @@ import Tasks from '../Tasks';
 import BottomNavBar from '../BottomNavBar';
 import AddTask from '../AddTask.js'
 import ListNav from '../ListNav.js'
+import Options from '../Options.js'
 import Container from '@material-ui/core/Container';
 
 const Home = () => {
@@ -22,49 +23,80 @@ const Home = () => {
       {
         id: 1,
         text: 'Doctors appt',
-        day: 'Feb 5th at 2:30pm',
+        date: '2021-02-05T14:00',
+        list: 'Main',
+        willRepeat: true,
+        repeatFrequency: "Every",
+        repeatNumDays: 1,
+        emailSelected: true,
+        discordSelected: false,
         reminder: true,
         subTasks: [
           'Get in car',
           'Drive to doctor'
         ],
+        isCompleted: false,
       },
       {
         id: 2,
         text: 'School meeting',
-        day: 'Feb 6th at 1:30pm',
+        date: '2021-02-05T14:00',
+        list: 'Main',
+        willRepeat: true,
+        repeatFrequency: "Every",
+        repeatNumDays: 1,
+        emailSelected: true,
+        discordSelected: false,
         reminder: true,
         subTasks: [
           'Take two shots',
           'Put on some pants',
           'Get a ride to school'
         ],
+        isCompleted: false,
       },
       {
         id: 3,
         text: 'Food shopping',
-        day: 'Feb 7th at 5:30pm',
-        reminder: false,
+        date: '2021-02-05T14:00',
+        list: 'Main',
+        willRepeat: true,
+        repeatFrequency: "Every",
+        repeatNumDays: 1,
+        emailSelected: true,
+        discordSelected: false,
+        reminder: true,
         subTasks: [
           'Make shopping list',
           'Drive to Costco',
           'Buy some shit'
         ],
+        isCompleted: true,
       },
       {
         id: 4,
         text: 'something something darkside',
-        day: 'Feb 8th at 2:30pm',
+        date: '2021-02-05T14:00',
+        list: 'Main',
+        willRepeat: true,
+        repeatFrequency: "Every",
+        repeatNumDays: 1,
+        emailSelected: true,
+        discordSelected: false,
         reminder: true,
         subTasks: [
         ],
+        isCompleted: false,
       },
     ]
   )
 
 
   const [showListNav, setListNav] = useState(false);
+  const [showOptions, setOptions] = useState(false);
   const [showAddTask, setAddTask] = useState(false);
+  const [showChangeTask, setChangeTask] = useState(false);
+  const [changingTask, setChangingTask] = useState(0);
   const [email, setEmail] = useState('');
 
   if (!getToken()){
@@ -81,19 +113,43 @@ const Home = () => {
       {/* <Container maxWidth="xs"> */}
       <p>Welcome {email}</p>
       <div className="mainContainer">
-      {showAddTask && <AddTask onAdd={() => setAddTask(false)}/>}
-      {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={['Main', 'Shared', 'Other']}/>}
+      {showAddTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{"discord": true, "email": false}}/>}
+      {showChangeTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{"discord": true, "email": false} } 
+        date={changingTask.date}
+        text={changingTask.text}
+        list={changingTask.list}
+        willRepeat={changingTask.willRepeat}
+        reminder={changingTask.reminder}
+        repeatFrequency={changingTask.repeatFrequency}
+        numDays={changingTask.repeatNumDays}
+        emailSelected={changingTask.emailSelected}
+        discordSelected={changingTask.discordSelected}
+        />}
+      {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{name: "Main List"}, {name: "Some Shared List"}, {name: "Some Other List"}]}/>}
+      {showOptions && <Options defaultList={"Shared"} defaultReminders={{"discord": true, "email": false}}/>}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
-          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' />) : ('No tasks to show')}
+          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' changeTask={(id) => {
+            // console.log("Changing task")
+            // console.log("id: " + id)
+            for (let i = 0; i < tasks.length; i++) {
+              if (tasks[i].id === id) {
+                setChangingTask(tasks[i])
+                // console.log(changingTask)
+              }
+            }
+            setChangeTask(!showChangeTask);
+            setListNav(false);
+            setOptions(false);
+            setAddTask(false);}}/>) : ('No tasks to show')}
         </div>
         <div className='listContainer'>
           {/* displays same placeholder list except with title "Tomorrow" */}
           {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Tomorrow' />) : ('No tasks to show')}
         </div>
       </div>
-      <BottomNavBar onAddTask={() => {setAddTask(!showAddTask); setListNav(false)}} onListNav={() => {setListNav(!showListNav); setAddTask(false)}} />
+      <BottomNavBar onAddTask={() => {setAddTask(!showAddTask); setChangeTask(false); setListNav(false); setOptions(false)}} onListNav={() => {setListNav(!showListNav); setChangeTask(false); setAddTask(false); setOptions(false)}} onOptions={() => {setListNav(false); setChangeTask(false); setAddTask(false); setOptions(!showOptions)}}/>
       {/* </Container> */}
     </>
   )

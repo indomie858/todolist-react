@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
   },
   submit: {
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
     margin: theme.spacing(3, 0, 2),
   },
 }));
@@ -46,6 +47,7 @@ const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered,
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
+                InputLabelProps={{ required: false }}
                 autoComplete="fname"
                 name="firstName"
                 variant="outlined"
@@ -59,6 +61,7 @@ const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered,
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
+                InputLabelProps={{ required: false }}
                 variant="outlined"
                 required
                 fullWidth
@@ -71,6 +74,7 @@ const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered,
             </Grid>
             <Grid item xs={12}>
               <TextField
+                InputLabelProps={{ required: false }}
                 variant="outlined"
                 required
                 fullWidth
@@ -83,6 +87,7 @@ const RegisterForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered,
             </Grid>
             <Grid item xs={12}>
               <TextField
+                InputLabelProps={{ required: false }}
                 variant="outlined"
                 required
                 fullWidth

@@ -36,33 +36,51 @@ ok  	database/bin/database	7.146s
 ***I DO NOT GUARANTEE ANY OTHER FUNCTION WILL WORK IF IT DOES NOT HAVE A PASSING TEST***
 
 
-CREATE
+## CREATE
 ~~TestCreateUser(t *testing.T)~~
+
 ~~TestCreateList(t *testing.T)~~
+
 ~~TestCreateListWithPayload(t *testing.T)~~
+
 ~~TestCreateTaskWithPaylod(t *testing.T)~~
+
 ~~TestCreateSubTask(t *testing.T)~~
 
-DESTROY
+## DESTROY
 ~~TestDestroyUser(t *testing.T)~~
+
 ~~TestDestroyList(t *testing.T)~~ *Destroy user destroys lists as well*
+
 ~~TestDestroyTask(t *testing.T)~~ *Destroy list (user) destroys tasks as well*
 
-READ
+## READ
 ~~TestGetUser(t *testing.T)~~
+
 ~~TestGetList(t *testing.T)~~
+
 ~~TestGetLists(t *testing.T)~~
+
 ~~TestGetTask(t *testing.T)~~
+
 ~~TestGetTasks(t *testing.T)~~
 
-UPDATE
+## UPDATE
 TestEditUser(t *testing.T)
+
 TestEditList(t *testing.T)
+
 TestEditTask(t *testing.T)
 
+# API REQUESTS
+
+# USERS 
+*documentation coming soon*
+
+# LISTS
+*documentatin coming soon*
 
 # TASKS
-*Request Methods*
 
 ## AddTask(task_name string, fields url.Values) (*TaskJSON, error)
 Possible `fields` are:
