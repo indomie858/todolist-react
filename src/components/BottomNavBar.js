@@ -3,7 +3,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import ListIcon from '@material-ui/icons/List';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ControlPointIcon from '@material-ui/icons/ControlPoint';
 
@@ -30,7 +30,7 @@ const BottomNavBar = (props) => {
             showLabels
             className={classes.root}
         >
-            <BottomNavigationAction label="" icon={<VisibilityIcon />} onClick={props.onListNav}/>
+            <BottomNavigationAction label="" icon={<ListIcon />} onClick={props.onListNav}/>
             <BottomNavigationAction label="" icon={<SettingsIcon />} onClick={props.onOptions}/>
             <BottomNavigationAction label="" icon={<ControlPointIcon />} onClick={props.onAddTask}/>
         </BottomNavigation>

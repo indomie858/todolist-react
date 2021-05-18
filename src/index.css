@@ -196,8 +196,10 @@ body {
 
 .listDisplay {
   text-align: center;
+  /* padding: 0px 5px 0 5px; */
+  vertical-align: middle;
   width: 100%;
-  border: 2px solid white;
+  border: 2px solid black;
 }
 
 .listDisplay:hover {
@@ -208,6 +210,11 @@ body {
 
 .listDisplay:active {
   transform: translate(0, 2px);
+}
+
+.listNavContainer {
+  display: flex;
+  align-items: center;
 }
 
 .listHeader {
@@ -263,9 +270,17 @@ body {
   color: green;
 }
 
+.blue {
+  color: blue;
+}
+
 .clickableText:hover {
   color: lightblue;
   cursor: pointer;
+}
+
+.moveDown {
+  transform: rotate(180deg);
 }
 
 @media only screen and (max-width: 500px) {

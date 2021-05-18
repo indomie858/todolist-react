@@ -1,11 +1,14 @@
 import React, {useState} from "react";
-
+import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 
 const ListNavItem = (props) => {
 
     return ( 
-        <div className="listDisplay">
-            {props.list}
+        <div className="listNavContainer">
+            <DragIndicatorIcon/>
+            <div className="listDisplay">        
+                {props.list}
+            </div>
         </div>
     );
 }
