@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import DatePicker from 'react-date-picker';
 import TimePicker from 'react-time-picker';
 import RepeatPicker from "./RepeatPicker";
+import discordImage from "./discord.png";
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
 
 
 const AddTask = (props) => {
@@ -14,6 +16,8 @@ const AddTask = (props) => {
     const [time, setTime] = useState("1:00");
     const [repeatFrequency, setRepeatFrequency] = useState("Every");
     const [numDays, setNumDays] = useState(1);
+    const [emailSelected, setEmailSelected] = useState(props.defaultReminders['email']);
+    const [discordSelected, setDiscordSelected] = useState(props.defaultReminders['discord']);
 
     return ( 
         <div>
@@ -22,11 +26,13 @@ const AddTask = (props) => {
                 <input type="text" value={taskValue} onChange={(e) => setTaskValue(e.target.value)}/>
                 <DatePicker value={dateValue}  onChange={setDateValue} className="addTaskInput"/>
                 <div>Repeat? &nbsp;
-                    <input type="checkbox" checked={willRepeat} onClick={() => setWillRepeat(!willRepeat)}/>&nbsp;
+                    <input type="checkbox" checked={willRepeat} onChange={() => setWillRepeat(!willRepeat)}/>&nbsp;
                     Remind? &nbsp;
-                    <input type="checkbox"checked={showTime} onClick={() => toggleShowTime(!showTime)}/>
+                    <input type="checkbox"checked={showTime} onChange={() => toggleShowTime(!showTime)}/>
                 </div>
-                {showTime && <TimePicker onChange={setTime} value={time} className="addTaskInput"/>}
+                {showTime && <TimePicker onChange={setTime} value={time} className="addTaskInput" disableClock={true} clearIcon={null} clockIcon={null}/>}
+                {showTime && <MailOutlineIcon className={emailSelected ? "outlined icon" : "icon"} onClick={() => setEmailSelected(!emailSelected)}/>}
+                {showTime && <img className={discordSelected ? "discord outlined icon" : "discord icon"} onClick={() => setDiscordSelected(!discordSelected)} src={discordImage}/>}
                 {willRepeat && <RepeatPicker 
                     isEvery={repeatFrequency} changeRepeats={(e) => setRepeatFrequency(e.target.value)}
                     numDays={numDays} onChange={(e) => e.target.value > 0 ? setNumDays(e.target.value) : setNumDays(numDays)}/>}

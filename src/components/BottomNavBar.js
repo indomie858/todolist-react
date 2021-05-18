@@ -31,7 +31,7 @@ const BottomNavBar = (props) => {
             className={classes.root}
         >
             <BottomNavigationAction label="" icon={<VisibilityIcon />} onClick={props.onListNav}/>
-            <BottomNavigationAction label="" icon={<SettingsIcon />} />
+            <BottomNavigationAction label="" icon={<SettingsIcon />} onClick={props.onOptions}/>
             <BottomNavigationAction label="" icon={<ControlPointIcon />} onClick={props.onAddTask}/>
         </BottomNavigation>
     );

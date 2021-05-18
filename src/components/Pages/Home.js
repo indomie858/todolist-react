@@ -6,6 +6,7 @@ import Tasks from '../Tasks';
 import BottomNavBar from '../BottomNavBar';
 import AddTask from '../AddTask.js'
 import ListNav from '../ListNav.js'
+import Options from '../Options.js'
 import Container from '@material-ui/core/Container';
 
 const Home = () => {
@@ -59,12 +60,14 @@ const Home = () => {
 
   const [showAddTask, setAddTask] = useState(false);
   const [showListNav, setListNav] = useState(false);
+  const [showOptions, setOptions] = useState(false);
   return (
     <>
       {/* <Container maxWidth="xs"> */}
       <div className="mainContainer">
-      {showAddTask && <AddTask onAdd={() => setAddTask(false)}/>}
-      {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={['Main', 'Shared', 'Other']}/>}
+      {showAddTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{"discord": true, "email": false}}/>}
+      {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{name: "Main List"}, {name: "Some Shared List"}, {name: "Some Other List"}]}/>}
+      {showOptions && <Options defaultList={"Shared"} defaultReminders={{"discord": true, "email": false}}/>}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
@@ -75,7 +78,7 @@ const Home = () => {
           {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Tomorrow' />) : ('No tasks to show')}
         </div>
       </div>
-      <BottomNavBar onAddTask={() => {setAddTask(!showAddTask); setListNav(false)}} onListNav={() => {setListNav(!showListNav); setAddTask(false)}} />
+      <BottomNavBar onAddTask={() => {setAddTask(!showAddTask); setListNav(false); setOptions(false)}} onListNav={() => {setListNav(!showListNav); setAddTask(false); setOptions(false)}} onOptions={() => {setListNav(false); setAddTask(false); setOptions(!showOptions)}}/>
       {/* </Container> */}
     </>
   )
