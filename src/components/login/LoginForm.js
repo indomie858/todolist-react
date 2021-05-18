@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
   },
   submit: {
+    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
     margin: theme.spacing(3, 0, 2),
   },
 }));
@@ -45,6 +46,7 @@ const LoginForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered }) 
         </Typography>
         <form className={classes.form} onSubmit={handleSubmit}>
           <TextField
+            InputLabelProps={{ required: false }}
             variant="outlined"
             margin="normal"
             required
@@ -57,6 +59,7 @@ const LoginForm = ({ handleSubmit, setUsername, setPassword, setIsRegistered }) 
             onChange={e => setUsername(e.target.value)}
           />
           <TextField
+            InputLabelProps={{ required: false }}
             variant="outlined"
             margin="normal"
             required

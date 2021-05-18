@@ -23,7 +23,12 @@ const AddSubTask = ({ addSubTask, setShowSubTaskInput }) => {
     return (
         <>
             <form onSubmit={handleSubmit} className="subtaskform">
-                <TextField required type="text" label="Subtask" onChange={e => setSubTaskText(e.target.value)} ></TextField>
+                <TextField
+                    InputLabelProps={{ required: false }} 
+                    required 
+                    type="text" 
+                    label="Subtask" 
+                    onChange={e => setSubTaskText(e.target.value)} ></TextField>
                 <Button type="submit"><AddCircleIcon /></Button>
             </form>
         </>

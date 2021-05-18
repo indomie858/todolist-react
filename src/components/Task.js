@@ -23,7 +23,8 @@ const Task = ({ task }) => {
                     <p>{task.day}</p>
                 </div>
                 <div className="task-flex-right">
-                    {!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                    {/* oh lawd this is nasty, but oh whale */}
+                    {subTasks.length > 0 ? (!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />) : ''}
                 </div>
             </div>
             {/* displays list of subtasks when individual task is clicked */}
