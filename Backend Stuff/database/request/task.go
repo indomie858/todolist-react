@@ -55,20 +55,20 @@ type Task struct {
     // ID of the parent list or parent task, if a subtask
     Parent      string      `firestore:"parent_id,omitempty"`
 
+    // Name of the list the task is in
+    List        string      `firestore:"list,omitempty"`
+
     // Whether or not someone can edit this task
     Lock        bool        `firestore:"lock,omitempty"`
 
     // Date this task (includes the time it is due)
     DateDue     time.Time   `firestore:"date_due,omitempty"`
 
-    // When the user would idelly like to start this task
-    //IdealStart  time.Time   `firestore:"ideal_start_date"`
-
-    // Date task was started
-    //StartDate   time.Time   `firestore:"start_date,omitempty"`
+    // Whether or not the task is complete / finished
+    Done        bool        `firestore:"done"`
 
     // Whether or not we should repeat this task, used for queries
-    Repeating   bool        `firestore:"repeating,omitempty"`
+    Repeating   bool        `firestore:"repeating"`
 
     // The frequency of the repeat, if we are repeating
     Repeat      string      `firestore:"repeat,omitempty"`
@@ -77,7 +77,10 @@ type Task struct {
     EndRepeat   time.Time   `firestore:"end_repeat,omitempty"`
 
     // Whether or not we should remind the user, used for queries
-    Remind      bool        `firestore:"remind,omitempty"`
+    Remind      bool        `firestore:"remind"`
+
+    // What type of reminder they want, discord or email
+    RemindType  string      `firestore:"remind_type,omitempty"`
 
     // Time frame before task to remind the user -- string
     // Similar to 'Alert' in Google Calendar
@@ -99,13 +102,13 @@ type Task struct {
     Url         string      `firestore:"url,omitempty"`
 
     // Whether or not this list is shared
-    Shared      bool        `firestore:"shared,omitempty"`
+    Shared      bool        `firestore:"shared"`
 
     // Array of user IDs of the users this task has been shared with
     SharedUsers []string    `firestore:"shared_users,omitempty"`
 
     // Whether or not this is a subtask
-    Subtask     bool        `firestore:"sub_task,omitempty"`
+    Subtask     bool        `firestore:"sub_task"`
 
     // IDs of assoociated Subtasks
     Subtasks    []string    `firestore:"sub_tasks,omitempty"`
@@ -131,17 +134,17 @@ type TaskJSON struct {
     // Whether or not someone can edit this task
     Lock        bool        `json:"lock,omitempty"`
 
+    // Name of the list the task is in
+    List        string      `json:"list,omitempty"`
+
     // Date this task is due (includes the time it is due)
     DateDue     time.Time   `json:"date_due,omitempty"`
 
-    // When the user would idelly like to start this task
-    //IdealStart  time.Time   `json:"ideal_start_date"`
-
-    // Date task was started
-    //StartDate   time.Time   `json:"start_date,omitempty"`
+    // Whether or not the task is complete / finished
+    Done        bool        `json:"done"`
 
     // Whether or not we should repeat this task, used for queries
-    Repeating   bool        `json:"repeating,omitempty"`
+    Repeating   bool        `json:"repeating"`
 
     // The frequency of the repeat, if we are repeating
     Repeat      string      `json:"repeat,omitempty"`
@@ -150,7 +153,10 @@ type TaskJSON struct {
     EndRepeat   time.Time   `json:"end_repeat,omitempty"`
 
     // Whether or not we should remind the user, used for queries
-    Remind      bool        `json:"remind,omitempty"`
+    Remind      bool        `json:"remind"`
+
+    // What type of reminder they want, discord or email
+    RemindType  string      `json:"remind_type,omitempty"`
 
     // Time frame before task to remind the user -- string
     Reminder    string      `json:"reminder,omitempty"`
@@ -171,13 +177,13 @@ type TaskJSON struct {
     Url         string      `json:"url,omitempty"`
 
     // Whether or not this list is shared
-    Shared      bool        `json:"shared,omitempty"`
+    Shared      bool        `json:"shared"`
 
     // Array of user IDs of the users this list has been shared with
     SharedUsers []string    `json:"shared_users,omitempty"`
 
     // Whether or not this is a subtask
-    Subtask     bool        `json:"sub_task,omitempty"`
+    Subtask     bool        `json:"sub_task"`
 
     // IDs of assoociated Subtasks
     Subtasks    []string    `json:"sub_tasks,omitempty"`
@@ -204,6 +210,7 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
     data["task_name"] = name
     data["parent_id"] = parentid
     data["lock"] = false
+    data["done"] = false
     data["repeating"] = false
     data["repeat"] = NEVER
     data["remind"] = false
@@ -402,20 +409,22 @@ func (r *Request) UpdateTask(name, parent string, fields url.Values) (*TaskJSON,
     var data = make(map[string]interface{})
     data = r.ParseTaskFields(fields, data)
 
-    //log.Printf("%v", data)
-
     // Get a reference to our task
     ref := r.Client.Collection("tasks").Doc(tjson.Id)
 
     // Send update to Firestore
-    _,err = ref.Set(r.Ctx, data, firestore.MergeAll)
+    _, err = ref.Set(r.Ctx, data, firestore.MergeAll)
     if err != nil {
         e := fmt.Sprintf("err updating task data: %v", err)
         return tjson, errors.New(e)
     }
 
-    tjson, err = r.GetTaskByID(ref.ID)
-    return tjson, err
+    if data["task_name"] != nil {
+        tjson, err = r.GetTaskByName(data["task_name"].(string), parent)
+        return tjson, err
+    }
+
+    return r.GetTaskByName(name, parent)
 } // }}}
 
 // func DestroyTasks {{{
@@ -636,6 +645,9 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
         case "date_due":
             data[k], _ = time.Parse("01/02/2006 3:04:05 PM", val)
             break
+        case "done":
+            data[k], _ = strconv.ParseBool(val)
+            break
         case "repeat":
             data[k] = val
             if val != NEVER {
@@ -699,6 +711,9 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             }
             data["remind"] = true
             break
+        case "remind_type":
+            data[k] = val
+            break
         case "priority":
             data[k] = val
             break
@@ -739,12 +754,12 @@ func (r *Request) TaskToJSON() *TaskJSON {
     taskjson.Parent      = r.Task.Parent
     taskjson.Lock        = r.Task.Lock
     taskjson.DateDue     = r.Task.DateDue
-    //taskjson.IdealStart  = r.Task.IdealStart
-    //taskjson.StartDate   = r.Task.StartDate
+    taskjson.Done        = r.Task.Done
     taskjson.Repeating   = r.Task.Repeating
     taskjson.Repeat      = r.Task.Repeat
     taskjson.EndRepeat   = r.Task.EndRepeat
     taskjson.Remind      = r.Task.Remind
+    taskjson.RemindType  = r.Task.RemindType
     taskjson.Reminder    = r.Task.Reminder
     taskjson.RemindTime  = r.Task.RemindTime
     taskjson.Priority    = r.Task.Priority

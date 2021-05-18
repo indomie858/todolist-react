@@ -466,7 +466,7 @@ func (a *App) updateUser(w http.ResponseWriter, r *http.Request) {
 //
 // Example :
 // http://localhost:10000/update/{uid}/list/{name}?<params>
-// http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/list1?list_name=list1updated&lock=false
+// http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/isolated_test_list?list_name=updated_isolated_list&lock=false&shared=true
 //
 func (a *App) updateList(w http.ResponseWriter, r *http.Request) {
     //fmt.Println("Endpoint Hit: updateList")

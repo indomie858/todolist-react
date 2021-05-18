@@ -50,9 +50,15 @@ type Request struct {
 
 func NewRequest(rtype, uid string) *Request {
     var r Request
+    var u User
+    var l List
+    var t Task
 
     r.Type = rtype
 	r.UserId = uid
+    r.User = &u
+    r.List = &l
+    r.Task = &t
 	r.Ctx = context.Background()
 	r.GetClient()
 

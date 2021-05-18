@@ -155,10 +155,9 @@ func (r *Request) GetListByName(listname string) (*ListJSON, error) {
         id := docsnap.Ref.ID
         list.Id = id
         // Set our request list to be this list
-        r.List = &list
+        ljson, _ = r.GetListByID(id)
     }
 
-    ljson = r.ListToJSON()
     return ljson, nil
 } // }}}
 
@@ -294,10 +293,12 @@ func (r *Request) GetSharedLists() ([]*ListJSON, error) {
 //
 func (r *Request) UpdateList(name string, fields url.Values) (*ListJSON, error) {
     ljson, err := r.GetListByName(name)
+    fmt.Printf("ljsn: %s\n", ljson)
     if err != nil {
         e := fmt.Sprintf("err getting list for update: %v", err)
         return ljson, errors.New(e)
     }
+
     if ljson.Owner != r.UserId {
         if ljson.SharedUsers == nil || !r.CheckIfShared(ljson.SharedUsers)  {
             return ljson, errors.New("err updating list: requestor does not have permission")
@@ -320,7 +321,11 @@ func (r *Request) UpdateList(name string, fields url.Values) (*ListJSON, error) 
         e := fmt.Sprintf("err updating list data: %v", err)
         return ljson, errors.New(e)
     }
-    ljson, err = r.GetListByID(ljson.Id)
+    if data["list_name"] != nil {
+        ljson, err = r.GetListByName(data["list_name"].(string))
+        return ljson, err
+    }
+    ljson, err = r.GetListByName(name)
     return ljson, err
 } // }}}
 
@@ -372,14 +377,15 @@ func (r *Request) DestroyList(name string) error {
 //
 func (r *Request) DestroyListById(id string) error {
     list, err := r.GetListByID(id)
+    //fmt.Printf("ListId: %s\n", list.Id)
     if err != nil {
-        e := fmt.Sprintf("err getting list for delete: %v", err)
+        e := fmt.Sprintf("DestroyListById: err getting list for delete: %v", err)
         return errors.New(e)
     }
 
     if list.Owner != r.UserId {
         if list.SharedUsers == nil || !r.CheckIfShared(list.SharedUsers) {
-            return errors.New("err deleting list: requestor does not have permission")
+            return errors.New("DestroyListById: err deleting list: requestor does not have permission")
         }
     }
 

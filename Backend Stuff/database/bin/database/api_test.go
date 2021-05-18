@@ -272,6 +272,32 @@ func TestGetTask(t *testing.T) {
     }
 }
 
+func TestUpdateTask(t *testing.T) {
+    url := fmt.Sprintf("/update/%s/task/test_task_1/parent/%s?done=true&remind_type=discord", testuid, testlid1)
+    req, _ := http.NewRequest("GET", url, nil)
+    fmt.Printf("Update Task Request: %v\n", req)
+
+    response := executeRequest(req)
+    checkResponseCode(t, http.StatusOK, response.Code)
+    fmt.Printf("Update Task Response: %v\n",response)
+
+    var m map[string]request.TaskJSON
+    json.Unmarshal(response.Body.Bytes(), &m)
+
+    task := m["result"]
+    if task.Name != "test_task_1" {
+        t.Errorf("Expected the name to be set to 'test_task_1'. Got '%v' instead.", task.Name)
+    }
+
+    if task.Parent != testlid1 {
+        t.Errorf("Expected the parent_id to be set to '%s'. Got '%v' instead.", testlid1, task.Parent)
+    }
+
+    if !task.Done {
+        t.Errorf("Expected done to be set to true. Got '%v' instead.", task.Done)
+    }
+}
+
 func TestGetTasks(t *testing.T) {
     url := fmt.Sprintf("/read/%s/tasks/%s", testuid, testlid1)
     req, _ := http.NewRequest("GET", url, nil)
