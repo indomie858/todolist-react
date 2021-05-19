@@ -148,10 +148,6 @@ const Home = () => {
             setAddTask(false);
           }} />) : ('No tasks to show')}
         </div>
-        <div className='listContainer'>
-          {/* displays same placeholder list except with title "Tomorrow" */}
-          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Tomorrow' />) : ('No tasks to show')}
-        </div>
       </div>
       <BottomNavBar onAddTask={() => { setAddTask(!showAddTask); setChangeTask(false); setListNav(false); setOptions(false) }} onListNav={() => { setListNav(!showListNav); setChangeTask(false); setAddTask(false); setOptions(false) }} onOptions={() => { setListNav(false); setChangeTask(false); setAddTask(false); setOptions(!showOptions) }} />
       {/* </Container> */}

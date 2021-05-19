@@ -82,6 +82,14 @@ body {
   justify-content: space-between;
 }
 
+.templateInput {
+  padding: 5px;
+}
+
+.textInput {
+  padding: 2px;
+}
+
 .addTaskInput {
   margin: 10px;
   color: rgb(221, 221, 221);
