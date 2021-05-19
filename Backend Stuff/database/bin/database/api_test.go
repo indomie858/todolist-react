@@ -73,7 +73,7 @@ func TestCreateUser(t *testing.T) {
     var m map[string]request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    user := m["result"]
+    user := m["user"]
     testuid = user.Id
     if user.Name != "testing_user_1" {
         t.Errorf("Expected the name to be set to 'testing_user_1'. Got '%v' instead.", user.Name)
