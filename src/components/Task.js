@@ -10,12 +10,12 @@ import moment from 'moment'
 const Task = (props) => {
     const [showSubTasks, setShowSubTasks] = useState(false);
     const [subTasks, setSubTasks] = useState(props.task.subTasks);
-    const [taskComplete, setTaskComplete] = useState(props.task.isCompleted);
+    const [taskComplete, setTaskComplete] = useState(props.task.isComplete);
 
     //function for adding subtasks.
     //need to handle sending subtask to the backend
     const addSubTask = (subTask) => {
-        //setSubTasks([...subTasks, subTask]);
+        setSubTasks([...subTasks, subTask]);
         console.log(subTask);
     }
 

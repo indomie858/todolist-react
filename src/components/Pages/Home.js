@@ -31,19 +31,11 @@ const Home = () => {
         emailSelected: true,
         discordSelected: false,
         reminder: true,
-        isCompleted: false,
+        isComplete: false,
         subTasks:
           [
-            {
-              id: 1,
-              text: 'Get in the car',
-              isCompleted: true,
-            },
-            {
-              id: 2,
-              text: 'Drive to the doctor',
-              isCompleted: false,
-            }
+            'Get in car',
+            'Drive to Doctor'
           ],
       },
       {
@@ -57,24 +49,12 @@ const Home = () => {
         emailSelected: true,
         discordSelected: false,
         reminder: true,
-        isCompleted: true,
+        isComplete: true,
         subTasks:
           [
-            {
-              id: 1,
-              text: 'Take two shots',
-              isCompleted: false,
-            },
-            {
-              id: 2,
-              text: 'Put on some pants',
-              isCompleted: true,
-            },
-            {
-              id: 3,
-              text: 'Get a ride to school',
-              isCompleted: false,
-            }
+            'Take two shots',
+            'Put on some pants',
+            'Get a ride to school'
           ],
       },
       {
@@ -88,24 +68,12 @@ const Home = () => {
         emailSelected: true,
         discordSelected: false,
         reminder: true,
-        isCompleted: false,
+        isComplete: false,
         subTasks:
           [
-            {
-              id: 1,
-              text: 'Make shopping list',
-              isCompleted: false,
-            },
-            {
-              id: 2,
-              text: 'Drive to Costco',
-              isCompleted: true,
-            },
-            {
-              id: 3,
-              text: 'Buy some shit',
-              isCompleted: true,
-            }
+            'Make shopping list',
+            'Drive to costco',
+            'Buy some shit'
           ],
       },
       {
@@ -119,7 +87,7 @@ const Home = () => {
         emailSelected: true,
         discordSelected: false,
         reminder: true,
-        isCompleted: false,
+        isComplete: false,
         subTasks: [
         ],
       },
