@@ -401,9 +401,9 @@ func (r *Request) GetTasks(parentid string) ([]*TaskJSON, error) {
 
 // func UpdateTask {{{
 //
-func (r *Request) UpdateTask(name, parent string, fields url.Values) (*TaskJSON, error) {
+func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
     // Get the task using it's name & the id of the parent list / task
-    tjson, err := r.GetTaskByName(name, parent)
+    tjson, err := r.GetTaskByID(id)
     if err != nil {
         e := fmt.Sprintf("err getting task for update: %v", err)
         return tjson, errors.New(e)
@@ -424,11 +424,11 @@ func (r *Request) UpdateTask(name, parent string, fields url.Values) (*TaskJSON,
     }
 
     if data["task_name"] != nil {
-        tjson, err = r.GetTaskByName(data["task_name"].(string), parent)
+        tjson, err = r.GetTaskByName(data["task_name"].(string), tjson.Parent)
         return tjson, err
     }
 
-    return r.GetTaskByName(name, parent)
+    return r.GetTaskByID(id)
 } // }}}
 
 // func DestroyTasks {{{

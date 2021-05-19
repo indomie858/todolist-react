@@ -68,7 +68,7 @@ func TestCreateUser(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create User Response: %v\n",response)
+    fmt.Printf("Create User Response: %v\n",response)
 
     var m map[string]request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -87,12 +87,12 @@ func TestCreateList(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create List Response: %v\n",response)
+    fmt.Printf("Create List Response: %v\n",response)
 
     var m map[string]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    list := m["result"]
+    list := m["list"]
     testlid1 = list.Id
     if list.Name != "test_list_1" {
         t.Errorf("Expected the name to be set to 'test_list_1'. Got '%v' instead.", list.Name)
@@ -119,12 +119,12 @@ func TestCreateListWithPayload(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create List with Payload Response: %v\n",response)
+    fmt.Printf("Create List with Payload Response: %v\n",response)
 
     var m map[string]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    list := m["result"]
+    list := m["list"]
     testlid2 = list.Id
     if list.Name != "test_list_2" {
         t.Errorf("Expected the name to be set to 'test_list_2'. Got '%v' instead.", list.Name)
@@ -147,7 +147,7 @@ func TestCreateTaskWithPaylod(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create Task with Payload Response: %v\n",response)
+    fmt.Printf("Create Task with Payload Response: %v\n",response)
 
     var m map[string]request.TaskJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -207,18 +207,18 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestGetList(t *testing.T) {
-    url := fmt.Sprintf("/read/%s/list/test_list_1", testuid)
+    url := fmt.Sprintf("/read/%s/list/%s", testuid, testlid1)
     req, _ := http.NewRequest("GET", url, nil)
     //fmt.Printf("Get List Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Get List Response: %v\n",response)
+    fmt.Printf("Get List Response: %v\n",response)
 
     var m map[string]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    list := m["result"]
+    list := m["list"]
     if list.Name != "test_list_1" {
         t.Errorf("Expected the name to be set to 'test_list_1'. Got '%v' instead.", list.Name)
     }
@@ -231,25 +231,25 @@ func TestGetLists(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Get Lists Response: %v\n",response)
+    fmt.Printf("Get Lists Response: %v\n",response)
 
     var m map[string][]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    lists := m["result"]
+    lists := m["lists"]
     if len(lists) == 0 {
         t.Errorf("Expected data to be in result. Got '%v' instead.", lists)
     }
 }
 
 func TestGetTask(t *testing.T) {
-    url := fmt.Sprintf("/read/%s/task/test_task_1/parent/%s", testuid, testlid1)
+    url := fmt.Sprintf("/read/%s/task/%s", testuid, testtid)
     req, _ := http.NewRequest("GET", url, nil)
     //fmt.Printf("Get Task Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Get Task Response: %v\n",response)
+    fmt.Printf("Get Task Response: %v\n",response)
 
     var m map[string]request.TaskJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -265,7 +265,7 @@ func TestGetTask(t *testing.T) {
 }
 
 func TestUpdateTask(t *testing.T) {
-    url := fmt.Sprintf("/update/%s/task/test_task_1/parent/%s?done=true&remind_type=discord", testuid, testlid1)
+    url := fmt.Sprintf("/update/%s/task/%s?done=true&remind_type=discord", testuid, testtid)
     req, _ := http.NewRequest("GET", url, nil)
     //fmt.Printf("Update Task Request: %v\n", req)
 

@@ -291,8 +291,8 @@ func (r *Request) GetSharedLists() ([]*ListJSON, error) {
 
 // func UpdateList {{{
 //
-func (r *Request) UpdateList(name string, fields url.Values) (*ListJSON, error) {
-    ljson, err := r.GetListByName(name)
+func (r *Request) UpdateList(id string, fields url.Values) (*ListJSON, error) {
+    ljson, err := r.GetListByID(id)
     fmt.Printf("ljsn: %s\n", ljson)
     if err != nil {
         e := fmt.Sprintf("err getting list for update: %v", err)
@@ -325,7 +325,7 @@ func (r *Request) UpdateList(name string, fields url.Values) (*ListJSON, error) 
         ljson, err = r.GetListByName(data["list_name"].(string))
         return ljson, err
     }
-    ljson, err = r.GetListByName(name)
+    ljson, err = r.GetListByID(id)
     return ljson, err
 } // }}}
 
