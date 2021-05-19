@@ -12,10 +12,11 @@ const Task = (props) => {
     const [subTasks, setSubTasks] = useState(props.task.subTasks);
     const [taskComplete, setTaskComplete] = useState(props.task.isCompleted);
 
-    //function for adding subtasks. currently pushing subtask to array in task object
+    //function for adding subtasks.
     //need to handle sending subtask to the backend
     const addSubTask = (subTask) => {
-        setSubTasks([...subTasks, subTask]);
+        //setSubTasks([...subTasks, subTask]);
+        console.log(subTask);
     }
 
     //onClick={() => setShowCompleteButton(!showCompleteButton)}
@@ -32,7 +33,7 @@ const Task = (props) => {
                 <div className="task-flex-right" onClick={() => {
                     setTaskComplete(!taskComplete);
                     console.log(props.task)
-                    }}>
+                }}>
                     {!taskComplete ? <CheckBoxOutlineBlankIcon /> : <CheckBoxIcon />}
                 </div>
             </div>

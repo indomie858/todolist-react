@@ -4,12 +4,12 @@ import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import { useState } from 'react';
 
 const SubTask = ({ subTask }) => {
-    const [taskComplete, setTaskComplete] = useState(false);
+    const [taskComplete, setTaskComplete] = useState(subTask.isCompleted);
 
     return (
         // outputs subtask from subtasks array
         <div className="subtask">
-            <p>{subTask}</p>
+            <p>{subTask.text}</p>
             <div className="task-flex-right" onClick={() => setTaskComplete(!taskComplete)} >
                 {!taskComplete ? <CheckBoxOutlineBlankIcon /> : <CheckBoxIcon />}
             </div>

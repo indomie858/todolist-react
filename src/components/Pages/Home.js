@@ -31,11 +31,20 @@ const Home = () => {
         emailSelected: true,
         discordSelected: false,
         reminder: true,
-        subTasks: [
-          'Get in car',
-          'Drive to doctor'
-        ],
         isCompleted: false,
+        subTasks:
+          [
+            {
+              id: 1,
+              text: 'Get in the car',
+              isCompleted: true,
+            },
+            {
+              id: 2,
+              text: 'Drive to the doctor',
+              isCompleted: false,
+            }
+          ],
       },
       {
         id: 2,
@@ -48,12 +57,25 @@ const Home = () => {
         emailSelected: true,
         discordSelected: false,
         reminder: true,
-        subTasks: [
-          'Take two shots',
-          'Put on some pants',
-          'Get a ride to school'
-        ],
-        isCompleted: false,
+        isCompleted: true,
+        subTasks:
+          [
+            {
+              id: 1,
+              text: 'Take two shots',
+              isCompleted: false,
+            },
+            {
+              id: 2,
+              text: 'Put on some pants',
+              isCompleted: true,
+            },
+            {
+              id: 3,
+              text: 'Get a ride to school',
+              isCompleted: false,
+            }
+          ],
       },
       {
         id: 3,
@@ -66,12 +88,25 @@ const Home = () => {
         emailSelected: true,
         discordSelected: false,
         reminder: true,
-        subTasks: [
-          'Make shopping list',
-          'Drive to Costco',
-          'Buy some shit'
-        ],
-        isCompleted: true,
+        isCompleted: false,
+        subTasks:
+          [
+            {
+              id: 1,
+              text: 'Make shopping list',
+              isCompleted: false,
+            },
+            {
+              id: 2,
+              text: 'Drive to Costco',
+              isCompleted: true,
+            },
+            {
+              id: 3,
+              text: 'Buy some shit',
+              isCompleted: true,
+            }
+          ],
       },
       {
         id: 4,
@@ -84,9 +119,9 @@ const Home = () => {
         emailSelected: true,
         discordSelected: false,
         reminder: true,
+        isCompleted: false,
         subTasks: [
         ],
-        isCompleted: false,
       },
     ]
   )
@@ -99,12 +134,12 @@ const Home = () => {
   const [changingTask, setChangingTask] = useState(0);
   const [email, setEmail] = useState('');
 
-  if (!getToken()){
+  if (!getToken()) {
     console.log('/home token does not exist');
     return (<Redirect to="/login" />);
   } else {
     console.log('/home token exists');
-    if(email === ''){
+    if (email === '') {
       setEmail(sessionStorage.getItem('email'));
     }
   }
@@ -113,20 +148,20 @@ const Home = () => {
       {/* <Container maxWidth="xs"> */}
       <p>Welcome {email}</p>
       <div className="mainContainer">
-      {showAddTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{"discord": true, "email": false}}/>}
-      {showChangeTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{"discord": true, "email": false} } 
-        date={changingTask.date}
-        text={changingTask.text}
-        list={changingTask.list}
-        willRepeat={changingTask.willRepeat}
-        reminder={changingTask.reminder}
-        repeatFrequency={changingTask.repeatFrequency}
-        numDays={changingTask.repeatNumDays}
-        emailSelected={changingTask.emailSelected}
-        discordSelected={changingTask.discordSelected}
+        {showAddTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{ "discord": true, "email": false }} />}
+        {showChangeTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{ "discord": true, "email": false }}
+          date={changingTask.date}
+          text={changingTask.text}
+          list={changingTask.list}
+          willRepeat={changingTask.willRepeat}
+          reminder={changingTask.reminder}
+          repeatFrequency={changingTask.repeatFrequency}
+          numDays={changingTask.repeatNumDays}
+          emailSelected={changingTask.emailSelected}
+          discordSelected={changingTask.discordSelected}
         />}
-      {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{name: "Main List"}, {name: "Some Shared List"}, {name: "Some Other List"}]}/>}
-      {showOptions && <Options defaultList={"Shared"} defaultReminders={{"discord": true, "email": false}}/>}
+        {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main List" }, { name: "Some Shared List" }, { name: "Some Other List" }]} />}
+        {showOptions && <Options defaultList={"Shared"} defaultReminders={{ "discord": true, "email": false }} />}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
@@ -142,14 +177,15 @@ const Home = () => {
             setChangeTask(!showChangeTask);
             setListNav(false);
             setOptions(false);
-            setAddTask(false);}}/>) : ('No tasks to show')}
+            setAddTask(false);
+          }} />) : ('No tasks to show')}
         </div>
         <div className='listContainer'>
           {/* displays same placeholder list except with title "Tomorrow" */}
           {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Tomorrow' />) : ('No tasks to show')}
         </div>
       </div>
-      <BottomNavBar onAddTask={() => {setAddTask(!showAddTask); setChangeTask(false); setListNav(false); setOptions(false)}} onListNav={() => {setListNav(!showListNav); setChangeTask(false); setAddTask(false); setOptions(false)}} onOptions={() => {setListNav(false); setChangeTask(false); setAddTask(false); setOptions(!showOptions)}}/>
+      <BottomNavBar onAddTask={() => { setAddTask(!showAddTask); setChangeTask(false); setListNav(false); setOptions(false) }} onListNav={() => { setListNav(!showListNav); setChangeTask(false); setAddTask(false); setOptions(false) }} onOptions={() => { setListNav(false); setChangeTask(false); setAddTask(false); setOptions(!showOptions) }} />
       {/* </Container> */}
     </>
   )
