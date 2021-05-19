@@ -110,7 +110,7 @@ Possible `fields` are:
 | lock          | bool      |   NO     | default = false                                                        |
 | list          | string    |   NO     | list name                                                              |
 | date_due      | date      |   YES    | Must be given BEFORE end_repeat date, format: `01/02/2006 3:04:05 PM`  |
-| done          | bool      |   NO     | Whether or not it's done - default false                               |
+| complete      | bool      |   NO     | Whether or not it's done - default false                               |
 | repeating     | bool      |   NO     | default = `false`                                                      |
 | repeat        | string    |   NO     | default = `never` example: `every week`                                |
 | end_repeat    | date      |   NO     | format: `01/02/2006`                                                   |
