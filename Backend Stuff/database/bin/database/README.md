@@ -111,7 +111,7 @@ Possible `fields` are:
 | list          | string    |   NO     | list name                                                              |
 | date_due      | date      |   YES    | Must be given BEFORE end_repeat date, format: `01/02/2006 3:04:05 PM`  |
 | done          | bool      |   NO     | Whether or not it's done - default false                               |
-| repeating     | bool      |   NO     | default = `false`                                                      |
+| repeating     | bool      |   NO     | default = `false`  - autoset when given repeat                         |
 | repeat        | string    |   NO     | default = `never` example: `every week`                                |
 | end_repeat    | date      |   NO     | format: `01/02/2006`                                                   |
 | discord       | bool      |   NO     | Whether or not discord was selected as a reminder                      |
