@@ -3,6 +3,29 @@ import discordImage from "./discord.png";
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 
 
+async function setEmailGlobal(emailState){
+    let text = "a3a1hWUx5geKB8qeR6fbk5LZZGI2"
+    // let options = "emailNotifications="+emailState
+    fetch('http://localhost:3003/api/update/'+text,{
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        //pass in value of input text in body of request
+                        update: 'userSettings',
+                        emailNotifications: {emailState}
+                    })
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response.json()}
+                }).then(data=>JSON.stringify(data));
+}
+
 const Options = (props) => {
 
     const [listValue, setListValue] = useState(props.defaultList);
@@ -26,7 +49,7 @@ const Options = (props) => {
                     </div>
                     <div className="optionsOption">Default Reminder Method: 
                         <div className="remindersContainer">
-                            <MailOutlineIcon className={emailSelected ? "outlined icon" : "icon"} onClick={() => setEmailSelected(!emailSelected)}/>
+                            <MailOutlineIcon className={emailSelected ? "outlined icon" : "icon"} onClick={() => {setEmailGlobal(!emailSelected); setEmailSelected(!emailSelected);}}/>
                             <img alt="discord icon" className={discordSelected ? "discord outlined icon" : "discord icon"} onClick={() => setDiscordSelected(!discordSelected)} src={discordImage}/>
                         </div>
                     </div>

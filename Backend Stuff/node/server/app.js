@@ -17,7 +17,9 @@ const usersRouter = require('./routes/users');
 const app = express();
 
 let jsonObject = require('./test.json');
-const { getDefaultNormalizer } = require('@testing-library/dom');
+const {
+  getDefaultNormalizer
+} = require('@testing-library/dom');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -60,21 +62,20 @@ app.get('/test1', (req, res) => {
 });
 
 
-app.get('/api/:input',(req,res) =>{
-  if(req.params.input in jsonObject.users){
+app.get('/api/:input', (req, res) => {
+  if (req.params.input in jsonObject.users) {
     res.send(JSON.stringify(jsonObject.users[req.params.input]))
-  }
-  else{
-    setCustomError(req,res,"Invalid API Reference. Please check the path again.","Invalid API Reference",404)
+  } else {
+    setCustomError(req, res, "Invalid API Reference. Please check the path again.", "Invalid API Reference", 404)
     res.render('error')
   }
 })
 
 
-app.get('/api/userData/:id',(req,res)=>{
+app.get('/api/userData/:id', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id,(name)=>{ //this is terrible and I hate it
-    
+  getName(req.params.id, (name) => { //this is terrible and I hate it
+
     console.log(name)
     res.send(JSON.stringify(name))
   })
@@ -82,10 +83,10 @@ app.get('/api/userData/:id',(req,res)=>{
 
 })
 
-app.get('/api/userData/:id/name',(req,res)=>{
+app.get('/api/userData/:id/name', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id,(name)=>{ //this is terrible and I hate it
-    
+  getName(req.params.id, (name) => { //this is terrible and I hate it
+
     console.log(name)
     res.send(JSON.stringify(name.Name))
   })
@@ -93,10 +94,10 @@ app.get('/api/userData/:id/name',(req,res)=>{
 
 })
 
-app.get('/api/userData/:id/email',(req,res)=>{
+app.get('/api/userData/:id/email', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id,(name)=>{ //this is terrible and I hate it
-    
+  getName(req.params.id, (name) => { //this is terrible and I hate it
+
     console.log(name)
     res.send(JSON.stringify(name.Email))
   })
@@ -104,10 +105,10 @@ app.get('/api/userData/:id/email',(req,res)=>{
 
 })
 
-app.get('/api/userData/:id/status',(req,res)=>{
+app.get('/api/userData/:id/status', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id,(name)=>{ //this is terrible and I hate it
-    
+  getName(req.params.id, (name) => { //this is terrible and I hate it
+
     console.log(name)
     res.send(JSON.stringify(name.Status))
   })
@@ -115,120 +116,171 @@ app.get('/api/userData/:id/status',(req,res)=>{
 
 })
 
-app.get('/api/userData/:id/lists',(req,res)=>{
+app.get('/api/userData/:id/lists', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id,(name)=>{ //this is terrible and I hate it
-    
+  getName(req.params.id, (name) => { //this is terrible and I hate it
+
     console.log(name)
-    res.send(JSON.stringify(name.Lists))
+    res.send(JSON.stringify(name.lists))
   })
   // res.send(JSON.stringify(name.Name))
 
 })
 
-app.get('/api/update/:uid/list/:list_id',(req,res)=>{
-  updateAPI(req.params.uid,`/list/${req.params.list_id}`,req.query,(output)=>{
+app.get('/api/userData/:id/list/:listID', (req, res) => {
+  console.log(req.params.id)
+  readAPI(req.params.id, `/list/${req.params.listID}`, (result) => { //this is terrible and I hate it
+    console.log(result)
+    res.send(JSON.stringify(result))
+  })
+  // res.send(JSON.stringify(name.Name))
+
+})
+
+app.get('/api/update/:id', (req, res) => {
+  console.log(req.params.id)
+  let body = JSON.parse(req.body)
+  // getName(req.params.id,(name)=>{ //this is terrible and I hate it
+  switch (body.update) {
+    case 'userSettings':
+      updateAPIJSON(req.params.uid, )
+
+      break;
+    case 'listSettings':
+      updateAPIJSON(req.params.uid + `/List/${body.listID}`, )
+
+      break;
+    case 'taskSettings':
+      updateAPIJSON(req.params.uid + `/Task/${body.taskID}`, )
+
+      break;
+    default:
+      console.log('default case hit')
+  }
+  // console.log(name)
+  // res.send(JSON.stringify(name))
+  // })
+  // res.send(JSON.stringify(name.Name))
+
+})
+
+app.get('/api/update/:uid/list/:list_id', (req, res) => {
+  updateAPI(req.params.uid, `/list/${req.params.list_id}`, req.query, (output) => {
     console.log(output)
     res.send(JSON.stringify(output))
   })
-  
+
 })
 
 
 
-function readAPI(uid,parameters,callback){
-  apiCall('http://localhost:10000/read/'+uid+parameters,(output)=>{
-    callback(output)
-  })
-}
-function updateAPI(uid,parameters,queries,callback){
-var url = 'http://localhost:10000/update/'+uid+parameters+"?"
-
-for (const query in queries){
-  url+=query+"="+queries[query]+"&"
-}
-
-url = url.substr(0,url.length-1)
-  apiCall(url,(output)=>{
+function readAPI(uid, parameters, callback) {
+  apiCall('http://localhost:10000/read/' + uid + parameters, (output) => {
     callback(output)
   })
 }
 
-function apiCall(url,callback){
+function updateAPI(uid, parameters, queries, callback) {
+  var url = 'http://localhost:10000/update/' + uid + parameters + "?"
+
+  for (const query in queries) {
+    url += query + "=" + queries[query] + "&"
+  }
+
+  url = url.substr(0, url.length - 1)
+  apiCall(url, (output) => {
+    callback(output)
+  })
+}
+
+function updateAPIJSON(uid, json, callback) {
+  var url = 'http://localhost:10000/update/' + uid
+
+  // for (const query in queries){
+  //   url+=query+"="+queries[query]+"&"
+  // }
+
+  // url = url.substr(0,url.length-1)
+  //   apiCall(url,(output)=>{
+  //     callback(output)
+  //   })
+}
+
+function apiCall(url, callback) {
   http.get(url, (resp) => {
     let data = ''
-  
+
     // A chunk of data has been received.
     resp.on('data', (chunk) => {
       data += chunk
     })
-  
+
     // The whole response has been received. Print out the result.
-     resp.on('end', () => {
+    resp.on('end', () => {
       // console.log(JSON.parse(data).explanation)
       callback(data)
       // return output
     });
-  
+
   }).on("error", (err) => {
     console.log("Error: " + err.message)
   })
 }
 
 
-function getName(uid,callback){
+function getName(uid, callback) {
   // var output =1
-  http.get('http://localhost:10000/read/'+uid, (resp) => {
+  http.get('http://localhost:10000/read/' + uid, (resp) => {
     let data = ''
-  
+
     // A chunk of data has been received.
     resp.on('data', (chunk) => {
       data += chunk
     })
-  
+
     // The whole response has been received. Print out the result.
-     resp.on('end', () => {
+    resp.on('end', () => {
       console.log(JSON.parse(data).explanation)
       callback(JSON.parse(data))
       // return output
     });
-  
+
   }).on("error", (err) => {
     console.log("Error: " + err.message)
   })
   // return output
 }
 
-function setCustomError(req,res,message,name,status){
-  const err = createError(status,name)
-  res.locals.title=name
+function setCustomError(req, res, message, name, status) {
+  const err = createError(status, name)
+  res.locals.title = name
   res.locals.message = message
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.status(status)
-  
+
 }
 
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.title = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-  
+
   // render the error page
   res.status(err.status || 500);
-  res.locals.message= res.statusCode + " "+err.message
+  res.locals.message = res.statusCode + " " + err.message
   res.render('error');
 });
 
-function errorHandler(err, req, res, next){
-  
+function errorHandler(err, req, res, next) {
+
 }
 
 // starting the server
