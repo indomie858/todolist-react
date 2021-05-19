@@ -161,7 +161,7 @@ type TaskJSON struct {
     // Time frame before task to remind the user -- string
     Reminder    string      `json:"reminder,omitempty"`
 
-    // Time frame before task to remind the user
+    // The actual time we are going to remind the user
     RemindTime  time.Time   `json:"reminder_time,omitempty"`
 
     // Priority level of the task
@@ -429,8 +429,7 @@ func (r *Request) UpdateTask(name, parent string, fields url.Values) (*TaskJSON,
 
 // func DestroyTasks {{{
 //
-//
-// TODO: Delete all subtasks as well
+// Destroys all tasks within a list as well as any subtasks it may have
 func (r *Request) DestroyTask(name, parentid string) error {
     // Get the task using it's name
     task, err := r.GetTaskByName(name, parentid)
@@ -450,12 +449,12 @@ func (r *Request) DestroyTask(name, parentid string) error {
         for {
             doc, err := iter.Next()
             if err == iterator.Done {
-				break
-			}
-			if err != nil {
+                break
+            }
+            if err != nil {
                 e := fmt.Sprintf("err getting snapshot of subtask for delete: %v", err)
                 return errors.New(e)
-			}
+            }
 
             // create a new task struct for the subtask
             var subtask Task
@@ -469,8 +468,8 @@ func (r *Request) DestroyTask(name, parentid string) error {
                 }
             }
 
-			batch.Delete(doc.Ref)
-			numDeleted++
+            batch.Delete(doc.Ref)
+            numDeleted++
         }
 
         // Let's add the task we originally wanted to delete to the batch -
@@ -514,7 +513,7 @@ func (r *Request) DestroyTask(name, parentid string) error {
 
     	_, err = batch.Commit(r.Ctx)
     	if err != nil {
-    		return err
+            return err
     	}
     }
 
@@ -523,8 +522,7 @@ func (r *Request) DestroyTask(name, parentid string) error {
 
 // func DestroyTaskById {{{
 //
-//
-// TODO: Delete all subtasks as well
+// Destroys all tasks within a list as well as any subtasks it may have
 func (r *Request) DestroyTaskById(id string) error {
     // Get the task using it's name
     task, err := r.GetTaskByID(id)
@@ -544,12 +542,12 @@ func (r *Request) DestroyTaskById(id string) error {
         for {
             doc, err := iter.Next()
             if err == iterator.Done {
-				break
-			}
-			if err != nil {
+                break
+            }
+            if err != nil {
                 e := fmt.Sprintf("err getting snapshot of subtask for delete: %v", err)
                 return errors.New(e)
-			}
+            }
 
             // create a new task struct for the subtask
             var subtask Task
@@ -563,8 +561,8 @@ func (r *Request) DestroyTaskById(id string) error {
                 }
             }
 
-			batch.Delete(doc.Ref)
-			numDeleted++
+            batch.Delete(doc.Ref)
+            numDeleted++
         }
 
         // Let's add the task we originally wanted to delete to the batch -
@@ -607,7 +605,7 @@ func (r *Request) DestroyTaskById(id string) error {
 
     	_, err = batch.Commit(r.Ctx)
     	if err != nil {
-    		return err
+            return err
     	}
     }
 
@@ -615,6 +613,8 @@ func (r *Request) DestroyTaskById(id string) error {
 } // }}}
 
 // func ParseTaskFields {{{
+//
+// Parses the fields of the request payload
 func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}) map[string]interface{} {
     //fmt.Printf("task fields: %v\n", fields)
 

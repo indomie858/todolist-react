@@ -8,29 +8,31 @@ return (so far) -
 ```
 (base) sabra@Sabras-MacBook-Pro database % go test -v
 === RUN   TestCreateUser
---- PASS: TestCreateUser (1.07s)
+--- PASS: TestCreateUser (0.95s)
 === RUN   TestCreateList
---- PASS: TestCreateList (0.76s)
+--- PASS: TestCreateList (0.83s)
 === RUN   TestCreateListWithPayload
---- PASS: TestCreateListWithPayload (0.75s)
+--- PASS: TestCreateListWithPayload (0.86s)
 === RUN   TestCreateTaskWithPaylod
---- PASS: TestCreateTaskWithPaylod (0.55s)
+--- PASS: TestCreateTaskWithPaylod (0.51s)
 === RUN   TestCreateSubTask
---- PASS: TestCreateSubTask (0.50s)
+--- PASS: TestCreateSubTask (0.57s)
 === RUN   TestGetUser
---- PASS: TestGetUser (0.20s)
+--- PASS: TestGetUser (0.93s)
 === RUN   TestGetList
---- PASS: TestGetList (0.16s)
+--- PASS: TestGetList (0.28s)
 === RUN   TestGetLists
---- PASS: TestGetLists (0.19s)
+--- PASS: TestGetLists (0.17s)
 === RUN   TestGetTask
---- PASS: TestGetTask (0.16s)
+--- PASS: TestGetTask (0.19s)
+=== RUN   TestUpdateTask
+--- PASS: TestUpdateTask (0.37s)
 === RUN   TestGetTasks
---- PASS: TestGetTasks (0.33s)
+--- PASS: TestGetTasks (0.41s)
 === RUN   TestDestroyUser
---- PASS: TestDestroyUser (2.45s)
+--- PASS: TestDestroyUser (2.39s)
 PASS
-ok  	database/bin/database	7.146s
+ok  	database/bin/database	8.479s
 ```
 
 ***I DO NOT GUARANTEE ANY OTHER FUNCTION WILL WORK IF IT DOES NOT HAVE A PASSING TEST***
@@ -70,11 +72,11 @@ TestEditUser(t *testing.T)
 
 TestEditList(t *testing.T)
 
-TestEditTask(t *testing.T)
+~~TestEditTask(t *testing.T)~~
 
 # API REQUESTS
 
-# USERS 
+# USERS
 *documentation coming soon*
 
 # LISTS

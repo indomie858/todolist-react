@@ -208,7 +208,7 @@ func TestGetUser(t *testing.T) {
     var m map[string]request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    user := m["result"]
+    user := m["user"]
     if user.Name != "testing_user_1" {
         t.Errorf("Expected the name to be set to 'testing_user_1'. Got '%v' instead.", user.Name)
     }
@@ -275,11 +275,11 @@ func TestGetTask(t *testing.T) {
 func TestUpdateTask(t *testing.T) {
     url := fmt.Sprintf("/update/%s/task/test_task_1/parent/%s?done=true&remind_type=discord", testuid, testlid1)
     req, _ := http.NewRequest("GET", url, nil)
-    fmt.Printf("Update Task Request: %v\n", req)
+    //fmt.Printf("Update Task Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Update Task Response: %v\n",response)
+    //fmt.Printf("Update Task Response: %v\n",response)
 
     var m map[string]request.TaskJSON
     json.Unmarshal(response.Body.Bytes(), &m)

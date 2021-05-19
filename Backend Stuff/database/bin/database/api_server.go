@@ -22,6 +22,7 @@ func (a *App) Initialize() {
 }
 
 func (a *App) Run(addr string) {
+    log.Printf("Running on port %s", addr)
     log.Fatal(http.ListenAndServe(":10000", a.Router))
 }
 
@@ -266,6 +267,12 @@ func (a *App) destroyTask(w http.ResponseWriter, r *http.Request) {
     respondWithJSON(w, http.StatusOK, map[string]string{"result": "task successfully deleted"})
 }
 
+type Result struct {
+    user *request.UserJSON
+    lists []*request.ListJSON
+    tasks [][]*request.TaskJSON
+}
+
 // Get a user from the Firstore database with the specified UID
 //
 // Example :
@@ -288,7 +295,20 @@ func (a *App) getUser(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]request.UserJSON{"result": *user})
+
+    lists, err := req.GetLists()
+    if err != nil {
+        respondWithError(w, http.StatusBadRequest,  err.Error())
+        return
+    }
+
+    var tasks [][]*request.TaskJSON
+    for _, list := range lists {
+        t, _ := req.GetTasks(list.Id)
+        tasks = append(tasks, t)
+    }
+
+    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks})
 }
 
 // Get a list from the Firstore database with the specified list name
