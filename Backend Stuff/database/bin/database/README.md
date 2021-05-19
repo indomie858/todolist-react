@@ -78,41 +78,58 @@ TestEditTask(t *testing.T)
 *documentation coming soon*
 
 # LISTS
-*documentatin coming soon*
+*full documentatin coming soon*
 
-# TASKS
+## AddList(list_name string, fields url.Values) (*TaskJSON, error)
+Adds a new list to the List Collection in Firebase, setting any fields that are provided
 
-## AddTask(task_name string, fields url.Values) (*TaskJSON, error)
 Possible `fields` are:
 
 |     field     |   type    | required | notes                                                                  |
 | :-----------: | :-------: | :------: | ---------------------------------------------------------------------- |
-| name          | string    |   NO     | Not required in the payload                                            |
+| list_name     | string    |   NO     | Not required in the payload                                            |
+| list_owner    | string    |   YES    | Must be given the id of the parent list, or the parent task if subtask |
+| lock          | bool      |   NO     | default = false                                                        |
+| tasks         | []string  |   NO     | tasks in the list                                                      |
+| shared        | bool      |   NO     | default = `false`                                                      |
+| shared_users  | []string  |   NO     | default = [""]                                                         |
+
+# TASKS
+
+## AddTask(task_name string, fields url.Values) (*TaskJSON, error)
+Adds a new task to the Task Collection in Firebase, setting any fields that are provided
+
+Possible `fields` are:
+
+|     field     |   type    | required | notes                                                                  |
+| :-----------: | :-------: | :------: | ---------------------------------------------------------------------- |
+| task_name     | string    |   NO     | Not required in the payload                                            |
 | parent_id     | string    |   YES    | Must be given the id of the parent list, or the parent task if subtask |
 | lock          | bool      |   NO     | default = false                                                        |
 | list          | string    |   NO     | list name                                                              |
 | date_due      | date      |   YES    | Must be given BEFORE end_repeat date, format: `01/02/2006 3:04:05 PM`  |
 | done          | bool      |   NO     | Whether or not it's done - default false                               |
-| repeating     | bool      |   NO     | default = false                                                        |
+| repeating     | bool      |   NO     | default = `false`                                                      |
 | repeat        | string    |   NO     | default = `never`                                                      |
 | end_repeat    | date      |   NO     | format: `01/02/2006`                                                   |
 | remind_type   | string    |   NO     | Type of reminder - `discord` or `email`                                |
-| reminder      | string    |   NO     | default = false                                                        |
+| reminder      | string    |   NO     | default = `false`                                                      |
 | priority      | string    |   NO     | default = `none`                                                       |
 | location      | string    |   NO     | default = ""                                                           |
 | description   | string    |   NO     | default = ""                                                           |
 | url           | string    |   NO     | default = ""                                                           |
-| shared        | bool      |   NO     | default = false                                                        |
+| shared        | bool      |   NO     | default = `false`                                                      |
 | shared_users  | []string  |   NO     | default = [""]                                                         |
 | sub_task      | bool      |   NO     | default = false                                                        |
 | sub_tasks     | []string  |   NO     | default = [""]                                                         |
 
+Fields must be listed exactly as you see them above.
 
 ## GetTaskByName(taskname, parentid string) (*TaskJSON, error)
 The parent of the task is required to ensure we get the correct task
 
 ## GetTaskByID(id string) (*TaskJSON, error)
-Called on by UpdateTask
+Called on by DestroyTaskById
 
 ## GetTasks(parentid string) ([]*TaskJSON, error)
 Returns all tasks that have the provided parentid
