@@ -785,7 +785,7 @@ func (r *Request) TaskToJSON() *TaskJSON {
     return &taskjson
 } // }}}
 
-func (r *Request) UpdateTaskSubtasks(taskid, id string) {
+func (r *Request) UpdateTaskSubtasks(taskid, id string) (*TaskJSON, error) {
     var task Task
 
     // Get the Firestore path for the user
@@ -798,14 +798,14 @@ func (r *Request) UpdateTaskSubtasks(taskid, id string) {
     docsnap, err := doc.Get(r.Ctx)
     if err != nil {
         fmt.Printf("err getting task snapshot: %v\n", err)
-        return
+        return r.GetTaskByID(taskid)
     }
 
     // Add the data to our structure
     err = docsnap.DataTo(&task)
     if err != nil {
         fmt.Printf("err putting task data to struct: %v\n", err)
-        return
+        return r.GetTaskByID(taskid)
     }
 
     // Add the new id to our subtask array
@@ -820,4 +820,6 @@ func (r *Request) UpdateTaskSubtasks(taskid, id string) {
     if err != nil {
         fmt.Printf("err setting new task data: %v\n", err)
     }
+
+    return r.GetTaskByID(taskid)
 }

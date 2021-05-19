@@ -172,27 +172,19 @@ func TestCreateTaskWithPaylod(t *testing.T) {
 func TestCreateSubTask(t *testing.T) {
     url := fmt.Sprintf("/create/%s/subtask/sub_task_1/parent/%s", testuid, testtid)
     req, _ := http.NewRequest("POST", url, nil)
-    //fmt.Printf("Create Subtask Request: %v\n", req)
+    fmt.Printf("Create Subtask Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create Subtask Response: %v\n",response)
+    fmt.Printf("Create Subtask Response: %v\n",response)
 
     var m map[string]request.TaskJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
     task := m["result"]
     teststid = task.Id
-    if task.Name != "sub_task_1" {
+    if task.Subtasks[0] != "sub_task_1" {
         t.Errorf("Expected the name to be set to 'sub_task_1'. Got '%v' instead.", task.Name)
-    }
-
-    if task.Parent != testtid {
-        t.Errorf("Expected parent field to be set to '%s'. Got '%v' instead.", testtid, task.Parent)
-    }
-
-    if !task.Subtask {
-        t.Errorf("Expected subtask field to be set to 'true'. Got '%v' instead.", task.Subtask)
     }
 }
 

@@ -81,12 +81,19 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
     }
 
     var tasks [][]*request.TaskJSON
+    var subtasks [][]*request.TaskJSON
     for _, list := range lists {
         t, _ := req.GetTasks(list.Id)
         tasks = append(tasks, t)
+        for _, ts := range t {
+            if ts.Subtasks != nil {
+                st, _ := req.GetTasks(ts.Id)
+                subtasks = append(subtasks, st)
+            }
+        }
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks})
+    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks, "subtasks": subtasks})
 }
 
 // Create a new list in the Firstore database with the provided name & params
@@ -193,7 +200,7 @@ func (a *App) createSubtask(w http.ResponseWriter, r *http.Request) {
     payload.Add("sub_task", "true")
 
     // Perform the requested action
-    task, err := req.AddTask(taskname, pid, payload)
+    task, err := req.UpdateTaskSubtasks(pid, taskname)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
@@ -491,7 +498,20 @@ func (a *App) updateUser(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.UserJSON{"result": user})
+
+    lists, err := req.GetLists()
+    if err != nil {
+        respondWithError(w, http.StatusBadRequest,  err.Error())
+        return
+    }
+
+    var tasks [][]*request.TaskJSON
+    for _, list := range lists {
+        t, _ := req.GetTasks(list.Id)
+        tasks = append(tasks, t)
+    }
+
+    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks})
 }
 
 // Update a Firestore list data
