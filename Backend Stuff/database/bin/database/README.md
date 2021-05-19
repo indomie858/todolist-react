@@ -105,16 +105,17 @@ Possible `fields` are:
 
 |     field     |   type    | required | notes                                                                  |
 | :-----------: | :-------: | :------: | ---------------------------------------------------------------------- |
-| task_name     | string    |   NO     | Not required in the payload                                            |
-| parent_id     | string    |   YES    | Must be given the id of the parent list, or the parent task if subtask |
+| task_name     | string    |   NO     | Not required in the *payload*                                          |
+| parent_id     | string    |   NO     | Not required in the *payload*                                          |
 | lock          | bool      |   NO     | default = false                                                        |
 | list          | string    |   NO     | list name                                                              |
 | date_due      | date      |   YES    | Must be given BEFORE end_repeat date, format: `01/02/2006 3:04:05 PM`  |
 | done          | bool      |   NO     | Whether or not it's done - default false                               |
-| repeating     | bool      |   NO     | default = `false`                                                      |
-| repeat        | string    |   NO     | default = `never`                                                      |
+| repeating     | bool      |   NO     | default = `false`  - autoset when given repeat                         |
+| repeat        | string    |   NO     | default = `never` example: `every week`                                |
 | end_repeat    | date      |   NO     | format: `01/02/2006`                                                   |
-| remind_type   | string    |   NO     | Type of reminder - `discord` or `email`                                |
+| discord       | bool      |   NO     | Whether or not discord was selected as a reminder                      |
+| email         | bool      |   NO     | Whether or not email was selected as a reminder                        |
 | reminder      | string    |   NO     | default = `false`                                                      |
 | priority      | string    |   NO     | default = `none`                                                       |
 | location      | string    |   NO     | default = ""                                                           |
