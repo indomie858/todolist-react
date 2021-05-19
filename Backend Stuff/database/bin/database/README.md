@@ -87,13 +87,18 @@ Possible `fields` are:
 
 |     field     |   type    | required | notes                                                                  |
 | :-----------: | :-------: | :------: | ---------------------------------------------------------------------- |
+| name          | string    |   NO     | Not required in the payload                                            |
 | parent_id     | string    |   YES    | Must be given the id of the parent list, or the parent task if subtask |
 | lock          | bool      |   NO     | default = false                                                        |
+| list          | string    |   NO     | list name                                                              |
 | date_due      | date      |   YES    | Must be given BEFORE end_repeat date, format: `01/02/2006 3:04:05 PM`  |
-| repeat        | string    |   NO     | default = "never"                                                      |
+| done          | bool      |   NO     | Whether or not it's done - default false                               |
+| repeating     | bool      |   NO     | default = false                                                        |
+| repeat        | string    |   NO     | default = `never`                                                      |
 | end_repeat    | date      |   NO     | format: `01/02/2006`                                                   |
+| remind_type   | string    |   NO     | Type of reminder - `discord` or `email`                                |
 | reminder      | string    |   NO     | default = false                                                        |
-| priority      | string    |   NO     | default = "none"                                                       |
+| priority      | string    |   NO     | default = `none`                                                       |
 | location      | string    |   NO     | default = ""                                                           |
 | description   | string    |   NO     | default = ""                                                           |
 | url           | string    |   NO     | default = ""                                                           |
