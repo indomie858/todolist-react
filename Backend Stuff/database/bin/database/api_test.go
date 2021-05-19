@@ -203,7 +203,7 @@ func TestGetUser(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Get User Response: %v\n",response)
+    fmt.Printf("Get User Response: %v\n",response)
 
     var m map[string]request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)

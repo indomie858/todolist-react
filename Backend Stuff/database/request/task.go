@@ -80,7 +80,8 @@ type Task struct {
     Remind      bool        `firestore:"remind"`
 
     // What type of reminder they want, discord or email
-    RemindType  string      `firestore:"remind_type,omitempty"`
+    Email       bool        `firestore:"email_selected"`
+    Discord     bool        `firestore:"discord_selected"`
 
     // Time frame before task to remind the user -- string
     // Similar to 'Alert' in Google Calendar
@@ -123,7 +124,7 @@ type TaskJSON struct {
     Id          string      `json:"id,omitempty"`
 
     // Name of the task
-    Name        string      `json:"task_name,omitempty"`
+    Name        string      `json:"text,omitempty"`
 
     // User ID of the user who owns this task
     Owner       string      `json:"task_owner,omitempty"`
@@ -138,16 +139,16 @@ type TaskJSON struct {
     List        string      `json:"list,omitempty"`
 
     // Date this task is due (includes the time it is due)
-    DateDue     time.Time   `json:"date_due,omitempty"`
+    DateDue     time.Time   `json:"date,omitempty"`
 
     // Whether or not the task is complete / finished
-    Done        bool        `json:"done"`
+    Done        bool        `json:"isComplete"`
 
     // Whether or not we should repeat this task, used for queries
-    Repeating   bool        `json:"repeating"`
+    Repeating   bool        `json:"willRepeat"`
 
     // The frequency of the repeat, if we are repeating
-    Repeat      string      `json:"repeat,omitempty"`
+    Repeat      string      `json:"repeatFrequency,omitempty"`
 
     // The date we should stop repeating this task
     EndRepeat   time.Time   `json:"end_repeat,omitempty"`
@@ -156,7 +157,8 @@ type TaskJSON struct {
     Remind      bool        `json:"remind"`
 
     // What type of reminder they want, discord or email
-    RemindType  string      `json:"remind_type,omitempty"`
+    Email       bool        `json:"emailSelected"`
+    Discord     bool        `json:"discordSelected"`
 
     // Time frame before task to remind the user -- string
     Reminder    string      `json:"reminder,omitempty"`
@@ -186,7 +188,7 @@ type TaskJSON struct {
     Subtask     bool        `json:"sub_task"`
 
     // IDs of assoociated Subtasks
-    Subtasks    []string    `json:"sub_tasks,omitempty"`
+    Subtasks    []string    `json:"subTasks,omitempty"`
 }
 
 // AddTask {{{
@@ -214,6 +216,8 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
     data["repeating"] = false
     data["repeat"] = NEVER
     data["remind"] = false
+    data["discord"] = false
+    data["email"] = false
     data["reminder"] = NONE
     data["priority"] = NONE
     data["location"] = ""
@@ -642,6 +646,9 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             // Unsure if we are even going to use this ..
             data[k], _ = strconv.ParseBool(val)
             break
+        case "list":
+            data[k] = val
+            break
         case "date_due":
             data[k], _ = time.Parse("01/02/2006 3:04:05 PM", val)
             break
@@ -711,8 +718,11 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             }
             data["remind"] = true
             break
-        case "remind_type":
-            data[k] = val
+        case "email":
+            data[k], _ = strconv.ParseBool(val)
+            break
+        case "discord":
+            data[k], _ = strconv.ParseBool(val)
             break
         case "priority":
             data[k] = val
@@ -759,7 +769,8 @@ func (r *Request) TaskToJSON() *TaskJSON {
     taskjson.Repeat      = r.Task.Repeat
     taskjson.EndRepeat   = r.Task.EndRepeat
     taskjson.Remind      = r.Task.Remind
-    taskjson.RemindType  = r.Task.RemindType
+    taskjson.Discord     = r.Task.Discord
+    taskjson.Email       = r.Task.Email
     taskjson.Reminder    = r.Task.Reminder
     taskjson.RemindTime  = r.Task.RemindTime
     taskjson.Priority    = r.Task.Priority
