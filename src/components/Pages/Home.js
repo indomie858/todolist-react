@@ -9,6 +9,7 @@ import ListNav from '../ListNav.js'
 import Options from '../Options.js'
 import Container from '@material-ui/core/Container';
 import { LensTwoTone } from '@material-ui/icons';
+import moment from 'moment'
 
 const Home = () => {
 
@@ -160,6 +161,10 @@ const Home = () => {
         parentId = id;
       }
     })
+
+    taskObject.date = moment(taskObject.date).format("MM/DD/YYYY h:MM:SS A")
+    taskObject.end_repeat = moment(taskObject.end_repeat).format("MM/DD/YYYY h:MM:SS A")
+    taskObject.reminder_time = moment(taskObject.reminder_time).format("MM/DD/YYYY h:MM:SS A")
 
     console.log(taskObject)
     fetch('http://localhost:3003/api/update/'+userId, {
