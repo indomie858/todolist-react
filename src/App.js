@@ -6,7 +6,7 @@ import Home from './components/Pages/Home';
 import Login from './components/login/Login';
 import useToken from './components/login/useToken';
 //import firebase from 'firebase/app';
-import firebase from "firebase";
+// import firebase from "firebase";
 //import { FirebaseAuthProvider, FirebaseAuthConsumer} from "@react-firebase/auth";
 
 

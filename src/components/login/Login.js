@@ -5,20 +5,22 @@ import PropTypes from 'prop-types';
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
 import firebase from "firebase";
+import { useHistory } from "react-router-dom";
+
 
 
 
 
 
 //passes user login info to backend
-async function loginUser(credentials) {
+async function loginUser(credentials, callback) {
     //logs in with firebase and gets credentials
-  let user
+  //let user
   firebase.auth().signInWithEmailAndPassword( credentials.username, credentials.password)
   .then((userCredential) => {
     // Signed in 
-    user = userCredential.user;
-
+    let user = userCredential.user;
+    callback(user);
     // ...
   })
   .catch((error) => {
@@ -29,7 +31,7 @@ async function loginUser(credentials) {
     // ..
   });
 
-  return user ? user:-1;
+  //return user ? user:null;
     
     // return fetch('http://localhost:3003/userLogin', {
     //     method: 'POST',
@@ -41,16 +43,54 @@ async function loginUser(credentials) {
     //     .then(data => data.json())
 }
 
+
+async function loginAppleUser(callback){
+
+  var provider = new firebase.auth.OAuthProvider('apple.com');
+
+  firebase
+    .auth()
+    .signInWithPopup(provider)
+    .then((result) => {
+      /** @type {firebase.auth.OAuthCredential} */
+      var credential = result.credential;
+
+      // The signed-in user info.
+      var user = result.user;
+
+      // You can also get the Apple OAuth Access and ID Tokens.
+      var accessToken = credential.accessToken;
+      var idToken = credential.idToken;
+
+      callback(user)
+      // ...
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+
+      // ...
+    });
+}
+
+
+
 //passes user registration info to backend
 //haven't done anything with this yet - gaven
-async function registerUser(credentials) {
+async function registerUser(credentials,callback) {
 
   let user
   firebase.auth().createUserWithEmailAndPassword(credentials.username, credentials.password)
   .then((userCredential) => {
     // Registered.  Maybe return user to sign in?
     user = userCredential.user;
-
+    callback(user)
+    
     // ...
   })
   .catch((error) => {
@@ -61,7 +101,6 @@ async function registerUser(credentials) {
     // ..
   });
   console.log(user)
-  return user ? user:-1;
 
     // return fetch('http://localhost:3003/userCreate', {
     //     method: 'POST',
@@ -83,6 +122,10 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
     //states for signup form
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const history = useHistory();
+    function returnLogin() {
+      history.push("/login");
+    }
 
     const getToken = () => {
       //tokens are stored locally so user doesn't have to keep logging in
@@ -100,9 +143,9 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
             username,
             password,
             isRegistered
-        });
-        setToken(token);
-        console.log(token);
+        }, (token) =>{ setToken(token); console.log(token)});
+        //setToken(token);
+        //console.log(token);
         //once token is set, home page renders
     }
 
@@ -118,9 +161,22 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
             firstName,
             lastName,
             isRegistered
-        });
-        setToken(token);
-        console.log(token);
+        },(user)=>{if (user){
+          user.displayName=firstName+" "+lastName;
+
+          firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            console.log("The User has been logged out.")
+            sessionStorage.setItem('token', "");
+            returnLogin();
+            setIsRegistered(true);
+          }).catch((error) => {
+            // An error happened.
+            console.log(error)
+          });
+        }});
+        // setToken(token);
+        // console.log(token);
         //once token is set, home page renders
     }
 
