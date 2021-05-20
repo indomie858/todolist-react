@@ -139,13 +139,15 @@ app.get('/api/userData/:id/list/:listID', (req, res) => {
 
 
 
-app.get('/api/update/:id', (req, res) => {
-  console.log(req.params.id)
-  let body = JSON.parse(req.body)
+app.post('/api/update/:uid', (req, res) => {
+
+  let body = req.body
+
   // getName(req.params.id,(name)=>{ //this is terrible and I hate it
   switch (body.update) {
     case 'userSettings':
       delete body.update //remove the update parameter to simplify object
+      console.log(body)
       updateAPIJSON(req.params.uid, body, (result) => {
         console.log(result)
         res.send(result)
@@ -202,6 +204,7 @@ function updateAPI(uid, parameters, queries, callback) {
   }
 
   url = url.substr(0, url.length - 1)
+  console.log(url)
   apiCall(url, (output) => {
     callback(output)
   })

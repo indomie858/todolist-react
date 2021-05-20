@@ -15,8 +15,8 @@ const App = ({ handleGoogleAuth }) => {
   const { setToken } = useToken();
 
   //comment out if connected to firebase auth
-  sessionStorage.setItem('token', 'cool token');
-  sessionStorage.setItem('email', 'test@gmail.com');
+  // sessionStorage.setItem('token', 'cool token');
+  // sessionStorage.setItem('email', 'test@gmail.com');
 
   return (
     <>

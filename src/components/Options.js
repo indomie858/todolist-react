@@ -43,7 +43,7 @@ async function setDefaultListGlobal(listValue){
                     body: JSON.stringify({
                         //pass in value of input text in body of request
                         update: 'userSettings',
-                        default_list: {listValue},
+                        default_list: listValue
                         
                     })
             

@@ -1,16 +1,25 @@
 {
     "version": "0.2.0",
-    "configurations": [
-    {
-        "name": "Launch api",
-        "type": "go",
-        "request": "launch",
-        "mode": "debug",
-        
-        
-        "program": "${workspaceFolder}/Backend Stuff/database/bin/database/api_server.go"
-    },
-       
+    "configurations": [{
+            "name": "Attach by Process ID",
+            "processId": "${command:PickProcess}",
+            "request": "attach",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "pwa-node"
+        },
+
+        {
+            "name": "Launch api",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+
+
+            "program": "${workspaceFolder}/Backend Stuff/database/bin/database/api_server.go"
+        },
+
         {
             "type": "node-terminal",
             "name": "Run Script: Node",
