@@ -100,8 +100,9 @@ const Home = () => {
     fetch(`http://localhost:3003/api/userData/${userId}`).then(
       data => data.text().then(
         value => {
-          const userData = JSON.parse(value);
-          const listsFromDb = userData.lists;
+          const userData = JSON.parse(value).result;
+          console.log(userData)
+          const listsFromDb = userData.Lists;
           var listNames = []; 
           listsFromDb.forEach(list => {
             listNames.push([list.list_name, list.id])
@@ -109,7 +110,7 @@ const Home = () => {
           console.log(listNames)
           setUserLists(listNames);
           let newTasks = []
-          userData.tasks[0].forEach(task => {
+          userData.AllTasks[0].forEach(task => {
             let parentList = null;
             listsFromDb.forEach(list => {
               if (list.id == task.parent_id) {
