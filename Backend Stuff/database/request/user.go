@@ -6,7 +6,7 @@ import (
     "strings"
     "strconv"
     "net/url"
-
+    "google.golang.org/api/iterator"
     "cloud.google.com/go/firestore"
 )
 
@@ -141,6 +141,44 @@ func (r *Request) GetUser() (*UserJSON, error) {
     ujson = r.UserToJSON()
     return ujson, nil
 } // }}}
+
+func (r *Request) GetAllUsers() ([]*UserJSON, error) {
+    var users []*UserJSON
+
+    // Get all tasks from Firestore where the owner is the requesting user and the parent is the same as the one provided
+    iter := r.Client.Collection("users").Documents(r.Ctx)
+
+    // For each document
+    for {
+        // Get a snapshot of the data
+        docsnap, err := iter.Next()
+
+        // Check if we're done with our loop
+        if err == iterator.Done {
+            break
+        }
+
+        // Check if we have some other error
+        if err != nil {
+            e := fmt.Sprintf("err getting snapshot of user data: %v", err)
+            return users, errors.New(e)
+        }
+
+        // create a new task struct
+        var user User
+
+        // Put doc data into our task structure
+        docsnap.DataTo(&user)
+
+        // Get & set the task ID
+        id := docsnap.Ref.ID
+        r.UserId = id
+        u, _ := r.GetUser()
+        users = append(users, u)
+    }
+
+    return users, nil
+}
 
 // func UpdateUser {{{
 //

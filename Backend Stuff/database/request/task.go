@@ -390,6 +390,49 @@ func (r *Request) GetTasks(parentid string) ([]*TaskJSON, error) {
     return tasks, nil
 } // }}}
 
+
+func (r *Request) GetRemindTasks() ([]*TaskJSON, error) {
+    var tasks []*TaskJSON
+
+    // Get all tasks from Firestore where the owner is the requesting user and the parent is the same as the one provided
+    iter := r.Client.Collection("tasks").Where("reminder_time", "<=", time.Now()).Documents(r.Ctx)
+
+    // For each document
+    for {
+        // Get a snapshot of the data
+        docsnap, err := iter.Next()
+
+        // Check if we're done with our loop
+        if err == iterator.Done {
+            break
+        }
+
+        // Check if we have some other error
+        if err != nil {
+            e := fmt.Sprintf("err getting snapshot of task data: %v", err)
+            return tasks, errors.New(e)
+        }
+
+        // create a new task struct
+        var task Task
+
+        // Put doc data into our task structure
+        docsnap.DataTo(&task)
+
+        // Get & set the task ID
+        id := docsnap.Ref.ID
+        task.Id = id
+        r.GetTaskByName(task.Name, task.Parent)
+
+        // Add task to the tasks array
+        if r.Task != nil {
+            tasks = append(tasks, r.TaskToJSON())
+        }
+    }
+
+    return tasks, nil
+}
+
 // func UpdateTask {{{
 //
 func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
