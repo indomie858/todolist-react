@@ -208,7 +208,6 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
     data["parent_id"] = parentid
     data["lock"] = false
     data["done"] = false
-    data["repeating"] = false
     data["repeat"] = NEVER
     data["remind"] = false
     data["discord"] = false
