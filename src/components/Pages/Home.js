@@ -166,7 +166,7 @@ const Home = () => {
                     body: JSON.stringify({
                         
                         update: 'taskSettings', 
-                        taskID: taskObject.id,
+                        taskId: taskObject.id,
                         date: taskObject.date,
                         discordSelected: taskObject.discordSelected,
                         emailSelected: taskObject.emailSelected,
