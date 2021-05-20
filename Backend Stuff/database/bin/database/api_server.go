@@ -691,6 +691,7 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
     // Get the payload params and display them to the terminal
     payload := r.URL.Query()
 
+    fmt.Printf("%v", r.Body)
     /*fmt.Println("\nPAYLOAD PARAMATERS")
     for k, v := range payload {
         s := fmt.Sprintf("%v => %v", k, v)
