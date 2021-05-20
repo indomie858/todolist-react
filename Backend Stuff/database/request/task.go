@@ -459,6 +459,10 @@ func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
         return tjson, errors.New(e)
     }
 
+    if data["task_name"] != nil {
+        return r.GetTaskByName(data["task_name"].(string), tjson.Parent)
+    }
+
     tjson, err = r.GetTaskByName(tjson.Name, tjson.Parent)
     return tjson, err
 } // }}}
@@ -665,10 +669,10 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
         // We want to check that the each key matches a field in
         // in the task to ensure we don't just add a bunch of new ones
         switch k {
-        case "task_name":
+        case "text":
             // I *probably* don't need to be checking this, cause it should
             // be passed to AddTask along with fields, not *in* fields
-            data[k] = val
+            data["task_name"] = val
             break
         case "parent_id":
             // parent_id can be either a list_id OR a task_id
@@ -681,14 +685,17 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
         case "list":
             data[k] = val
             break
-        case "date_due":
-            data[k], _ = time.Parse("01/02/2006 3:04:05 PM", val)
+        case "date":
+            data["date_due"], _ = time.Parse("01/02/2006 3:04:05 PM", val)
             break
         case "done":
             data[k], _ = strconv.ParseBool(val)
             break
-        case "repeat":
-            data[k] = val
+        case "willRepeat":
+            data["reapting"], _ = strconv.ParseBool(val)
+            break
+        case "repeatFrequency":
+            data["repeat"] = val
             if val != NEVER {
                 data["repeating"] = true
             }
@@ -750,11 +757,17 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             }
             data["remind"] = true
             break
-        case "email":
+        case "reminder_time":
+            data[k], _ = time.Parse("01/02/2006 3:04:05 PM", val)
+            break
+        case "remind":
             data[k], _ = strconv.ParseBool(val)
             break
-        case "discord":
-            data[k], _ = strconv.ParseBool(val)
+        case "emailSelected":
+            data["email"], _ = strconv.ParseBool(val)
+            break
+        case "discordSelected":
+            data["discord"], _ = strconv.ParseBool(val)
             break
         case "priority":
             data[k] = val
