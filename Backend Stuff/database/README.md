@@ -79,52 +79,53 @@ URL
 Return (new user)
 
 ```json
-"lists": [
-    {
-        "id": "364DgExvwpE4lNC7JV59",
-        "list_name": "first_list",
-        "list_owner": "gNMA6TlIOCdB52LPSuL5",
-        "shared_users": [
-            ""
+"result": {
+    "User": {
+        "id": "1jWLj4DAlZUcJFbXUUVS",
+        "name": "testing_user_1",
+        "lists": [
+            "dC4l2ZvwQSiU0bIviTcX"
         ],
-        "tasks": [
-            "MKEUu0LxHZtMOd6KfmsB"
-        ]
-    }
-],
-"tasks": [
-    [
+        "discord_reminder": false,
+        "email_reminder": false
+    },
+    "List": null,
+    "Lists": [
         {
-            "id": "MKEUu0LxHZtMOd6KfmsB",
-            "text": "first_task",
-            "task_owner": "gNMA6TlIOCdB52LPSuL5",
-            "parent_id": "364DgExvwpE4lNC7JV59",
-            "date": "0001-01-01T00:00:00Z",
-            "isComplete": false,
-            "willRepeat": false,
-            "repeatFrequency": "never",
-            "end_repeat": "0001-01-01T00:00:00Z",
-            "remind": false,
-            "emailSelected": false,
-            "discordSelected": false,
-            "reminder": "none",
-            "reminder_time": "0001-01-01T00:00:00Z",
-            "priority": "none",
-            "shared": false,
-            "sub_task": false
+            "id": "dC4l2ZvwQSiU0bIviTcX",
+            "list_name": "first_list",
+            "list_owner": "1jWLj4DAlZUcJFbXUUVS",
+            "shared_users": [
+                ""
+            ],
+            "tasks": [
+                "hYbQdEgjCNkeCECDhoCX"
+            ]
         }
-    ]
-],
-"user": {
-    "id": "gNMA6TlIOCdB52LPSuL5",
-    "name": "testing_user_1",
-    "name": "testing_user_1",
-    "email": "",
-    "status": "",
-    "default_list": "",
-    "default_reminder": "",
-    "lists": [
-        "364DgExvwpE4lNC7JV59"
+    ],
+    "Task": null,
+    "Tasks": null,
+    "AllTasks": [
+        [
+            {
+                "id": "hYbQdEgjCNkeCECDhoCX",
+                "text": "first_task",
+                "task_owner": "1jWLj4DAlZUcJFbXUUVS",
+                "parent_id": "dC4l2ZvwQSiU0bIviTcX",
+                "date": "0001-01-01T00:00:00Z",
+                "isComplete": false,
+                "willRepeat": false,
+                "repeatFrequency": "never",
+                "end_repeat": "0001-01-01T00:00:00Z",
+                "remind": false,
+                "emailSelected": false,
+                "discordSelected": false,
+                "reminder": "none",
+                "reminder_time": "0001-01-01T00:00:00Z",
+                "priority": "none",
+                "shared": false
+            }
+        ]
     ]
 }
 ```
@@ -477,6 +478,73 @@ Return (user)
         "364DgExvwpE4lNC7JV59",
         "fQksVGJzgTUc6FervXa4",
         "S02pAtwV1Fsc1o5DHbPn"
+    ]
+}
+```
+
+### Read All Users
+`http://localhost:10000/readusers`
+
+Return
+
+```json
+{
+    "users": [
+        {
+            "id": "MTREdIGdhUhoT5RyhlR7",
+            "name": "testing_user_1",
+            "lists": [
+                "haTzgO8uPAsXCAYLSrDH",
+                "ptbhy7C4xFiHmhYtm9EP",
+                "NtFDVgrb5JzMRaOKBLAW"
+            ],
+            "discord_reminder": false,
+            "email_reminder": false
+        },
+        {
+            "id": "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
+            "name": "max",
+            "lists": [
+                "NIcoux7atd3A8Lv7guUO",
+                "ahsdfhhf"
+            ],
+            "default_list": "Shared",
+            "discord_reminder": false,
+            "email_reminder": false
+        },
+        {
+            "id": "f9oXnGYUlUADNIDambFG",
+            "name": "testing_user_1",
+            "lists": [
+                "5rtFkYURIxBeil4NEdoM",
+                "hsHYrOZeeAAuIAOSWaLk",
+                "GDQ0gcEqqftU2iQdu3Ae"
+            ],
+            "discord_reminder": false,
+            "email_reminder": false
+        },
+        {
+            "id": "kF9VV9rep89BpjMcf1n0",
+            "name": "testing_user_1",
+            "lists": [
+                "u6krZBxi2eeJ1QcG6bWH",
+                "MEC7q1TSixOG4EJj1ApA",
+                "lSA8K6KXk98UbexyRNRz"
+            ],
+            "discord_reminder": false,
+            "email_reminder": false
+        },
+        {
+            "id": "mxYIIQrKBgZKIhdPKHmh",
+            "name": "testing_user_1",
+            "lists": [
+                "3l5v1uSc96RvBaTfuVjD",
+                "H3uam9oYWvyZPR5bzYxr",
+                "6R5c97TTTygB3hBFd32M"
+            ],
+            "discord_reminder": false,
+            "email_reminder": false
+        }
     ]
 }
 ```
