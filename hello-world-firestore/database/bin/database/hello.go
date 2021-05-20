@@ -1,7 +1,7 @@
 package main
 
 import (
-	"database/request"
+	"todolist-react/hello-world-firestore/database/request"
 
 	"fmt"
     "log"
@@ -114,7 +114,7 @@ func (a *App) getUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user})
+    respondWithJSON(w, http.StatusOK, map[string]*request.UserJSON{"user": user})
 }
 
 // Update a Firestore user data
@@ -157,7 +157,7 @@ func (a *App) updateUser(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user})
+    respondWithJSON(w, http.StatusOK, map[string]*request.UserJSON{"user": user})
 }
 
 
@@ -175,7 +175,7 @@ func (a *App) destroyUser(w http.ResponseWriter, r *http.Request) {
 	uid := vars["uid"]
 
     // Create a new request for the app
-    a.Request = a.Request.NewRequest("destroy", uid)
+    a.Request = request.NewRequest("destroy", uid)
 
     // Perform the requested action
     if err := a.Request.DestroyUser(); err != nil {
@@ -198,7 +198,7 @@ func (a *App) initializeRoutes() {
     a.Router.HandleFunc("/api/readUser/{uid}", a.getUser).Methods("GET", "POST")
 
     // Update function - has two variables, the user id and what their major is
-    a.Router.HandleFunc("/api/updateUser/{uid}/major/{major}", a.updateUser).Methods("GET", "PUT")
+    a.Router.HandleFunc("/api/updateUser/{uid}/major/{major}", a.updateUser).Methods("GET", "PUT", "POST")
 }
 
 func main() {

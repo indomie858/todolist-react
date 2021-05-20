@@ -1,7 +1,7 @@
 package main
 
 import (
-    "database/request"
+    "todolist-react/hello-world-firestore/database/request"
 
     "os"
     "fmt"
@@ -36,7 +36,7 @@ func TestCreateUser(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     fmt.Printf("New User Response: %v\n",response)
 
-    var m map[string]interface{}
+    var m map[string]*request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
     user := m["user"]
@@ -72,7 +72,7 @@ func TestGetUser(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     fmt.Printf("Get User Response: %v\n",response)
 
-    var m map[string]interface{}
+    var m map[string]*request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
     user := m["user"]
@@ -84,13 +84,13 @@ func TestGetUser(t *testing.T) {
         t.Errorf("Expected the last name to be set to '%s'. Got '%v' instead.", LN, user.LastName)
     }
 
-    if user.Major != nil {
+    if user.Major != "" {
         t.Errorf("Expected the major not to be set. Got '%v' instead.", user.Major)
     }
 }
 
 func TestUpdateUser(t *testing.T) {
-    url := fmt.Sprintf("api/updateUser/%s/major/%s", testuid, mj)
+    url := fmt.Sprintf("/api/updateUser/%s/major/%s", testuid, MJ)
     req, _ := http.NewRequest("GET", url, nil)
     fmt.Printf("Update Task Request: %v\n", req)
 
@@ -98,7 +98,33 @@ func TestUpdateUser(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     fmt.Printf("Update Task Response: %v\n",response)
 
-    var m map[string]interface{}
+    var m map[string]*request.UserJSON
+    json.Unmarshal(response.Body.Bytes(), &m)
+
+    user := m["user"]
+    if user.FirstName == "" || user.FirstName != FN {
+        t.Errorf("Expected the first name to be set to '%s'. Got '%v' instead.", FN, user.FirstName)
+    }
+
+    if user.LastName == "" || user.LastName != LN {
+        t.Errorf("Expected the last name to be set to '%s'. Got '%v' instead.", LN, user.LastName)
+    }
+
+    if user.Major != MJ {
+        t.Errorf("Expected the major to be set to '%s'. Got '%v' instead.", MJ, user.Major)
+    }
+}
+
+func TestGetUserAgain(t *testing.T) {
+    url := fmt.Sprintf("/api/readUser/%s", testuid)
+    req, _ := http.NewRequest("GET", url, nil)
+    fmt.Printf("Get User Request: %v\n", req)
+
+    response := executeRequest(req)
+    checkResponseCode(t, http.StatusOK, response.Code)
+    fmt.Printf("Get User Response: %v\n",response)
+
+    var m map[string]*request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
 
     user := m["user"]
@@ -115,35 +141,9 @@ func TestUpdateUser(t *testing.T) {
     }
 }
 
-func TestGetUser(t *testing.T) {
-    url := fmt.Sprintf("/api/readUser/%s", testuid)
-    req, _ := http.NewRequest("GET", url, nil)
-    fmt.Printf("Get User Request: %v\n", req)
-
-    response := executeRequest(req)
-    checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get User Response: %v\n",response)
-
-    var m map[string]interface{}
-    json.Unmarshal(response.Body.Bytes(), &m)
-
-    user := m["user"]
-    if user.FirstName != FN {
-        t.Errorf("Expected the first name to be set to '%s'. Got '%v' instead.", FN, user.FirstName)
-    }
-
-    if user.LastName != LN {
-        t.Errorf("Expected the last name to be set to '%s'. Got '%v' instead.", LN, user.LastName)
-    }
-
-    if user.Major != MJ {
-        t.Errorf("Expected the major to be set to '%s'. Got '%v' instead.", MJ, user.Name)
-    }
-}
-
 func TestDestroyUser(t *testing.T) {
     // delete the user
-    url := fmt.Sprintf("/destroy/%s", testuid)
+    url := fmt.Sprintf("/api/destroyUser/%s", testuid)
     req, _ := http.NewRequest("DELETE", url, nil)
     fmt.Printf("Destroy User Request: %v\n", req)
 

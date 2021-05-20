@@ -446,9 +446,9 @@ func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
     }
 
     // Make sure we're updating a task the user actually owns
-    if task.Owner != r.UserId {
+    if tjson.Owner != r.UserId {
         // If they don't own it, check if its shared with them
-        if task.SharedUsers == nil || !r.CheckIfShared(task.SharedUsers){
+        if tjson.SharedUsers == nil || !r.CheckIfShared(tjson.SharedUsers){
             return tjson, errors.New("err getting task: requestor does not have permission")
         }
     }

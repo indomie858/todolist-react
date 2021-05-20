@@ -11,19 +11,7 @@ import (
 )
 
 /*
-    http://localhost:10000/create/user/sabra
-    {"id":"hLVgv6QshC9NBhX9lisl","name":"sabra","lists":["flLMiIuYN2rRjNwweTJi"]}
-
-    http://localhost:10000/read/hLVgv6QshC9NBhX9lisl
-    {
-        "id": "hLVgv6QshC9NBhX9lisl",
-        "name": "sabra",
-        "lists": [
-            "flLMiIuYN2rRjNwweTJi"
-        ]
-    }
-
-    TESTS TO WRITE:\
+    TESTS TO WRITE:
     CREATE
     ~~TestCreateUser(t *testing.T)~~
     ~~TestCreateList(t *testing.T)~~
@@ -39,14 +27,14 @@ import (
     READ
     ~~TestGetUser(t *testing.T)~~
     ~~TestGetList(t *testing.T)~~
-    TestGetLists(t *testing.T)
-    TestGetTask(t *testing.T)
-    TestGetTasks(t *testing.T)
+    ~TestGetLists(t *testing.T)~
+    ~TestGetTask(t *testing.T)~
+    ~TestGetTasks(t *testing.T)~
 
     UPDATE
-    TestEditUser(t *testing.T)
+    ~TestEditUser(t *testing.T)~
     TestEditList(t *testing.T)
-    TestEditTask(t *testing.T)
+    ~TestEditTask(t *testing.T)~
 */
 
 var a App
@@ -146,7 +134,7 @@ func TestCreateListWithPayload(t *testing.T) {
 
 func TestCreateTaskWithPaylod(t *testing.T) {
     date_due := "01/02/2006 3:04:05 PM"
-    url := fmt.Sprintf("/create/%s/task/test_task_1/parent/%s?sub_task=false&lock=false&date_due=%s", testuid, testlid1, date_due)
+    url := fmt.Sprintf("/create/%s/task/test_task_1/parent/%s?sub_task=false&lock=false&date=%s", testuid, testlid1, date_due)
     req, _ := http.NewRequest("POST", url, nil)
     //fmt.Printf("Create Task with Payload Request: %v\n", req)
 
