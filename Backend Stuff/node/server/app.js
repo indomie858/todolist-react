@@ -131,7 +131,7 @@ app.get('/api/userData/:id/list/:listID', (req, res) => {
   console.log(req.params.id)
   readAPI(req.params.id, `/list/${req.params.listID}`, (result) => { //this is terrible and I hate it
     console.log(result)
-    res.send(JSON.stringify(result))
+    res.send((result))
   })
   // res.send(JSON.stringify(name.Name))
 

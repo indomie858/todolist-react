@@ -8,16 +8,19 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 
 const AddTask = (props) => {
 
+    const [userLists, setUserLists] = useState(props.userLists)
     const [taskValue, setTaskValue] = useState(props.text ? props.text : "");
     const [dateValue, setDateValue] = useState(props.date ? new Date(props.date) : new Date());
     const [listValue, setListValue] = useState(props.list ? props.list : "Main");
     const [willRepeat, setWillRepeat] = useState(props.willRepeat ? props.willRepeat : false);
     const [showTime, toggleShowTime] = useState(props.reminder ? props.reminder : false);
     const [time, setTime] = useState(props.date ? new Date(props.date) : new Date());
-    const [repeatFrequency, setRepeatFrequency] = useState(props.repeatFrequency ? props.repeatFrequency : "Every");
-    const [numDays, setNumDays] = useState(props.numDays ? props.numDays : 1);
+    const [repeatFrequency, setRepeatFrequency] = useState(props.repeatFrequency ? props.repeatFrequency : "Never");
     const [emailSelected, setEmailSelected] = useState(props.emailSelected ? props.emailSelected : props.defaultReminders['email']);
     const [discordSelected, setDiscordSelected] = useState(props.discordSelected !== undefined ? props.discordSelected : props.defaultReminders['discord']);
+    const [endDate, setEndDate] = useState(props.endRepeat ? new Date(props.endRepeat) : new Date());
+
+    console.log(userLists)
 
     return ( 
         <div>
@@ -34,13 +37,13 @@ const AddTask = (props) => {
                 {showTime && <MailOutlineIcon className={emailSelected ? "outlined icon" : "icon"} onClick={() => setEmailSelected(!emailSelected)}/>}
                 {showTime && <img alt="discord icon" className={discordSelected ? "discord outlined icon" : "discord icon"} onClick={() => setDiscordSelected(!discordSelected)} src={discordImage}/>}
                 {willRepeat && <RepeatPicker 
-                    isEvery={repeatFrequency} changeRepeats={(e) => setRepeatFrequency(e.target.value)}
-                    numDays={numDays} onChange={(e) => e.target.value > 0 ? setNumDays(e.target.value) : setNumDays(numDays)}/>}
+                    frequency={repeatFrequency} changeRepeats={(e) => setRepeatFrequency(e.target.value)} endDate={endDate}
+                    changeEndDate={setEndDate}/>}
                 <label className="addTaskInput">List: &nbsp;
                     <select value={listValue} onChange={(e) => setListValue(e.target.value)}>
-                        <option value="Main">Main</option>
-                        <option value="Shared">Shared</option>
-                        <option value="Other List">Other List</option>
+                        {userLists.map((name, id) => (
+                            <option value={name[0]} key={id[1]}>{name[0]}</option>
+                        ))}
                     </select>
                 </label>
                 <div className="addTaskInput">
