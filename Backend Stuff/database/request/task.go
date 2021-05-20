@@ -3,6 +3,7 @@ package request
 import (
     "time"
     "fmt"
+    //"regexp"
     "net/url"
     "errors"
     "strings"
@@ -792,7 +793,7 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             data[k] = val
             break
         case "sub_tasks":
-            arraychars := regexp.MustCompile(`[]"*`)
+        //    arraychars := regexp.MustCompile(`[]"*`)
             fmt.Printf("%t\n", v)
             //data[k] = v
             break
