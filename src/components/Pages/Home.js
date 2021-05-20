@@ -116,8 +116,8 @@ const Home = () => {
       {/* <Container maxWidth="xs"> */}
       <p>Welcome {email}</p>
       <div className="mainContainer">
-        {showAddTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{ "discord": true, "email": false }} />}
-        {showChangeTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{ "discord": true, "email": false }}
+        {showAddTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)}/>}
+        {showChangeTask && <AddTask onAdd={() => setAddTask(false)} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)}
           date={changingTask.date}
           text={changingTask.text}
           list={changingTask.list}
