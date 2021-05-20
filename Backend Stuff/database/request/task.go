@@ -202,6 +202,7 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
 
     // Let's set some default values real quick -
     var subtasks []string
+    subtasks = append(subtasks, "")
     data["task_owner"] = r.UserId
     data["task_name"] = name
     data["parent_id"] = parentid
@@ -840,7 +841,11 @@ func (r *Request) UpdateTaskSubtasks(taskid, id string) (*TaskJSON, error) {
     }
 
     // Add the new id to our subtask array
-    task.Subtasks = append(task.Subtasks, id)
+    if task.Subtasks[0] == "" {
+        task.Subtasks[0] = id
+    } else {
+        task.Subtasks = append(task.Subtasks, id)
+    }
 
     // Make a map of the new subtasks to send to Firestore
     d := make(map[string]interface{})
