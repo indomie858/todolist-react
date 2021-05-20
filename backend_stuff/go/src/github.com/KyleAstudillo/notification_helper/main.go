@@ -1,8 +1,7 @@
 package main
 
 import (
-  "fmt"
-  "github.com/KyleAstudillo/notification_helper"
+  "github.com/KyleAstudillo/notification_helper/notification_helper"
 )
 
 func main() {

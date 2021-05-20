@@ -184,11 +184,16 @@ const Home = () => {
                     if(response.status===404){
                         return "Error: 404"
                     }else{
+<<<<<<< HEAD
                         console.log(response)
                         console.log(typeof(response))
                         return response}
                 }).then(data=>{console.log(data); JSON.stringify(data)});
     refreshTasks();
+=======
+                        return response}
+                }).then(data=>JSON.stringify(data));
+>>>>>>> 8c21fe71cbbe928dc7d1b447aa1046a3a79f52bc
   }
 
   

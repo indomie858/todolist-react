@@ -144,7 +144,7 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
             username,
             password,
             isRegistered
-        }, (token) =>{ sessionStorage.setItem('token',JSON.stringify(token));setToken(token); console.log(token)});
+        }, (token) =>{ setToken(JSON.stringify(token)); console.log(token)});
         //setToken(token);
         //console.log(token);
         //once token is set, home page renders
