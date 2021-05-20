@@ -24,6 +24,7 @@ const AddTask = (props) => {
     const [endRepeat, setEndRepeat] = useState(props.endRepeat ? new Date(props.endRepeat) : new Date());
     const [showSubtasks, setShowSubtasks] = useState(false);
     const [subtaskValue, setSubtaskValue] = useState('');
+    const [subtaskArr, setSubtaskArr] = useState([]);
 
     return ( 
         <div>
@@ -76,12 +77,15 @@ const AddTask = (props) => {
                     </select>
                 </label>
                 <div>
-                    Subtask? &nbsp;
+                    Subtasks? &nbsp;
                     <input type="checkbox" 
                         checked={showSubtasks}
                         onChange={() => setShowSubtasks(!showSubtasks)}/> &nbsp;
                 </div>
-                {showSubtasks && <AddSubForm setSubtaskValue={setSubtaskValue} />}
+                <div className="subtaskSectionAdd">
+                    {showSubtasks && <AddSubForm setSubtaskValue={setSubtaskValue} subtaskValue=    {subtaskValue} subtaskArr={subtaskArr} setSubtaskArr={setSubtaskArr}/>}
+                    {(subtaskArr && showSubtasks) ? subtaskArr.map((subTask) => (<p>{subTask}</p>)) : ''}
+                </div>
                 <div className="addTaskInput">
                     <button className="addTaskInput addTaskButton" onClick={() => props.onAdd({
                         id: id,
