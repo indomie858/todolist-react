@@ -74,7 +74,7 @@ app.get('/api/:input', (req, res) => {
 
 app.get('/getTasks', (req, res) => {
   console.log("HIT /api/getTasks");
-  getTasks( (result) => { //this is terrible and I hate it
+  getTasks((result) => { //this is terrible and I hate it
 
     //console.log(result)
     var myresults = result["result"]["Tasks"]
@@ -166,11 +166,51 @@ app.get('/api/userData/:id/list/:listID', (req, res) => {
 })
 
 //http://localhost:10000/create/{uid}/task/{name}/parents/{pid}?<params>
-app.post('/api/create/:uid',(req,res)=>{
+app.post('/api/create/:uid', (req, res) => {
   let body = req.body
-  
+
+  switch (body.create) {
+    case 'user':
+      delete body.create //remove the update parameter to simplify object
+      console.log(body)
+      createAPIJSON(req.params.uid, body, (result) => {
+        console.log(result)
+        res.send(result)
+      })
+
+      break;
+    case 'listSettings':
+      // delete body.update //remove the update parameter to simplify object
+      // const listId = body.listId;
+      // delete body.listId;
+      // updateAPIJSON(req.params.uid + `/list/${body.listId}`, body, (result) => { //add /List/:ID to url
+      //   console.log(result)
+      //   res.send(result)
+      // })
+
+      break;
+    case 'task':
+      delete body.create //remove the update parameter to simplify object
+      const task_name = body.task_name;
+      const parentId = body.parentId;
+      delete body.task_name;
+      delete body.parentId;
+      updateAPIJSON(req.params.uid + `/task/${task_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
+        console.log(result)
+        res.send(result)
+      })
+
+      // http://localhost:10000/update/{uid}/task/{id}?
+
+      break;
+    default:
+      console.log('default case hit')
+  }
+
 
 })
+
+
 
 
 
@@ -229,7 +269,7 @@ app.get('/api/update/:uid/list/:list_id', (req, res) => {
 
 })
 
-
+//http://localhost:10000/create/{uid}/task/{name}/parents/{pid}?<params>
 function createAPIJSON(uid, json, callback) {
   var url = 'http://localhost:10000/create/' + uid + "?"
 
@@ -242,6 +282,7 @@ function createAPIJSON(uid, json, callback) {
     callback(output) //return output to the passed in callback function
   })
 }
+//
 
 function readAPI(uid, parameters, callback) {
   apiCall('http://localhost:10000/read/' + uid + parameters, (output) => {
