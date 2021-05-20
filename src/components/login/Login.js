@@ -4,36 +4,73 @@ import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import LoginForm from './LoginForm'
 import RegisterForm from './RegisterForm'
+import firebase from "firebase";
+
+
 
 
 
 //passes user login info to backend
-async function loginUser(credentials) {
-    //replace url with correct endpoint
-    return fetch('http://localhost:3003/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
+async function loginUser(credentials, callback) {
+    //logs in with firebase and gets credentials
+  //let user
+  firebase.auth().signInWithEmailAndPassword( credentials.username, credentials.password)
+  .then((userCredential) => {
+    // Signed in 
+    let user = userCredential.user;
+    callback(user);
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorCode)
+    console.log(errorMessage)
+    // ..
+  });
+
+  //return user ? user:null;
+    
+    // return fetch('http://localhost:3003/userLogin', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(credentials)
+    // })
+    //     .then(data => data.json())
 }
 
 //passes user registration info to backend
 //haven't done anything with this yet - gaven
 async function registerUser(credentials) {
-    //replace url with correct endpoint
 
+  let user
+  firebase.auth().createUserWithEmailAndPassword(credentials.username, credentials.password)
+  .then((userCredential) => {
+    // Registered.  Maybe return user to sign in?
+    user = userCredential.user;
 
-    return fetch('http://localhost:3003/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
+    // ...
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorCode)
+    console.log(errorMessage)
+    // ..
+  });
+  console.log(user)
+  return user ? user:null;
+
+    // return fetch('http://localhost:3003/userCreate', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(credentials)
+    // })
+    //     .then(data => data.json())
 }
 
 const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/ }) => {
@@ -63,9 +100,9 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
             username,
             password,
             isRegistered
-        });
-        setToken(token);
-        console.log(token);
+        }, (token) => setToken(token));
+        //setToken(token);
+        //console.log(token);
         //once token is set, home page renders
     }
 
@@ -130,7 +167,7 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
     if (isRegistered) {
         return (
             <>
-                <LoginForm handleSubmit={handleGoogleSignIn} setUsername={setUsername} setPassword={setPassword} setIsRegistered={setIsRegistered} />
+                <LoginForm handleSubmit={handleSubmitLogin} setUsername={setUsername} setPassword={setPassword} setIsRegistered={setIsRegistered} />
             </>
         )
     } else {

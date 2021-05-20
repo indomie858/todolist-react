@@ -6,16 +6,19 @@ import Home from './components/Pages/Home';
 import Login from './components/login/Login';
 import useToken from './components/login/useToken';
 //import firebase from 'firebase/app';
-import "firebase/auth";
+import firebase from "firebase";
 //import { FirebaseAuthProvider, FirebaseAuthConsumer} from "@react-firebase/auth";
+
+
+
 
 const App = ({ handleGoogleAuth }) => {
   //login token with custom hook:  /components/login/useToken
   const { setToken } = useToken();
 
-  //comment out if connected to firebase auth
-  sessionStorage.setItem('token', 'cool token');
-  sessionStorage.setItem('email', 'test@gmail.com');
+  // comment out if connected to firebase auth
+  // sessionStorage.setItem('token', 'cool token');
+  // sessionStorage.setItem('email', 'test@gmail.com');
 
   return (
     <>

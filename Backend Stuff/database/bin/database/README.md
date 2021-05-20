@@ -108,7 +108,7 @@ Possible `fields` are:
 | list_name     | string    |   NO     | Not required in the payload                                            |
 | list_owner    | string    |   YES    | Must be given the id of the parent list, or the parent task if subtask |
 | lock          | bool      |   NO     | default = false                                                        |
-| tasks         | []string  |   NO     | tasks in the list                                                      |
+| tasks         | []string  |   NO     | Tasks in the list                                                      |
 | shared        | bool      |   NO     | default = `false`                                                      |
 | shared_users  | []string  |   NO     | default = [""]                                                         |
 

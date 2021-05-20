@@ -11,14 +11,13 @@ import "firebase/auth";
 const {REACT_APP_API_KEY, REACT_APP_PROJECT_ID, REACT_APP_STORAGE_BUCKET, REACT_APP_AUTH_DOMAIN} = process.env;
 console.log(REACT_APP_PROJECT_ID);
 const config = {
-  apiKey: REACT_APP_API_KEY,
-  projectId: REACT_APP_PROJECT_ID,
-  appName: REACT_APP_PROJECT_ID,
-  databaseURL: "DATABASE_URL",
-  authDomain: REACT_APP_AUTH_DOMAIN,
-  // OPTIONAL
-  storageBucket: REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: "MESSAGING_SENDER_ID"
+  apiKey: "AIzaSyAHUKJNQj77dcxX0JeCrw1ZniwVZ52uwus",
+  authDomain: "friday-584.firebaseapp.com",
+  projectId: "friday-584",
+  storageBucket: "friday-584.appspot.com",
+  messagingSenderId: "748113457358",
+  appId: "1:748113457358:web:08e92a55354cecf740a09f",
+  measurementId: "G-2DC9L5VCCX"
 }
 
 firebase.initializeApp(config);

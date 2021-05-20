@@ -71,6 +71,7 @@ const AddTask = (props) => {
                 </label>
                 <div className="addTaskInput">
                     <button className="addTaskInput addTaskButton" onClick={props.onAdd}>Add</button>
+                    <button className="addTaskInput addTaskButton" onClick={props.onCancel}>Cancel</button>
                 </div>
             </div>
             <div className="popoverTag1 popoverRight1"></div>
