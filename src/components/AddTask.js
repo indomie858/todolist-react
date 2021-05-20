@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import DatePicker from 'react-date-picker';
 import TimePicker from 'react-time-picker';
 import RepeatPicker from "./RepeatPicker";
+import AddSubForm from "./AddSubForm"
 import discordImage from "./discord.png";
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 
@@ -18,6 +19,8 @@ const AddTask = (props) => {
     const [numDays, setNumDays] = useState(props.numDays ? props.numDays : 1);
     const [emailSelected, setEmailSelected] = useState(props.emailSelected ? props.emailSelected : props.defaultReminders['email']);
     const [discordSelected, setDiscordSelected] = useState(props.discordSelected !== undefined ? props.discordSelected : props.defaultReminders['discord']);
+    const [showSubtasks, setShowSubtasks] = useState(false);
+    const [subtaskValue, setSubtaskValue] = useState('');
 
     return ( 
         <div>
@@ -69,6 +72,13 @@ const AddTask = (props) => {
                         <option value="Other List">Other List</option>
                     </select>
                 </label>
+                <div>
+                    Subtask? &nbsp;
+                    <input type="checkbox" 
+                        checked={showSubtasks}
+                        onChange={() => setShowSubtasks(!showSubtasks)}/> &nbsp;
+                </div>
+                {showSubtasks && <AddSubForm setSubtaskValue={setSubtaskValue} />}
                 <div className="addTaskInput">
                     <button className="addTaskInput addTaskButton" onClick={props.onAdd}>Add</button>
                     <button className="addTaskInput addTaskButton" onClick={props.onCancel}>Cancel</button>
