@@ -351,6 +351,32 @@ func (a *App) getUser(w http.ResponseWriter, r *http.Request) {
     respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
+// Get all the tasks with reminders
+//
+// Example :
+// http://localhost:10000/readusers
+// http://localhost:10000/read/taskreminders
+func (a *App) getAllUsers(w http.ResponseWriter, r *http.Request) {
+    //fmt.Println("Endpoint Hit: updateUser")
+
+    // Read the variables passed
+    //vars := mux.Vars(r)
+    //uid := vars["uid"]
+    //now := vars["now"]
+
+    // Create a new request for the app
+    a.Request = request.NewRequest("read", "read_all_users")
+
+    users, err := a.Request.GetAllUsers()
+    if err != nil {
+        respondWithError(w, http.StatusBadRequest,  err.Error())
+        return
+    }
+
+    respondWithJSON(w, http.StatusOK, map[string][]*request.UserJSON{"users": users})
+
+}
+
 // Get a list from the Firstore database with the specified list name
 // that has an owner with the provided UID
 //
@@ -522,6 +548,34 @@ func (a *App) getTasks(w http.ResponseWriter, r *http.Request) {
     respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
+// Get all the tasks with reminders
+//
+// Example :
+// http://localhost:10000/readtaskreminders
+// http://localhost:10000/read/taskreminders
+func (a *App) getRemindTasks(w http.ResponseWriter, r *http.Request) {
+    //fmt.Println("Endpoint Hit: updateUser")
+
+    // Read the variables passed
+    //vars := mux.Vars(r)
+    //uid := vars["uid"]
+    //now := vars["now"]
+
+    // Create a new request for the app
+    a.Request = request.NewRequest("read", "reminder_read")
+
+    tasks, err := a.Request.GetRemindTasks()
+    if err != nil {
+        respondWithError(w, http.StatusBadRequest,  err.Error())
+        return
+    }
+
+    var res Result
+    res.Tasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
+}
+
 // Update a Firestore user data
 //
 // Example :
@@ -680,11 +734,13 @@ func (a *App) initializeRoutes() {
     a.Router.HandleFunc("/read/{uid}/shared_lists", a.getLists).Methods("GET", "POST")
     a.Router.HandleFunc("/read/{uid}/task/{id}", a.getTask).Methods("GET", "POST")
     a.Router.HandleFunc("/read/{uid}/tasks/{pid}", a.getTasks).Methods("GET", "POST")
+    a.Router.HandleFunc("/readtaskreminders", a.getRemindTasks).Methods("GET", "POST")
+    a.Router.HandleFunc("/readusers", a.getAllUsers).Methods("GET", "POST")
 
     // Update functions
-    a.Router.HandleFunc("/update/{uid}", a.updateUser).Methods("GET", "PUT")
-	a.Router.HandleFunc("/update/{uid}/list/{id}", a.updateList).Methods("GET", "PUT")
-	a.Router.HandleFunc("/update/{uid}/task/{id}", a.updateTask).Methods("GET", "PUT")
+    a.Router.HandleFunc("/update/{uid}", a.updateUser).Methods("GET", "PUT", "POST")
+	a.Router.HandleFunc("/update/{uid}/list/{id}", a.updateList).Methods("GET", "PUT", "POST")
+	a.Router.HandleFunc("/update/{uid}/task/{id}", a.updateTask).Methods("GET", "PUT", "POST")
 }
 
 func main() {
