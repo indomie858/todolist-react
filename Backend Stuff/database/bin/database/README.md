@@ -89,9 +89,9 @@ Possible `fields` are:
 | name             | string    |   NO     | Not required in the payload                                            |
 | email            | string    |   NO     | Users email that they signed up with                                   |
 | status           | string    |   NO     | Users status to be shown to friends *later feature*                    |
-| lists            | []string  |   NO     | the ids of the users lists                                             |
-| default_list     | string    |   NO     | the default list to add tasks to                                       |
-| default_reminder | string    |   NO     | the default reminder - email or discord                                |
+| lists            | []string  |   NO     | The ids of the users lists                                             |
+| default_list     | string    |   NO     | The default list to add tasks to                                       |
+| default_reminder | string    |   NO     | The default reminder - email or discord                                |
 
 
 
@@ -107,7 +107,7 @@ Possible `fields` are:
 | list_name     | string    |   NO     | Not required in the payload                                            |
 | list_owner    | string    |   YES    | Must be given the id of the parent list, or the parent task if subtask |
 | lock          | bool      |   NO     | default = false                                                        |
-| tasks         | []string  |   NO     | tasks in the list                                                      |
+| tasks         | []string  |   NO     | Tasks in the list                                                      |
 | shared        | bool      |   NO     | default = `false`                                                      |
 | shared_users  | []string  |   NO     | default = [""]                                                         |
 
