@@ -156,7 +156,9 @@ app.post('/api/update/:uid', (req, res) => {
       break;
     case 'listSettings':
       delete body.update //remove the update parameter to simplify object
-      updateAPIJSON(req.params.uid + `/List/${body.listID}`, body, (result) => { //add /List/:ID to url
+      const listId = body.listId;
+      delete body.listId;
+      updateAPIJSON(req.params.uid + `/list/${body.listId}`, body, (result) => { //add /List/:ID to url
         console.log(result)
         res.send(result)
       })
@@ -164,10 +166,14 @@ app.post('/api/update/:uid', (req, res) => {
       break;
     case 'taskSettings':
       delete body.update //remove the update parameter to simplify object
-      updateAPIJSON(req.params.uid + `/Task/${body.taskID}`, body, (result) => { //add /Task/:ID to url
+      const taskId = body.taskId;
+      delete body.taskId;
+      updateAPIJSON(req.params.uid + `/task/${taskId}`, body, (result) => { //add /Task/:ID to url
         console.log(result)
         res.send(result)
       })
+
+      // http://localhost:10000/update/{uid}/task/{id}?
 
       break;
     default:

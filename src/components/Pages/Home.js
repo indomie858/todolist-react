@@ -184,7 +184,7 @@ const Home = () => {
                     if(response.status===404){
                         return "Error: 404"
                     }else{
-                        return response.json()}
+                        return response}
                 }).then(data=>JSON.stringify(data));
   }
 
