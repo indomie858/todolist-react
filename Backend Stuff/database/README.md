@@ -230,7 +230,7 @@ URL
 Return (new task)
 
 ```json
-"result": {
+"task": {
     "id": "mOCohcha1i6sInCJPeEp",
     "text": "test_task_1",
     "task_owner": "gNMA6TlIOCdB52LPSuL5",
@@ -263,7 +263,7 @@ URL
 Return (task)
 
 ```json
-"result": {
+"task": {
     "id": "mOCohcha1i6sInCJPeEp",
     "text": "test_task_1",
     "task_owner": "gNMA6TlIOCdB52LPSuL5",
@@ -701,7 +701,7 @@ URL
 Return (task)
 
 ```json
-"result": {
+"task": {
     "id": "mOCohcha1i6sInCJPeEp",
     "text": "test_task_1",
     "task_owner": "gNMA6TlIOCdB52LPSuL5",
@@ -739,7 +739,7 @@ URL
 Return (all tasks in the list)
 
 ```json
-"result": [
+"tasks": [
     {
         "id": "D59h0RRGCtlidmgcxBG9",
         "text": "first_task",
@@ -829,7 +829,7 @@ URL
 Return (updated task)
 
 ```json
-"result": {
+"task": {
     "id": "jHExtupOREWA1CyHcEUX",
     "text": "test_task_1",
     "task_owner": "SFCCBJMyEA3NyBnCRe4j",

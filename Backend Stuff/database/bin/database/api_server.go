@@ -163,7 +163,7 @@ func (a *App) createTask(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"result": task})
+    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"task": task})
 }
 
 // Create a new sub task in the Firstore database with the provided name
@@ -200,7 +200,7 @@ func (a *App) createSubtask(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"result": task})
+    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"task": task})
 }
 
 // Remove a user from the Firstore database, specified by UID
@@ -440,7 +440,7 @@ func (a *App) getTask(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"result": task})
+    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"task": task})
 }
 
 // Returns all tasks in a given list that the user owns
@@ -466,7 +466,7 @@ func (a *App) getTasks(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string][]*request.TaskJSON{"result": tasks})
+    respondWithJSON(w, http.StatusOK, map[string][]*request.TaskJSON{"tasks": tasks})
 }
 
 // Update a Firestore user data
@@ -588,7 +588,7 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"result": task})
+    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"task": task})
 }
 
 func (a *App) initializeRoutes() {
