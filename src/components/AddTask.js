@@ -24,6 +24,8 @@ const AddTask = (props) => {
     const [endRepeat, setEndRepeat] = useState(props.endRepeat ? new Date(props.endRepeat) : new Date());
     const [showSubtasks, setShowSubtasks] = useState(false);
     const [subtaskValue, setSubtaskValue] = useState('');
+    
+    //array for subtasks to be pushed with new task
     const [subtaskArr, setSubtaskArr] = useState([]);
 
     return ( 
