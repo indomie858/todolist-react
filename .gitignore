@@ -4,7 +4,10 @@
 node_modules
 /.pnp
 .pnp.js
-friday-584-firebase-adminsdk.json
+go.sum
+**/friday-584-firebase-adminsdk.json
+**/variables_dev.sh
+**/credentials.json
 
 # testing
 /coverage
