@@ -291,8 +291,8 @@ func (r *Request) GetSharedLists() ([]*ListJSON, error) {
 
 // func UpdateList {{{
 //
-func (r *Request) UpdateList(name string, fields url.Values) (*ListJSON, error) {
-    ljson, err := r.GetListByName(name)
+func (r *Request) UpdateList(id string, fields url.Values) (*ListJSON, error) {
+    ljson, err := r.GetListByID(id)
     fmt.Printf("ljsn: %s\n", ljson)
     if err != nil {
         e := fmt.Sprintf("err getting list for update: %v", err)
@@ -325,7 +325,7 @@ func (r *Request) UpdateList(name string, fields url.Values) (*ListJSON, error) 
         ljson, err = r.GetListByName(data["list_name"].(string))
         return ljson, err
     }
-    ljson, err = r.GetListByName(name)
+    ljson, err = r.GetListByID(id)
     return ljson, err
 } // }}}
 
@@ -429,18 +429,25 @@ func ParseListFields(fields url.Values, data map[string]interface{}) map[string]
         val := strings.Join(v,"")
 
         // We want to check the key to ensure we don't just add a bunch of new fields
-        if k == "list_name" {
+        switch k {
+        case "list_name":
             data[k] = val
-        } else if k == "lock" {
+            break
+        case "lock":
             data[k], _ = strconv.ParseBool(val)
-        } else if k == "tasks" {
+            break
+        case "tasks":
             data[k] = v
-        } else if k == "list_owner" {
+            break
+        case "list_owner":
             data[k] = val
-        } else if k == "shared" {
+            break
+        case "shared":
             data[k], _ = strconv.ParseBool(val)
-        } else if k == "shared_users" {
+            break
+        case "shared_users":
             data[k] = v
+            break
         }
     }
     return data

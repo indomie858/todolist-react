@@ -2,11 +2,12 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Home from './components/Pages/Home';
+import Demo from './components/Pages/Demo';
 //import Preferences from './components/Pages/Preferences';
 import Login from './components/login/Login';
 import useToken from './components/login/useToken';
 //import firebase from 'firebase/app';
-import "firebase/auth";
+// import firebase from "firebase";
 //import { FirebaseAuthProvider, FirebaseAuthConsumer} from "@react-firebase/auth";
 
 const App = ({ handleGoogleAuth }) => {
@@ -36,6 +37,12 @@ const App = ({ handleGoogleAuth }) => {
               exact
               path="/"
               render={() => (<Home />)}
+            />
+            {/* for in class "Hello world demo" */}
+            <Route
+              exact
+              path="/demo"
+              render={() => (<Demo />)} 
             />
           </Switch>
         </Router>

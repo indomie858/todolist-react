@@ -64,7 +64,7 @@ app.get('/test1', (req, res) => {
 
 app.get('/api/:input', (req, res) => {
   if (req.params.input in jsonObject.users) {
-    res.send(JSON.stringify(jsonObject.users[req.params.input]))
+    res.send(jsonObject.users[req.params.input])
   } else {
     setCustomError(req, res, "Invalid API Reference. Please check the path again.", "Invalid API Reference", 404)
     res.render('error')
@@ -74,10 +74,10 @@ app.get('/api/:input', (req, res) => {
 
 app.get('/api/userData/:id', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (name) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //this is terrible and I hate it
 
-    console.log(name)
-    res.send(JSON.stringify(name))
+    console.log(result)
+    res.send(result)
   })
   // res.send(JSON.stringify(name.Name))
 
@@ -85,10 +85,10 @@ app.get('/api/userData/:id', (req, res) => {
 
 app.get('/api/userData/:id/name', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (name) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //this is terrible and I hate it
 
-    console.log(name)
-    res.send(JSON.stringify(name.Name))
+    console.log(result)
+    res.send(result.user.name)
   })
   // res.send(JSON.stringify(name.Name))
 
@@ -96,10 +96,10 @@ app.get('/api/userData/:id/name', (req, res) => {
 
 app.get('/api/userData/:id/email', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (name) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //this is terrible and I hate it
 
-    console.log(name)
-    res.send(JSON.stringify(name.Email))
+    console.log(result)
+    res.send(result.user.email)
   })
   // res.send(JSON.stringify(name.Name))
 
@@ -107,10 +107,10 @@ app.get('/api/userData/:id/email', (req, res) => {
 
 app.get('/api/userData/:id/status', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (name) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //this is terrible and I hate it
 
-    console.log(name)
-    res.send(JSON.stringify(name.Status))
+    console.log(result)
+    res.send(result.user.status)
   })
   // res.send(JSON.stringify(name.Name))
 
@@ -118,10 +118,10 @@ app.get('/api/userData/:id/status', (req, res) => {
 
 app.get('/api/userData/:id/lists', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (name) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //this is terrible and I hate it
 
-    console.log(name)
-    res.send(JSON.stringify(name.lists))
+    console.log(result)
+    res.send(result.lists)
   })
   // res.send(JSON.stringify(name.Name))
 
@@ -131,11 +131,13 @@ app.get('/api/userData/:id/list/:listID', (req, res) => {
   console.log(req.params.id)
   readAPI(req.params.id, `/list/${req.params.listID}`, (result) => { //this is terrible and I hate it
     console.log(result)
-    res.send((result))
+    res.send(result)
   })
   // res.send(JSON.stringify(name.Name))
 
 })
+
+
 
 app.get('/api/update/:id', (req, res) => {
   console.log(req.params.id)
@@ -143,15 +145,27 @@ app.get('/api/update/:id', (req, res) => {
   // getName(req.params.id,(name)=>{ //this is terrible and I hate it
   switch (body.update) {
     case 'userSettings':
-      updateAPIJSON(req.params.uid, )
+      delete body.update //remove the update parameter to simplify object
+      updateAPIJSON(req.params.uid, body, (result) => {
+        console.log(result)
+        res.send(result)
+      })
 
       break;
     case 'listSettings':
-      updateAPIJSON(req.params.uid + `/List/${body.listID}`, )
+      delete body.update //remove the update parameter to simplify object
+      updateAPIJSON(req.params.uid + `/List/${body.listID}`, body, (result) => { //add /List/:ID to url
+        console.log(result)
+        res.send(result)
+      })
 
       break;
     case 'taskSettings':
-      updateAPIJSON(req.params.uid + `/Task/${body.taskID}`, )
+      delete body.update //remove the update parameter to simplify object
+      updateAPIJSON(req.params.uid + `/Task/${body.taskID}`, body, (result) => { //add /Task/:ID to url
+        console.log(result)
+        res.send(result)
+      })
 
       break;
     default:
@@ -167,7 +181,7 @@ app.get('/api/update/:id', (req, res) => {
 app.get('/api/update/:uid/list/:list_id', (req, res) => {
   updateAPI(req.params.uid, `/list/${req.params.list_id}`, req.query, (output) => {
     console.log(output)
-    res.send(JSON.stringify(output))
+    res.send(output)
   })
 
 })
@@ -194,16 +208,16 @@ function updateAPI(uid, parameters, queries, callback) {
 }
 
 function updateAPIJSON(uid, json, callback) {
-  var url = 'http://localhost:10000/update/' + uid
+  var url = 'http://localhost:10000/update/' + uid + "?"
 
-  // for (const query in queries){
-  //   url+=query+"="+queries[query]+"&"
-  // }
+  for (const query in json) {
+    url += query + "=" + json[query] + "&"
+  }
 
-  // url = url.substr(0,url.length-1)
-  //   apiCall(url,(output)=>{
-  //     callback(output)
-  //   })
+  url = url.substr(0, url.length - 1)
+  apiCall(url, (output) => {
+    callback(output) //return output to the passed in callback function
+  })
 }
 
 function apiCall(url, callback) {

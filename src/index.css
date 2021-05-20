@@ -82,6 +82,22 @@ body {
   justify-content: space-between;
 }
 
+.templateInput {
+  padding: 5px;
+}
+
+.textInput {
+  padding: 2px;
+}
+
+.addSubForm {
+  display: flex;
+}
+
+.addSubForm input {
+  width: 9em;
+}
+
 .addTaskInput {
   margin: 10px;
   color: rgb(221, 221, 221);

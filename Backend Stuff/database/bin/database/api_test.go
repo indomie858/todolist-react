@@ -1,7 +1,6 @@
 package main
 
 import (
-    "database/request"
 
     "os"
     "fmt"
@@ -70,10 +69,11 @@ func TestCreateUser(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     //fmt.Printf("Create User Response: %v\n",response)
 
-    var m map[string]request.UserJSON
+    var m map[string]*Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    user := m["user"]
+    result := m["result"]
+    user := result.User
     testuid = user.Id
     if user.Name != "testing_user_1" {
         t.Errorf("Expected the name to be set to 'testing_user_1'. Got '%v' instead.", user.Name)
@@ -87,16 +87,20 @@ func TestCreateList(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create List Response: %v\n",response)
+    fmt.Printf("Create List Response: %v\n",response)
 
-    var m map[string]request.ListJSON
+    var m map[string]*Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    list := m["result"]
+    result := m["result"]
+
+    list := result.List
     testlid1 = list.Id
+
     if list.Name != "test_list_1" {
         t.Errorf("Expected the name to be set to 'test_list_1'. Got '%v' instead.", list.Name)
     }
+
 }
 
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
@@ -121,10 +125,11 @@ func TestCreateListWithPayload(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     //fmt.Printf("Create List with Payload Response: %v\n",response)
 
-    var m map[string]request.ListJSON
+    var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    list := m["result"]
+    result := m["result"]
+    list := result.List
     testlid2 = list.Id
     if list.Name != "test_list_2" {
         t.Errorf("Expected the name to be set to 'test_list_2'. Got '%v' instead.", list.Name)
@@ -149,10 +154,11 @@ func TestCreateTaskWithPaylod(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     //fmt.Printf("Create Task with Payload Response: %v\n",response)
 
-    var m map[string]request.TaskJSON
+    var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    task := m["result"]
+    result := m["result"]
+    task := result.Task
     testtid = task.Id
     if task.Name != "test_task_1" {
         t.Errorf("Expected the name to be set to 'test_task_1'. Got '%v' instead.", task.Name)
@@ -164,24 +170,22 @@ func TestCreateTaskWithPaylod(t *testing.T) {
     if task.Lock {
         t.Errorf("Expected lock field to be set to 'false'. Got '%v' instead.", task.Lock)
     }
-    if task.Subtask {
-        t.Errorf("Expected subtask field to be set to 'false'. Got '%v' instead.", task.Subtask)
-    }
 }
 
 func TestCreateSubTask(t *testing.T) {
     url := fmt.Sprintf("/create/%s/subtask/sub_task_1/parent/%s", testuid, testtid)
     req, _ := http.NewRequest("POST", url, nil)
-    fmt.Printf("Create Subtask Request: %v\n", req)
+    //fmt.Printf("Create Subtask Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create Subtask Response: %v\n",response)
+    //fmt.Printf("Create Subtask Response: %v\n",response)
 
-    var m map[string]request.TaskJSON
+    var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    task := m["result"]
+    result := m["result"]
+    task := result.Task
     teststid = task.Id
     if task.Subtasks[0] != "sub_task_1" {
         t.Errorf("Expected the name to be set to 'sub_task_1'. Got '%v' instead.", task.Name)
@@ -195,19 +199,20 @@ func TestGetUser(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get User Response: %v\n",response)
+    //fmt.Printf("Get User Response: %v\n",response)
 
-    var m map[string]request.UserJSON
+    var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    user := m["user"]
+    result := m["result"]
+    user := result.User
     if user.Name != "testing_user_1" {
         t.Errorf("Expected the name to be set to 'testing_user_1'. Got '%v' instead.", user.Name)
     }
 }
 
 func TestGetList(t *testing.T) {
-    url := fmt.Sprintf("/read/%s/list/test_list_1", testuid)
+    url := fmt.Sprintf("/read/%s/list/%s", testuid, testlid1)
     req, _ := http.NewRequest("GET", url, nil)
     //fmt.Printf("Get List Request: %v\n", req)
 
@@ -215,10 +220,11 @@ func TestGetList(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     //fmt.Printf("Get List Response: %v\n",response)
 
-    var m map[string]request.ListJSON
+    var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    list := m["result"]
+    result := m["result"]
+    list := result.List
     if list.Name != "test_list_1" {
         t.Errorf("Expected the name to be set to 'test_list_1'. Got '%v' instead.", list.Name)
     }
@@ -233,17 +239,18 @@ func TestGetLists(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     //fmt.Printf("Get Lists Response: %v\n",response)
 
-    var m map[string][]request.ListJSON
+    var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    lists := m["result"]
+    result := m["result"]
+    lists := result.Lists
     if len(lists) == 0 {
         t.Errorf("Expected data to be in result. Got '%v' instead.", lists)
     }
 }
 
 func TestGetTask(t *testing.T) {
-    url := fmt.Sprintf("/read/%s/task/test_task_1/parent/%s", testuid, testlid1)
+    url := fmt.Sprintf("/read/%s/task/%s", testuid, testtid)
     req, _ := http.NewRequest("GET", url, nil)
     //fmt.Printf("Get Task Request: %v\n", req)
 
@@ -251,10 +258,11 @@ func TestGetTask(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     //fmt.Printf("Get Task Response: %v\n",response)
 
-    var m map[string]request.TaskJSON
+    var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    task := m["result"]
+    result := m["result"]
+    task := result.Task
     if task.Name != "test_task_1" {
         t.Errorf("Expected the name to be set to 'test_task_1'. Got '%v' instead.", task.Name)
     }
@@ -265,7 +273,7 @@ func TestGetTask(t *testing.T) {
 }
 
 func TestUpdateTask(t *testing.T) {
-    url := fmt.Sprintf("/update/%s/task/test_task_1/parent/%s?done=true&remind_type=discord", testuid, testlid1)
+    url := fmt.Sprintf("/update/%s/task/%s?done=true&discord=true", testuid, testtid)
     req, _ := http.NewRequest("GET", url, nil)
     //fmt.Printf("Update Task Request: %v\n", req)
 
@@ -273,10 +281,11 @@ func TestUpdateTask(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     //fmt.Printf("Update Task Response: %v\n",response)
 
-    var m map[string]request.TaskJSON
+    var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    task := m["result"]
+    result := m["result"]
+    task := result.Task
     if task.Name != "test_task_1" {
         t.Errorf("Expected the name to be set to 'test_task_1'. Got '%v' instead.", task.Name)
     }
@@ -290,6 +299,26 @@ func TestUpdateTask(t *testing.T) {
     }
 }
 
+func TestUpdateUser(t *testing.T) {
+    url := fmt.Sprintf("/update/%s?discord_reminder=true", testuid)
+
+    req, _ := http.NewRequest("GET", url, nil)
+    fmt.Printf("Update Task Request: %v\n", req)
+
+    response := executeRequest(req)
+    checkResponseCode(t, http.StatusOK, response.Code)
+    fmt.Printf("Update Task Response: %v\n",response)
+
+    var m map[string]Result
+    json.Unmarshal(response.Body.Bytes(), &m)
+
+    result := m["result"]
+    user := result.User
+    if !user.DiscordReminder {
+        t.Errorf("Expected discord_reminder to be set to true. Got '%v' instead.", user.DiscordReminder)
+    }
+}
+
 func TestGetTasks(t *testing.T) {
     url := fmt.Sprintf("/read/%s/tasks/%s", testuid, testlid1)
     req, _ := http.NewRequest("GET", url, nil)
@@ -299,10 +328,11 @@ func TestGetTasks(t *testing.T) {
     checkResponseCode(t, http.StatusOK, response.Code)
     //fmt.Printf("Get Tasks Response: %v\n",response)
 
-    var m map[string][]request.TaskJSON
+    var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
-    tasks := m["result"]
+    result := m["result"]
+    tasks := result.Tasks
     if len(tasks) == 0 {
         t.Errorf("Expected data to be in result. Got '%v' instead.", tasks)
     }

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import DatePicker from 'react-date-picker';
 import TimePicker from 'react-time-picker';
 import RepeatPicker from "./RepeatPicker";
+import AddSubForm from "./AddSubForm"
 import discordImage from "./discord.png";
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 
@@ -9,6 +10,7 @@ import MailOutlineIcon from '@material-ui/icons/MailOutline';
 const AddTask = (props) => {
 
     const [userLists, setUserLists] = useState(props.userLists)
+    const [templateValue, setTemplateValue] = useState('');
     const [taskValue, setTaskValue] = useState(props.text ? props.text : "");
     const [dateValue, setDateValue] = useState(props.date ? new Date(props.date) : new Date());
     const [listValue, setListValue] = useState(props.list ? props.list : "Main");
@@ -21,17 +23,45 @@ const AddTask = (props) => {
     const [endDate, setEndDate] = useState(props.endRepeat ? new Date(props.endRepeat) : new Date());
 
     console.log(userLists)
+    const [showSubtasks, setShowSubtasks] = useState(false);
+    const [subtaskValue, setSubtaskValue] = useState('');
 
     return ( 
         <div>
             <div className="popover" >
                 <span>Add New Task:</span>
-                <input type="text" value={taskValue} onChange={(e) => setTaskValue(e.target.value)} autoFocus/>
+                <label className="templateInput">Template: &nbsp;
+                    <select value={templateValue} onChange={(e) => {
+                        //sorry for how nasty this select element is
+                        setTemplateValue(e.target.value);
+                        if (e.target.value !== ''){
+                            toggleShowTime(true);
+                            setTaskValue(e.target.value);
+                        } else {
+                            toggleShowTime(false);
+                            setTaskValue('');
+                        }                        
+                        }}>
+                        <option value=""></option>
+                        <option value="Study">Study</option>
+                        <option value="Clean Room">Clean Room</option>
+                        <option value="Do Laundry">Do Laundry</option>
+                        <option value="Buy Groceries">Buy Groceries</option>
+                        <option value="Relax">Relax</option>
+                    </select>
+                </label>
+                <input 
+                    className="textInput"
+                    type="text" 
+                    value={taskValue} 
+                    onChange={(e) => setTaskValue(e.target.value)} autoFocus/>
                 <DatePicker value={dateValue}  onChange={setDateValue} className="addTaskInput"/>
                 <div>Repeat? &nbsp;
                     <input type="checkbox" checked={willRepeat} onChange={() => setWillRepeat(!willRepeat)}/>&nbsp;
                     Remind? &nbsp;
-                    <input type="checkbox"checked={showTime} onChange={() => toggleShowTime(!showTime)}/>
+                    <input type="checkbox"
+                        checked={showTime} 
+                        onChange={() => toggleShowTime(!showTime)}/>
                 </div>
                 {showTime && <TimePicker onChange={setTime} value={time} className="addTaskInput" disableClock={true} clearIcon={null} clockIcon={null}/>}
                 {showTime && <MailOutlineIcon className={emailSelected ? "outlined icon" : "icon"} onClick={() => setEmailSelected(!emailSelected)}/>}
@@ -46,8 +76,16 @@ const AddTask = (props) => {
                         ))}
                     </select>
                 </label>
+                <div>
+                    Subtask? &nbsp;
+                    <input type="checkbox" 
+                        checked={showSubtasks}
+                        onChange={() => setShowSubtasks(!showSubtasks)}/> &nbsp;
+                </div>
+                {showSubtasks && <AddSubForm setSubtaskValue={setSubtaskValue} />}
                 <div className="addTaskInput">
                     <button className="addTaskInput addTaskButton" onClick={props.onAdd}>Add</button>
+                    <button className="addTaskInput addTaskButton" onClick={props.onCancel}>Cancel</button>
                 </div>
             </div>
             <div className="popoverTag1 popoverRight1"></div>

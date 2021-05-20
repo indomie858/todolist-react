@@ -13,6 +13,7 @@ import (
 
 type App struct {
     Router *mux.Router
+    Request *request.Request
 }
 
 // src: https://semaphoreci.com/community/tutorials/building-and-testing-a-rest-api-in-go-with-gorilla-mux-and-postgresql
@@ -43,6 +44,15 @@ func (a *App) homePage(w http.ResponseWriter, r *http.Request) {
 	//fmt.Printf("Endpoint Hit: homePage")
 }
 
+type Result struct {
+    User *request.UserJSON
+    List *request.ListJSON
+    Lists []*request.ListJSON
+    Task *request.TaskJSON
+    Tasks []*request.TaskJSON
+    AllTasks [][]*request.TaskJSON
+}
+
 // Create a new user in the Firstore database wih the provided name
 //
 // Example:
@@ -57,7 +67,7 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
 	name := vars["name"]
 
     // Create a new request for the app
-    req := request.NewRequest("create", uid)
+    a.Request = request.NewRequest("create", uid)
 
     // Get the payload params and display them to the terminal
 	payload := r.URL.Query()
@@ -69,31 +79,30 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Perform the requested action
-    user, err := req.AddUser(name, payload)
+    user, err := a.Request.AddUser(name, payload)
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, err.Error())
         return
     }
-    lists, err := req.GetLists()
+
+    lists, err := a.Request.GetLists()
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
 
     var tasks [][]*request.TaskJSON
-    var subtasks [][]*request.TaskJSON
     for _, list := range lists {
-        t, _ := req.GetTasks(list.Id)
+        t, _ := a.Request.GetTasks(list.Id)
         tasks = append(tasks, t)
-        for _, ts := range t {
-            if ts.Subtasks != nil {
-                st, _ := req.GetTasks(ts.Id)
-                subtasks = append(subtasks, st)
-            }
-        }
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks, "subtasks": subtasks})
+    var res Result
+    res.User = user
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Create a new list in the Firstore database with the provided name & params
@@ -113,7 +122,7 @@ func (a *App) createList(w http.ResponseWriter, r *http.Request) {
     //fmt.Printf("list_name: %v\n", listname)
 
     // Create a new request for the app
-    req := request.NewRequest("create", uid)
+    a.Request = request.NewRequest("create", uid)
 
     // Get the payload params and display them to the terminal
 	payload := r.URL.Query()
@@ -124,13 +133,19 @@ func (a *App) createList(w http.ResponseWriter, r *http.Request) {
         fmt.Printf("\n%v\n", s)
     }*/
 
-    list, err := req.AddList(listname, payload)
+    list, err := a.Request.AddList(listname, payload)
     // Perform the requested action
     if err != nil {
         respondWithError(w, http.StatusBadRequest, err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.ListJSON{"result": list})
+    tasks, _ := a.Request.GetTasks(list.Id)
+
+    var res Result
+    res.List = list
+    res.Tasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Create a new task in the Firstore database
@@ -151,7 +166,7 @@ func (a *App) createTask(w http.ResponseWriter, r *http.Request) {
     //fmt.Printf("task_name: %v", taskname)
 
     // Create a new request for the app
-    req := request.NewRequest("create", uid)
+    a.Request = request.NewRequest("create", uid)
 
     // Get the payload params and display them to the terminal
 	payload := r.URL.Query()
@@ -163,12 +178,16 @@ func (a *App) createTask(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Perform the requested action
-    task, err := req.AddTask(taskname, pid, payload)
+    task, err := a.Request.AddTask(taskname, pid, payload)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"result": task})
+
+    var res Result
+    res.Task = task
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Create a new sub task in the Firstore database with the provided name
@@ -187,7 +206,7 @@ func (a *App) createSubtask(w http.ResponseWriter, r *http.Request) {
     //fmt.Printf("task_name: %v", taskname)
 
     // Create a new request for the app
-    req := request.NewRequest("create", uid)
+    a.Request = request.NewRequest("create", uid)
 
     // Get the payload params and display them to the terminal
 	payload := r.URL.Query()
@@ -200,12 +219,16 @@ func (a *App) createSubtask(w http.ResponseWriter, r *http.Request) {
     payload.Add("sub_task", "true")
 
     // Perform the requested action
-    task, err := req.UpdateTaskSubtasks(pid, taskname)
+    task, err := a.Request.UpdateTaskSubtasks(pid, taskname)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"result": task})
+
+    var res Result
+    res.Task = task
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Remove a user from the Firstore database, specified by UID
@@ -222,10 +245,10 @@ func (a *App) destroyUser(w http.ResponseWriter, r *http.Request) {
 	uid := vars["uid"]
 
     // Create a new request for the app
-    req := request.NewRequest("destroy", uid)
+    a.Request = request.NewRequest("destroy", uid)
 
     // Perform the requested action
-    if err := req.DestroyUser(); err != nil {
+    if err := a.Request.DestroyUser(); err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
@@ -235,7 +258,7 @@ func (a *App) destroyUser(w http.ResponseWriter, r *http.Request) {
 // Remove a list from the Firstore database, specified by list name
 //
 // Example :
-// http://localhost:10000/destroy/{uid}/list/{name}
+// http://localhost:10000/destroy/{uid}/list/{id}
 // http://localhost:10000/destroy/MIUVfleqSkxAtzwNeW0W/list/first_list
 //
 // TODO: Add code to delete all tasks and subtasks
@@ -245,13 +268,13 @@ func (a *App) destroyList(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
 	vars := mux.Vars(r)
 	uid := vars["uid"]
-	name := vars["name"]
+	id := vars["id"]
 
     // Create a new request for the app
-    req := request.NewRequest("destroy", uid)
+    a.Request = request.NewRequest("destroy", uid)
 
     // Perform the requested action
-    if err := req.DestroyList(name); err != nil {
+    if err := a.Request.DestroyListById(id); err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
@@ -262,7 +285,7 @@ func (a *App) destroyList(w http.ResponseWriter, r *http.Request) {
 // AND parent_list id <-- TO DO
 //
 // Example :
-// http://localhost:10000/destroy/{uid}/task/{name}/parent/{pid}
+// http://localhost:10000/destroy/{uid}/task/{id}
 // http://localhost:10000/destroy/f9oXnGYUlUADNIDambFG/task/test_task_1/parent/hsHYrOZeeAAuIAOSWaLk/
 //
 // TODO: Add code to delete all sub tasks + to filter by parent id
@@ -272,24 +295,17 @@ func (a *App) destroyTask(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
 	vars := mux.Vars(r)
 	uid := vars["uid"]
-    pid := vars["pid"]
-	name := vars["name"]
+    id := vars["id"]
 
     // Create a new request for the app
-    req := request.NewRequest("destroy", uid)
+    a.Request = request.NewRequest("destroy", uid)
 
     // Perform the requested action
-    if err := req.DestroyTask(name, pid); err != nil {
+    if err := a.Request.DestroyTaskById(id); err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
     respondWithJSON(w, http.StatusOK, map[string]string{"result": "task successfully deleted"})
-}
-
-type Result struct {
-    user *request.UserJSON
-    lists []*request.ListJSON
-    tasks [][]*request.TaskJSON
 }
 
 // Get a user from the Firstore database with the specified UID
@@ -306,16 +322,16 @@ func (a *App) getUser(w http.ResponseWriter, r *http.Request) {
 	uid := vars["uid"]
 
     // Create a new request for the app
-    req := request.NewRequest("read", uid)
+    a.Request = request.NewRequest("read", uid)
 
     // Perform the requested action
-    user, err := req.GetUser()
+    user, err := a.Request.GetUser()
 	if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
 
-    lists, err := req.GetLists()
+    lists, err := a.Request.GetLists()
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
@@ -323,18 +339,23 @@ func (a *App) getUser(w http.ResponseWriter, r *http.Request) {
 
     var tasks [][]*request.TaskJSON
     for _, list := range lists {
-        t, _ := req.GetTasks(list.Id)
+        t, _ := a.Request.GetTasks(list.Id)
         tasks = append(tasks, t)
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks})
+    var res Result
+    res.User = user
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Get a list from the Firstore database with the specified list name
 // that has an owner with the provided UID
 //
 // Example :
-// http://localhost:10000/read/{uid}/list/{name}
+// http://localhost:10000/read/{uid}/list/{id}
 //
 func (a *App) getList(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("Endpoint Hit: getList")
@@ -342,18 +363,25 @@ func (a *App) getList(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
 	vars := mux.Vars(r)
 	uid := vars["uid"]
-	name := vars["name"]
+	id := vars["id"]
 
     // Create a new request for the app
-    req := request.NewRequest("read", uid)
+    a.Request = request.NewRequest("read", uid)
 
     // Perform the requested action
-    list, err := req.GetListByName(name)
+    list, err := a.Request.GetListByID(id)
 	if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.ListJSON{"result": list})
+
+    tasks, _ := a.Request.GetTasks(id)
+
+    var res Result
+    res.List = list
+    res.Tasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Get ALL lists from the Firstore database with that has an owner with
@@ -371,15 +399,26 @@ func (a *App) getLists(w http.ResponseWriter, r *http.Request) {
     uid := vars["uid"]
 
     // Create a new request for the app
-    req := request.NewRequest("read", uid)
+    a.Request = request.NewRequest("read", uid)
 
     // Perform the requested action
-    lists, err := req.GetLists()
+    lists, err := a.Request.GetLists()
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string][]*request.ListJSON{"result": lists})
+
+    var tasks [][]*request.TaskJSON
+    for _, list := range lists {
+        t, _ := a.Request.GetTasks(list.Id)
+        tasks = append(tasks, t)
+    }
+
+    var res Result
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Get ALL lists from the Firstore database that have been shared with
@@ -397,15 +436,25 @@ func (a *App) getSharedLists(w http.ResponseWriter, r *http.Request) {
     uid := vars["uid"]
 
     // Create a new request for the app
-    req := request.NewRequest("read", uid)
+    a.Request = request.NewRequest("read", uid)
 
     // Perform the requested action
-    lists, err := req.GetSharedLists()
+    lists, err := a.Request.GetSharedLists()
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string][]*request.ListJSON{"result": lists})
+    var tasks [][]*request.TaskJSON
+    for _, list := range lists {
+        t, _ := a.Request.GetTasks(list.Id)
+        tasks = append(tasks, t)
+    }
+
+    var res Result
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Get a task from the Firstore database with the specified task name
@@ -414,7 +463,7 @@ func (a *App) getSharedLists(w http.ResponseWriter, r *http.Request) {
 // in case user names a bunch of tasks the same thing just in diff. lists
 //
 // Example :
-// http://localhost:10000/read/{uid}/task/{name}/parent/{pid}
+// http://localhost:10000/read/{uid}/task/{id}
 // http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/task/task1/list/thgvhhcyresjc
 //
 func (a *App) getTask(w http.ResponseWriter, r *http.Request) {
@@ -423,27 +472,30 @@ func (a *App) getTask(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
     vars := mux.Vars(r)
     uid := vars["uid"]
-    pid := vars["pid"]
-    name := vars["name"]
+    id := vars["id"]
 
     // Create a new request for the app
-    req := request.NewRequest("read", uid)
+    a.Request = request.NewRequest("read", uid)
 
     // Perform the requested action
 
     // Return the task
-    task, err := req.GetTaskByName(name, pid)
+    task, err := a.Request.GetTaskByID(id)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"result": task})
+
+    var res Result
+    res.Task = task
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Returns all tasks in a given list that the user owns
 //
 // Example :
-// http://localhost:10000/read/{uid}/tasks/{parent_id}
+// http://localhost:10000/read/{uid}/tasks/{pid}
 // http://localhost:10000/read/a3a1hWUx5geKB8qeR6fbk5LZZGI2/tasks/NIcoux7atd3A8Lv7guUO
 //
 func (a *App) getTasks(w http.ResponseWriter, r *http.Request) {
@@ -452,18 +504,22 @@ func (a *App) getTasks(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
     vars := mux.Vars(r)
     uid := vars["uid"]
-    parent := vars["parent_id"]
+    parent := vars["pid"]
 
     // Create a new request for the app
-    req := request.NewRequest("read", uid)
+    a.Request = request.NewRequest("read", uid)
 
     // Perform the requested action
-    tasks, err := req.GetTasks(parent)
+    tasks, err := a.Request.GetTasks(parent)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string][]*request.TaskJSON{"result": tasks})
+
+    var res Result
+    res.Tasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Update a Firestore user data
@@ -489,17 +545,17 @@ func (a *App) updateUser(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Create a new request for the app
-    req := request.NewRequest("update", uid)
+    a.Request = request.NewRequest("update", uid)
 
     // Perform the requested action
-    req.GetUser()
-    user, err := req.UpdateUser(payload)
+    a.Request.GetUser()
+    user, err := a.Request.UpdateUser(payload)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
 
-    lists, err := req.GetLists()
+    lists, err := a.Request.GetLists()
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
@@ -507,17 +563,22 @@ func (a *App) updateUser(w http.ResponseWriter, r *http.Request) {
 
     var tasks [][]*request.TaskJSON
     for _, list := range lists {
-        t, _ := req.GetTasks(list.Id)
+        t, _ := a.Request.GetTasks(list.Id)
         tasks = append(tasks, t)
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks})
+    var res Result
+    res.User = user
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Update a Firestore list data
 //
 // Example :
-// http://localhost:10000/update/{uid}/list/{name}?<params>
+// http://localhost:10000/update/{uid}/list/{id}?<params>
 // http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/isolated_test_list?list_name=updated_isolated_list&lock=false&shared=true
 //
 func (a *App) updateList(w http.ResponseWriter, r *http.Request) {
@@ -526,7 +587,7 @@ func (a *App) updateList(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
     vars := mux.Vars(r)
     uid := vars["uid"]
-    listname := vars["name"]
+    id := vars["id"]
     //fmt.Printf("listname: %v\n", listname)
 
     // Get the payload params and display them to the terminal
@@ -539,21 +600,28 @@ func (a *App) updateList(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Create a new request for the app
-    req := request.NewRequest("update", uid)
+    a.Request = request.NewRequest("update", uid)
 
     // Perform the requested action
-    list, err := req.UpdateList(listname, payload)
+    list, err := a.Request.UpdateList(id, payload)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.ListJSON{"result": list})
+
+    tasks, _ := a.Request.GetTasks(id)
+
+    var res Result
+    res.List = list
+    res.Tasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Update a Firestore task data
 //
 // Example :
-// http://localhost:10000/update/{uid}/task/{name}/parent/{pid}?<params>
+// http://localhost:10000/update/{uid}/task/{id}?<params>
 //
 func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
     //fmt.Println("Endpoint Hit: updateTask")
@@ -561,8 +629,7 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
     // Read the variables passed
     vars := mux.Vars(r)
     uid := vars["uid"]
-    pid := vars["pid"]
-    taskname := vars["name"]
+    id := vars["id"]
     //fmt.Printf("taskname: %v\n", taskname)
 
     // Get the payload params and display them to the terminal
@@ -575,15 +642,19 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Create a new request for the app
-    req := request.NewRequest("update", uid)
+    a.Request = request.NewRequest("update", uid)
 
     // Perform the requested action
-    task, err := req.UpdateTask(taskname, pid, payload)
+    task, err := a.Request.UpdateTask(id, payload)
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"result": task})
+
+    var res Result
+    res.Task = task
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 func (a *App) initializeRoutes() {
@@ -598,22 +669,22 @@ func (a *App) initializeRoutes() {
     // Destroy functions
     // We can use one for destroying both tasks and subtasks due to requiring the parent id
 	a.Router.HandleFunc("/destroy/{uid}", a.destroyUser).Methods("GET","DELETE")
-	a.Router.HandleFunc("/destroy/{uid}/list/{name}", a.destroyList).Methods("GET", "DELETE")
+    a.Router.HandleFunc("/destroy/{uid}/list/{id}", a.destroyList).Methods("GET", "DELETE")
     a.Router.HandleFunc("/destroy/{uid}/task/{name}/parent/{pid}", a.destroyTask).Methods("GET", "DELETE")
 
     // Read functions
     // Only one for tasks & subtaks, as we get both using just the parent id, not user id
     a.Router.HandleFunc("/read/{uid}", a.getUser).Methods("GET", "POST")
-    a.Router.HandleFunc("/read/{uid}/list/{name}", a.getList).Methods("GET", "POST")
+    a.Router.HandleFunc("/read/{uid}/list/{id}", a.getList).Methods("GET", "POST")
     a.Router.HandleFunc("/read/{uid}/lists", a.getLists).Methods("GET", "POST")
     a.Router.HandleFunc("/read/{uid}/shared_lists", a.getLists).Methods("GET", "POST")
-    a.Router.HandleFunc("/read/{uid}/task/{name}/parent/{pid}", a.getTask).Methods("GET", "POST")
-    a.Router.HandleFunc("/read/{uid}/tasks/{parent_id}", a.getTasks).Methods("GET", "POST")
+    a.Router.HandleFunc("/read/{uid}/task/{id}", a.getTask).Methods("GET", "POST")
+    a.Router.HandleFunc("/read/{uid}/tasks/{pid}", a.getTasks).Methods("GET", "POST")
 
     // Update functions
     a.Router.HandleFunc("/update/{uid}", a.updateUser).Methods("GET", "PUT")
-	a.Router.HandleFunc("/update/{uid}/list/{name}", a.updateList).Methods("GET", "PUT")
-	a.Router.HandleFunc("/update/{uid}/task/{name}/parent/{pid}", a.updateTask).Methods("GET", "PUT")
+	a.Router.HandleFunc("/update/{uid}/list/{id}", a.updateList).Methods("GET", "PUT")
+	a.Router.HandleFunc("/update/{uid}/task/{id}", a.updateTask).Methods("GET", "PUT")
 }
 
 func main() {

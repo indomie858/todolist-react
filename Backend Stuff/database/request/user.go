@@ -4,6 +4,7 @@ import (
     "fmt"
     "errors"
     "strings"
+    "strconv"
     "net/url"
 
     "cloud.google.com/go/firestore"
@@ -18,42 +19,50 @@ const (
 // Structure for user data
 type User struct {
     // Firestore generated user ID
-    Id     string   `firestore:"id,omitempty"`
+    Id              string   `firestore:"id,omitempty"`
 
     // Name of the user
-    Name   string   `firestore:"name,omitempty"`
+    Name            string   `firestore:"name,omitempty"`
 
     // Email of the user -- could possibly be an array if desired
-    Email  string   `firestore:"email,omitempty"`
+    Email           string   `firestore:"email,omitempty"`
 
     // Status to show other users
-    Status string   `firestore:"status,omitempty"`
+    Status          string   `firestore:"status,omitempty"`
 
     // Array of list ids
-    Lists  []string `firestore:"lists,omitempty"`
+    Lists           []string `firestore:"lists,omitempty"`
 
-    // Client settings
-    Settings string `firestore:"settings,omitempty"`
+    // Default list for the user
+    DefaultList     string   `firestore:"default_list,omitempty"`
+
+    // Default reminder for the user
+    DiscordReminder bool     `firestore:"discord_reminder"`
+    EmailReminder   bool     `firestore:"email_reminder"`
 }
 
 type UserJSON struct {
     // Firestore generated user ID
-    Id     string   `json:"id,omitempty"`
+    Id              string   `json:"id,omitempty"`
 
     // Name of the user
-    Name   string   `json:"name,omitempty"`
+    Name            string   `json:"name,omitempty"`
 
     // Email of the user -- could possibly be an array if desired
-    Email  string   `json:"email,omitempty"`
+    Email           string   `json:"email,omitempty"`
 
     // Status to show other users
-    Status string   `json:"status,omitempty"`
+    Status          string   `json:"status,omitempty"`
 
     // Array of list ids
-    Lists  []string `json:"lists,omitempty"`
+    Lists           []string `json:"lists,omitempty"`
 
-    // Client settings
-    Settings string `json:"settings,omitempty"`
+    // Default list for the user
+    DefaultList     string   `json:"default_list,omitempty"`
+
+    // Default reminder for the user
+    DiscordReminder bool     `json:"discord_reminder"`
+    EmailReminder   bool     `json:"email_reminder"`
 }
 
 // func AddUser {{{
@@ -196,12 +205,28 @@ func ParseUserFields(fields url.Values) map[string]interface{} {
         val := strings.Join(v, "")
 
         // We want to check the key to ensure we don't just add a bunch of new fields
-        if k == "lists" {
-            data[k] = v
-        } else if k == "tasks" {
-            data[k] = v
-        } else if k == "name" {
+        switch k {
+        case "name":
             data[k] = val
+            break
+        case "email":
+            data[k] = val
+            break
+        case "status":
+            data[k] = val
+            break
+        case "lists":
+            data[k] = v
+            break
+        case "default_list":
+            data[k] = val
+            break
+        case "discord_reminder":
+            data[k], _ = strconv.ParseBool(val)
+            break
+        case "email_reminder":
+            data[k], _ = strconv.ParseBool(val)
+            break
         }
     }
 
@@ -213,12 +238,14 @@ func ParseUserFields(fields url.Values) map[string]interface{} {
 func (r *Request) UserToJSON() *UserJSON {
     var userjson UserJSON
 
-    userjson.Id       = r.User.Id
-    userjson.Name     = r.User.Name
-    userjson.Email    = r.User.Email
-    userjson.Status   = r.User.Status
-    userjson.Lists    = r.User.Lists
-    userjson.Settings = r.User.Settings
+    userjson.Id              = r.User.Id
+    userjson.Name            = r.User.Name
+    userjson.Email           = r.User.Email
+    userjson.Status          = r.User.Status
+    userjson.Lists           = r.User.Lists
+    userjson.DefaultList     = r.User.DefaultList
+    userjson.DiscordReminder = r.User.DiscordReminder
+    userjson.EmailReminder   = r.User.EmailReminder
 
     return &userjson
 } // }}}
