@@ -459,12 +459,8 @@ func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
         return tjson, errors.New(e)
     }
 
-    if data["task_name"] != nil {
-        tjson, err = r.GetTaskByName(data["task_name"].(string), tjson.Parent)
-        return tjson, err
-    }
-
-    return r.GetTaskByID(id)
+    tjson, err = r.GetTaskByName(tjson.Name, tjson.Parent)
+    return tjson, err
 } // }}}
 
 // func DestroyTasks {{{
