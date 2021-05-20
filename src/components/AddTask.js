@@ -26,7 +26,7 @@ const AddTask = (props) => {
     const [subtaskValue, setSubtaskValue] = useState('');
     
     //array for subtasks to be pushed with new task
-    const [subtaskArr, setSubtaskArr] = useState([]);
+    const [subtaskArr, setSubtaskArr] = useState(props.subtasks ? props.subtasks : []);
 
     return ( 
         <div>
