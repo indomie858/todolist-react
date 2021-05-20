@@ -37,7 +37,7 @@ const Options = (props) => {
     // const logOut = logOut();
 
     const logOut = () => {
-        
+
     }
 
     return ( 
@@ -63,7 +63,7 @@ const Options = (props) => {
                     </div>
                 <div className="listHeader">Account Options:</div>
                     <div className="optionsOption">
-                        <button onClick={logOut} >Reset Password</button>
+                        <button className="addTaskButton addTaskInput" onClick={logOut} >Reset Password</button>
                     </div>
             </div>
             <div className="popoverTag1 popoverCenter1"></div>
