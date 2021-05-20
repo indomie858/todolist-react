@@ -9,6 +9,7 @@ import ListNav from '../ListNav.js'
 import Options from '../Options.js'
 import Container from '@material-ui/core/Container';
 import { LensTwoTone } from '@material-ui/icons';
+import moment from 'moment'
 
 const Home = () => {
 
@@ -95,12 +96,17 @@ const Home = () => {
   const [userLists, setUserLists] = useState([]);
   const [discordDefault, setDiscordDefault] = useState(false);
   const [emailDefault, setEmailDefault] = useState(false);
+  const [defaultList, setDefaultList] = useState("Main");
 
   function refreshTasks() {
     fetch(`http://localhost:3003/api/userData/${userId}`).then(
       data => data.text().then(
         value => {
           const userData = JSON.parse(value).result;
+          console.log(userData.User)
+          setDefaultList(userData.User.default_list)
+          setDiscordDefault(userData.User.discord_reminder)
+          setEmailDefault(userData.User.email_reminder)
           const listsFromDb = userData.Lists;
           let listNames = []; 
           listsFromDb.forEach(list => {
@@ -156,7 +162,11 @@ const Home = () => {
       }
     })
 
-    // console.log(taskObject)
+    taskObject.date = moment(taskObject.date).format("MM/DD/YYYY h:MM:SS A")
+    taskObject.end_repeat = moment(taskObject.end_repeat).format("MM/DD/YYYY h:MM:SS A")
+    taskObject.reminder_time = moment(taskObject.reminder_time).format("MM/DD/YYYY h:MM:SS A")
+
+    console.log(taskObject)
     fetch('http://localhost:3003/api/update/'+userId, {
                     method: 'POST',
                     headers: {
@@ -184,11 +194,9 @@ const Home = () => {
                     if(response.status===404){
                         return "Error: 404"
                     }else{
-                        console.log(response)
-                        console.log(typeof(response))
-                        return response}
-                }).then(data=>{console.log(data); JSON.stringify(data)});
-    refreshTasks();
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
 
   
@@ -208,9 +216,10 @@ const Home = () => {
           repeatFrequency={changingTask.repeatFrequency}
           emailSelected={changingTask.emailSelected}
           discordSelected={changingTask.discordSelected}
+          subtasks={changingTask.subTasks}
         />}
         {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main List" }, { name: "Some Shared List" }, { name: "Some Other List" }]} />}
-        {showOptions && <Options defaultList={"Shared"} defaultReminders={{ "discord": true, "email": false }} />}
+        {showOptions && <Options userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}

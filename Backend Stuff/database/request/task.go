@@ -233,7 +233,7 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
         return tjson, errors.New(e)
     }
 
-    if name != "first_task" {
+    if name != "First Task !" {
         r.UpdateListTasks(data["parent_id"].(string), ref.ID)
     }
 
@@ -468,7 +468,8 @@ func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
     }
 
     if data["task_name"] != nil {
-        return r.GetTaskByName(data["task_name"].(string), tjson.Parent)
+        tjson, err = r.GetTaskByName(data["task_name"].(string), tjson.Parent)
+        return tjson, err
     }
 
     tjson, err = r.GetTaskByName(tjson.Name, tjson.Parent)
@@ -700,14 +701,10 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             data[k], _ = strconv.ParseBool(val)
             break
         case "willrepeat":
-            data["reapting"], _ = strconv.ParseBool(val)
+            data["repeating"], _ = strconv.ParseBool(val)
             break
         case "repeatfrequency":
             data["repeat"] = val
-            if val != NEVER {
-                data["repeating"] = true
-            }
-            // Need function to update date_due at the repeat interval
             break
         case "end_repeat":
             data[k], _ = time.Parse("01/02/2006", val)
@@ -723,13 +720,13 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             if len(reminder) == 4 {
                 // Only way this could be the case is if it's "At time of event"
                 data["reminder"] = ATOE
-                data["reminder_time"] = data["date_due"]
-                data["remind"] = true
+                //data["reminder_time"] = data["date_due"]
+                //data["remind"] = true
                 break
             }
 
             // So reminder must be some time before the event
-            timeBefore, _ := strconv.Atoi(reminder[0])
+            //timeBefore, _ := strconv.Atoi(reminder[0])
 
             // Let's determine if it's minutes, days, or weeks before
             // which is indicated by the second word in the reminder
@@ -739,31 +736,31 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             i := interval[0]
             if i == 'd' {
                 data["reminder"] = reminder[0] + DBE
-                var remindTime time.Time
+                /*var remindTime time.Time
                 due := data["date_due"].(time.Time)
 
                 remindTime = due.AddDate(0, 0, -timeBefore)
-                data["reminder_time"] = remindTime
+                data["reminder_time"] = remindTime*/
             }
 
             if i == 'm' {
                 data["reminder"] = reminder[0] + MBE
-                var remindTime time.Time
+                /*var remindTime time.Time
                 due := data["date_due"].(time.Time)
                 var before time.Duration
                 before = time.Duration(timeBefore)
                 remindTime = due.Add(-before * time.Minute)
-                data["reminder_time"] = remindTime
+                data["reminder_time"] = remindTime*/
             }
 
             if i == 'w' {
                 data["reminder"] = reminder[0] + WBE
-                var remindTime time.Time
+                /*var remindTime time.Time
                 due := data["date_due"].(time.Time)
                 remindTime = due.AddDate(0, 0, -7 * timeBefore)
-                data["reminder_time"] = remindTime
+                data["reminder_time"] = remindTime*/
             }
-            data["remind"] = true
+            //data["remind"] = true
             break
         case "reminder_time":
             data[k], _ = time.Parse("01/02/2006 3:04:05 PM", val)
@@ -796,7 +793,7 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             data[k] = val
             break
         case "sub_tasks":
-            data[k] = val
+            data[k] = v
             break
         }
     }

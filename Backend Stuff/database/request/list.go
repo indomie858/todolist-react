@@ -96,7 +96,7 @@ func (r *Request) AddList(name string, fields url.Values) (*ListJSON, error) {
     // If our tasks array is empty, lets create a default one
     if data["tasks"] == nil {
         f := url.Values{}
-        task, _ := r.AddTask("first_task", list.Id, f)
+        task, _ := r.AddTask("First Task !", list.Id, f)
 
         var tasks []string
         tasks = append(tasks, task.Id)
@@ -114,7 +114,7 @@ func (r *Request) AddList(name string, fields url.Values) (*ListJSON, error) {
 
     r.GetListByName(name)
     ljson = r.ListToJSON()
-    if name != "first_list" {
+    if name != "Main" || name != "Shared" {
         r.UpdateUserList(ref.ID)
     }
 

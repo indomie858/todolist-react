@@ -271,6 +271,9 @@ function updateAPIJSON(uid, json, callback) {
   }
 
   url = url.substr(0, url.length - 1)
+
+  console.log(url)
+
   apiCall(url, (output) => {
     callback(output) //return output to the passed in callback function
   })
