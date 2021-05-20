@@ -216,6 +216,7 @@ const Home = () => {
           repeatFrequency={changingTask.repeatFrequency}
           emailSelected={changingTask.emailSelected}
           discordSelected={changingTask.discordSelected}
+          subtasks={changingTask.subTasks}
         />}
         {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main List" }, { name: "Some Shared List" }, { name: "Some Other List" }]} />}
         {showOptions && <Options userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
