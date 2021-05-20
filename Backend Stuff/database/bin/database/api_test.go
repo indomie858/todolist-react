@@ -67,7 +67,7 @@ func TestCreateUser(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create User Response: %v\n",response)
+    fmt.Printf("Create User Response: %v\n",response)
 
     var m map[string]*Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -123,7 +123,7 @@ func TestCreateListWithPayload(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create List with Payload Response: %v\n",response)
+    fmt.Printf("Create List with Payload Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -152,7 +152,7 @@ func TestCreateTaskWithPaylod(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create Task with Payload Response: %v\n",response)
+    fmt.Printf("Create Task with Payload Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -179,7 +179,7 @@ func TestCreateSubTask(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Create Subtask Response: %v\n",response)
+    fmt.Printf("Create Subtask Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -199,7 +199,7 @@ func TestGetUser(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Get User Response: %v\n",response)
+    fmt.Printf("Get User Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -237,7 +237,7 @@ func TestGetLists(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Get Lists Response: %v\n",response)
+    fmt.Printf("Get Lists Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -256,7 +256,7 @@ func TestGetTask(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Get Task Response: %v\n",response)
+    fmt.Printf("Get Task Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -279,7 +279,7 @@ func TestUpdateTask(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Update Task Response: %v\n",response)
+    fmt.Printf("Update Task Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -326,7 +326,7 @@ func TestGetTasks(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    //fmt.Printf("Get Tasks Response: %v\n",response)
+    fmt.Printf("Get Tasks Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)

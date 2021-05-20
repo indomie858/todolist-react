@@ -1,20 +1,20 @@
-import React from 'react';
+import {React} from 'react';
+import DatePicker from 'react-date-picker';
 
 const RepeatPicker  = (props) => {
-    return (  
-        <div>
-            <form>
-                <select value={props.isEvery} onChange={props.changeRepeats}>
-                        <option value="Once">Once</option>
-                        <option value="Every">Every</option>
-                </select>
 
-                <span>
-                    <input type="number" value={props.numDays} onChange={props.onChange} className="numberInput"/>
-                    <label>Days</label>
-                </span>
-                
-            </form>
+    return (  
+        <div className="centerAlignContainer">
+            <select value={props.frequency} onChange={props.changeRepeats}>
+                    <option value="Daily">Daily</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Yearly">Yearly</option>
+            </select>
+
+            <div className="verticalSpace">End Repeat: </div>
+
+            <DatePicker value={props.endDate}  onChange={props.changeEndDate} className="addTaskInput"/>
         </div>
     );
 }

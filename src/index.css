@@ -290,6 +290,18 @@ body {
   width: 100%;
 }
 
+.centerAlignContainer {
+  display: flex;
+  align-items: center;
+  margin: 10px 10px 0 0;
+  width: 100%;
+  flex-direction: column;
+}
+
+.verticalSpace {
+  margin-top: 10px;
+}
+
 .red {
   color: red;
 }

@@ -201,7 +201,8 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
     var data = make(map[string]interface{})
 
     // Let's set some default values real quick -
-
+    var subtasks []string
+    subtasks = append(subtasks, "")
     data["task_owner"] = r.UserId
     data["task_name"] = name
     data["parent_id"] = parentid
@@ -218,6 +219,7 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
     data["description"] = ""
     data["url"] = ""
     data["shared"] = false
+    data["sub_tasks"] = subtasks
 
     // Now let's update our map to reflect the values we were given
     data = r.ParseTaskFields(fields, data)
@@ -389,6 +391,49 @@ func (r *Request) GetTasks(parentid string) ([]*TaskJSON, error) {
 
     return tasks, nil
 } // }}}
+
+
+func (r *Request) GetRemindTasks() ([]*TaskJSON, error) {
+    var tasks []*TaskJSON
+
+    // Get all tasks from Firestore where the owner is the requesting user and the parent is the same as the one provided
+    iter := r.Client.Collection("tasks").Where("reminder_time", "<=", time.Now()).Documents(r.Ctx)
+
+    // For each document
+    for {
+        // Get a snapshot of the data
+        docsnap, err := iter.Next()
+
+        // Check if we're done with our loop
+        if err == iterator.Done {
+            break
+        }
+
+        // Check if we have some other error
+        if err != nil {
+            e := fmt.Sprintf("err getting snapshot of task data: %v", err)
+            return tasks, errors.New(e)
+        }
+
+        // create a new task struct
+        var task Task
+
+        // Put doc data into our task structure
+        docsnap.DataTo(&task)
+
+        // Get & set the task ID
+        id := docsnap.Ref.ID
+        task.Id = id
+        r.GetTaskByName(task.Name, task.Parent)
+
+        // Add task to the tasks array
+        if r.Task != nil {
+            tasks = append(tasks, r.TaskToJSON())
+        }
+    }
+
+    return tasks, nil
+}
 
 // func UpdateTask {{{
 //
@@ -796,7 +841,11 @@ func (r *Request) UpdateTaskSubtasks(taskid, id string) (*TaskJSON, error) {
     }
 
     // Add the new id to our subtask array
-    task.Subtasks = append(task.Subtasks, id)
+    if task.Subtasks[0] == "" {
+        task.Subtasks[0] = id
+    } else {
+        task.Subtasks = append(task.Subtasks, id)
+    }
 
     // Make a map of the new subtasks to send to Firestore
     d := make(map[string]interface{})
