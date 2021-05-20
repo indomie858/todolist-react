@@ -32,6 +32,10 @@ const Options = (props) => {
     const [emailSelected, setEmailSelected] = useState(props.defaultReminders['email']);
     const [discordSelected, setDiscordSelected] = useState(props.defaultReminders['discord']);
 
+    const logOut = () => {
+        
+    }
+
     return ( 
         <div>
             <div className="popover" >
@@ -54,7 +58,9 @@ const Options = (props) => {
                         </div>
                     </div>
                 <div className="listHeader">Account Options:</div>
-                    <div className="optionsOption"><span className="clickableText blue">Reset Password</span></div>
+                    <div className="optionsOption">
+                        <button onClick={logOut} >Reset Password</button>
+                    </div>
             </div>
             <div className="popoverTag1 popoverCenter1"></div>
             <div className="popoverTag2 popoverCenter2"></div>
