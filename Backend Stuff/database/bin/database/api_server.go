@@ -691,17 +691,6 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
     // Get the payload params and display them to the terminal
     payload := r.URL.Query()
 
-    var response interface{}
-    err := json.NewDecoder(r.Body).Decode(&response)
-
-    if err != nil {
-        http.Error(w, err.Error(), http.StatusBadRequest)
-        return
-    }
-
-    // Do something with the Person struct...
-    fmt.Printf("body: %v", response)
-
     /*fmt.Println("\nPAYLOAD PARAMATERS")
     for k, v := range payload {
         s := fmt.Sprintf("%v => %v", k, v)

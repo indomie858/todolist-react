@@ -67,11 +67,15 @@ type UserJSON struct {
 
 // func AddUser {{{
 //
-func (r *Request) AddUser(name string, fields url.Values) (*UserJSON, error) {
+func (r *Request) AddUser(id string, fields url.Values) (*UserJSON, error) {
     var ujson *UserJSON
-    // Create a new doc & set our UserId to that doc's ID
-    ref := r.Client.Collection("users").NewDoc()
-    r.UserId = ref.ID
+
+    // Get the Firestore path for the user
+    useridpath := fmt.Sprintf("users/%s", id)
+
+    // Pass that to Firestore
+    doc := r.Client.Doc(useridpath)
+    r.UserId = id
 
     // Parse the url fields into a map for Firestore
     data := ParseUserFields(fields)
@@ -91,14 +95,14 @@ func (r *Request) AddUser(name string, fields url.Values) (*UserJSON, error) {
         data["lists"] = lists
     }
 
-    if data["name"] == nil {
-        data["name"] = name
+    if data["id"] == nil {
+        data["id"] = id
     }
 
     //fmt.Printf("%v\n", data)
 
     // Pass the field data to Firestore
-    _, err := ref.Set(r.Ctx, data, firestore.MergeAll)
+    _, err := doc.Set(r.Ctx, data, firestore.MergeAll)
     if err != nil {
         e := fmt.Sprintf("err setting new user data: %v", err)
         return ujson, errors.New(e)
