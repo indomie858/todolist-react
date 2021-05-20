@@ -95,12 +95,17 @@ const Home = () => {
   const [userLists, setUserLists] = useState([]);
   const [discordDefault, setDiscordDefault] = useState(false);
   const [emailDefault, setEmailDefault] = useState(false);
+  const [defaultList, setDefaultList] = useState("Main");
 
   function refreshTasks() {
     fetch(`http://localhost:3003/api/userData/${userId}`).then(
       data => data.text().then(
         value => {
           const userData = JSON.parse(value).result;
+          console.log(userData.User)
+          setDefaultList(userData.User.default_list)
+          setDiscordDefault(userData.User.discord_reminder)
+          setEmailDefault(userData.User.email_reminder)
           const listsFromDb = userData.Lists;
           let listNames = []; 
           listsFromDb.forEach(list => {
@@ -208,7 +213,7 @@ const Home = () => {
           discordSelected={changingTask.discordSelected}
         />}
         {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main List" }, { name: "Some Shared List" }, { name: "Some Other List" }]} />}
-        {showOptions && <Options defaultList={"Shared"} defaultReminders={{ "discord": true, "email": false }} />}
+        {showOptions && <Options userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
