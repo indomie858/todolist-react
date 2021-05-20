@@ -114,7 +114,7 @@ func (r *Request) AddList(name string, fields url.Values) (*ListJSON, error) {
 
     r.GetListByName(name)
     ljson = r.ListToJSON()
-    if name != "Main" && name != "Shared" {
+    if name != "Main" || name != "Shared" {
         r.UpdateUserList(ref.ID)
     }
 
