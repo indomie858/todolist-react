@@ -201,7 +201,7 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
     var data = make(map[string]interface{})
 
     // Let's set some default values real quick -
-
+    var subtasks []string
     data["task_owner"] = r.UserId
     data["task_name"] = name
     data["parent_id"] = parentid
@@ -218,6 +218,7 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
     data["description"] = ""
     data["url"] = ""
     data["shared"] = false
+    data["sub_tasks"] = subtasks
 
     // Now let's update our map to reflect the values we were given
     data = r.ParseTaskFields(fields, data)
