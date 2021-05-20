@@ -455,6 +455,8 @@ func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
     var data = make(map[string]interface{})
     data = r.ParseTaskFields(fields, data)
 
+    fmt.Printf("%v\n",data)
+
     // Get a reference to our task
     ref := r.Client.Collection("tasks").Doc(tjson.Id)
 
@@ -662,7 +664,7 @@ func (r *Request) DestroyTaskById(id string) error {
 //
 // Parses the fields of the request payload
 func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}) map[string]interface{} {
-    //fmt.Printf("task fields: %v\n", fields)
+    fmt.Printf("task fields: %v\n", fields)
 
     // Parse url fields
     for k, v := range fields {
@@ -697,10 +699,10 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
         case "done":
             data[k], _ = strconv.ParseBool(val)
             break
-        case "willRepeat":
+        case "willrepeat":
             data["reapting"], _ = strconv.ParseBool(val)
             break
-        case "repeatFrequency":
+        case "repeatfrequency":
             data["repeat"] = val
             if val != NEVER {
                 data["repeating"] = true
@@ -769,10 +771,10 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
         case "remind":
             data[k], _ = strconv.ParseBool(val)
             break
-        case "emailSelected":
+        case "emailselected":
             data["email"], _ = strconv.ParseBool(val)
             break
-        case "discordSelected":
+        case "discordselected":
             data["discord"], _ = strconv.ParseBool(val)
             break
         case "priority":
