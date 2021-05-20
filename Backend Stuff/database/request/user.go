@@ -80,10 +80,14 @@ func (r *Request) AddUser(name string, fields url.Values) (*UserJSON, error) {
     if data["lists"] == nil {
         // f is a url.Values variable, which is required for r.AddList
         f := url.Values{}
-        list, _ := r.AddList("first_list", f)
+        mainlist, _ := r.AddList("Main", f)
+
+        f.Add("shared", "true")
+        sharedlist, _ := r.AddList("Shared", f)
 
         var lists []string
-        lists = append(lists, list.Id)
+        lists = append(lists, mainlist.Id)
+        lists = append(lists, sharedlist.Id)
         data["lists"] = lists
     }
 
