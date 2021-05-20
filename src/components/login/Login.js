@@ -89,6 +89,7 @@ async function registerUser(credentials,callback) {
   .then((userCredential) => {
     // Registered.  Maybe return user to sign in?
     user = userCredential.user;
+    user.displayName = `${credentials.firstName} ${credentials.lastName}`
     callback(user)
     
     // ...
@@ -100,7 +101,7 @@ async function registerUser(credentials,callback) {
     console.log(errorMessage)
     // ..
   });
-  console.log(user)
+  // console.log(user)
 
     // return fetch('http://localhost:3003/userCreate', {
     //     method: 'POST',
@@ -143,7 +144,7 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
             username,
             password,
             isRegistered
-        }, (token) =>{ setToken(token); console.log(token)});
+        }, (token) =>{ sessionStorage.setItem('token',JSON.stringify(token));setToken(token); console.log(token)});
         //setToken(token);
         //console.log(token);
         //once token is set, home page renders
