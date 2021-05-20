@@ -165,6 +165,13 @@ app.get('/api/userData/:id/list/:listID', (req, res) => {
 
 })
 
+//http://localhost:10000/create/{uid}/task/{name}/parents/{pid}?<params>
+app.post('/api/create/:uid',(req,res)=>{
+  let body = req.body
+  
+
+})
+
 
 
 app.post('/api/update/:uid', (req, res) => {
@@ -223,6 +230,18 @@ app.get('/api/update/:uid/list/:list_id', (req, res) => {
 })
 
 
+function createAPIJSON(uid, json, callback) {
+  var url = 'http://localhost:10000/create/' + uid + "?"
+
+  for (const query in json) {
+    url += query + "=" + json[query] + "&"
+  }
+
+  url = url.substr(0, url.length - 1)
+  apiCall(url, (output) => {
+    callback(output) //return output to the passed in callback function
+  })
+}
 
 function readAPI(uid, parameters, callback) {
   apiCall('http://localhost:10000/read/' + uid + parameters, (output) => {
@@ -256,6 +275,9 @@ function updateAPIJSON(uid, json, callback) {
     callback(output) //return output to the passed in callback function
   })
 }
+
+
+
 
 function apiCall(url, callback) {
   http.get(url, (resp) => {
