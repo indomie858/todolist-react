@@ -2,6 +2,10 @@ import React, {useState} from "react";
 import discordImage from "./discord.png";
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import firebase from "firebase";
+import { useHistory } from "react-router-dom";
+
+
+  
 
 
 async function setEmailGlobal(emailState){
@@ -34,10 +38,23 @@ const Options = (props) => {
     const [listValue, setListValue] = useState(props.defaultList);
     const [emailSelected, setEmailSelected] = useState(props.defaultReminders['email']);
     const [discordSelected, setDiscordSelected] = useState(props.defaultReminders['discord']);
+    const history = useHistory();
+
+    function returnLogin() {
+        history.push("/login");
+    }
     // const logOut = logOut();
 
     const logOut = () => {
-
+        firebase.auth().signOut().then(() => {
+            // Sign-out successful.
+            console.log("The User has been logged out.")
+            sessionStorage.setItem('token', "");
+            returnLogin()
+        }).catch((error) => {
+            // An error happened.
+            console.log(error)
+        });
     }
 
     return ( 
@@ -63,7 +80,7 @@ const Options = (props) => {
                     </div>
                 <div className="listHeader">Account Options:</div>
                     <div className="optionsOption">
-                        <button className="addTaskButton addTaskInput" onClick={logOut} >Reset Password</button>
+                        <button className="addTaskButton addTaskInput" onClick={logOut} >Log Out</button>
                     </div>
             </div>
             <div className="popoverTag1 popoverCenter1"></div>

@@ -85,6 +85,9 @@ const TestComponent = () => {
                     }else{
                         return response.json()}
                 }).then(data=>setOutput(JSON.stringify(data)));
+
+
+                
             break;
             case "destroy":
             break;
