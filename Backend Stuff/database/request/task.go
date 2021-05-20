@@ -445,6 +445,14 @@ func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
         return tjson, errors.New(e)
     }
 
+    // Make sure we're updating a task the user actually owns
+    if task.Owner != r.UserId {
+        // If they don't own it, check if its shared with them
+        if task.SharedUsers == nil || !r.CheckIfShared(task.SharedUsers){
+            return tjson, errors.New("err getting task: requestor does not have permission")
+        }
+    }
+
     // Parse the url fields into a map for Firestore
     var data = make(map[string]interface{})
     data = r.ParseTaskFields(fields, data)
