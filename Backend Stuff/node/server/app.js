@@ -72,6 +72,34 @@ app.get('/api/:input', (req, res) => {
 })
 
 
+app.get('/getTasks', (req, res) => {
+  console.log("HIT /api/getTasks");
+  getTasks( (result) => { //this is terrible and I hate it
+
+    //console.log(result)
+    var myresults = result["result"]["Tasks"]
+    console.log("myresults")
+    console.log(myresults)
+    res.send(myresults)
+  })
+});
+/*
+app.get('/api/getTasks', (req, res) => {
+  console.log("HIT /api/getTasks")
+  /*
+  getTasks( (result) => { //this is terrible and I hate it
+
+    console.log(result)
+    //var myresults = result["result"]["Tasks"]
+    //console.log("myresults")
+    //console.log(myresults)
+    res.send(result)
+  })
+  res.send("you rang?");
+  res.end("hello?")
+});*/
+
+
 app.get('/api/userData/:id', (req, res) => {
   console.log(req.params.id)
   getName(req.params.id, (result) => { //this is terrible and I hate it
@@ -250,6 +278,28 @@ function apiCall(url, callback) {
   })
 }
 
+function getTasks(callback) {
+  // var output =1
+  http.get('http://localhost:10000/readtaskreminders', (resp) => {
+    let data = ''
+
+    // A chunk of data has been received.
+    resp.on('data', (chunk) => {
+      data += chunk
+    })
+
+    // The whole response has been received. Print out the result.
+    resp.on('end', () => {
+      console.log(JSON.parse(data).explanation)
+      callback(JSON.parse(data))
+      // return output
+    });
+
+  }).on("error", (err) => {
+    console.log("Error: " + err.message)
+  })
+  // return output
+}
 
 function getName(uid, callback) {
   // var output =1

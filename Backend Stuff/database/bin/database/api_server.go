@@ -573,7 +573,9 @@ func (a *App) getRemindTasks(w http.ResponseWriter, r *http.Request) {
     var res Result
     res.Tasks = tasks
 
-    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
+		//Tasks []*request.TaskJSON
+
+    respondWithJSON(w, http.StatusOK, &res.Tasks)
 }
 
 // Update a Firestore user data
