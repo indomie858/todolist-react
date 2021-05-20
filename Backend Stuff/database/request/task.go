@@ -792,7 +792,8 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             data[k] = val
             break
         case "sub_tasks":
-            data[k] = v
+            fmt.Printf("%t\n", v)
+            //data[k] = v
             break
         }
     }
