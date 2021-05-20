@@ -4,6 +4,7 @@ import (
     "fmt"
     "errors"
     "strings"
+    "strconv"
     "net/url"
 
     "cloud.google.com/go/firestore"
@@ -36,7 +37,8 @@ type User struct {
     DefaultList     string   `firestore:"default_list,omitempty"`
 
     // Default reminder for the user
-    DefaultReminder string   `firestore:"default_reminder,omitempty"`
+    DiscordReminder bool     `firestore:"discord_reminder"`
+    EmailReminder   bool     `firestore:"email_reminder"`
 }
 
 type UserJSON struct {
@@ -59,7 +61,8 @@ type UserJSON struct {
     DefaultList     string   `json:"default_list,omitempty"`
 
     // Default reminder for the user
-    DefaultReminder string   `json:"default_reminder,omitempty"`
+    DiscordReminder bool     `json:"discord_reminder"`
+    EmailReminder   bool     `json:"email_reminder"`
 }
 
 // func AddUser {{{
@@ -218,8 +221,11 @@ func ParseUserFields(fields url.Values) map[string]interface{} {
         case "default_list":
             data[k] = val
             break
-        case "default_reminder":
-            data[k] = val
+        case "discord_reminder":
+            data[k], _ = strconv.ParseBool(val)
+            break
+        case "email_reminder":
+            data[k], _ = strconv.ParseBool(val)
             break
         }
     }
@@ -238,7 +244,8 @@ func (r *Request) UserToJSON() *UserJSON {
     userjson.Status          = r.User.Status
     userjson.Lists           = r.User.Lists
     userjson.DefaultList     = r.User.DefaultList
-    userjson.DefaultReminder = r.User.DefaultReminder
+    userjson.DiscordReminder = r.User.DiscordReminder
+    userjson.EmailReminder   = r.User.EmailReminder
 
     return &userjson
 } // }}}

@@ -89,9 +89,10 @@ Possible `fields` are:
 | name             | string    |   NO     | Not required in the payload                                            |
 | email            | string    |   NO     | Users email that they signed up with                                   |
 | status           | string    |   NO     | Users status to be shown to friends *later feature*                    |
-| lists            | []string  |   NO     | The ids of the users lists                                             |
-| default_list     | string    |   NO     | The default list to add tasks to                                       |
-| default_reminder | string    |   NO     | The default reminder - email or discord                                |
+| lists            | []string  |   NO     | the ids of the users lists                                             |
+| default_list     | string    |   NO     | the default list to add tasks to                                       |
+| discord_reminder | bool      |   NO     | Whether or not discord is the default reminder                         |
+| email_reminder   | bool      |   NO     | Whether or not email is the default reminder                           |
 
 
 
