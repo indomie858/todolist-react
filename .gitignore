@@ -7,6 +7,7 @@ node_modules
 go.sum
 **/friday-584-firebase-adminsdk.json
 **/variables_dev.sh
+**/credentials.json
 
 # testing
 /coverage
