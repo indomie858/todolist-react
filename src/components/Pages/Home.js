@@ -147,7 +147,7 @@ const Home = () => {
   const [email, setEmail] = useState('');
 
   function updateTask(taskObject) {
-    console.log("updating")
+    // console.log("updating")
     setChangeTask(false);
     let parentId;
     userLists.forEach(([name, id]) => {
@@ -156,8 +156,8 @@ const Home = () => {
       }
     })
 
-    console.log(taskObject)
-    fetch('http://localhost:3003/api/update/'+userId,{
+    // console.log(taskObject)
+    fetch('http://localhost:3003/api/update/'+userId, {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -166,8 +166,8 @@ const Home = () => {
                     body: JSON.stringify({
                         
                         update: 'taskSettings', 
+                        taskID: taskObject.id,
                         date: taskObject.date,
-                        taskId: taskObject.id,
                         discordSelected: taskObject.discordSelected,
                         emailSelected: taskObject.emailSelected,
                         end_repeat: taskObject.end_repeat,
@@ -184,8 +184,11 @@ const Home = () => {
                     if(response.status===404){
                         return "Error: 404"
                     }else{
-                        return response.json()}
-                }).then(data=>JSON.stringify(data));
+                        console.log(response)
+                        console.log(typeof(response))
+                        return response}
+                }).then(data=>{console.log(data); JSON.stringify(data)});
+    refreshTasks();
   }
 
   
