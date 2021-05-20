@@ -108,7 +108,7 @@ const Home = () => {
   } else {
     console.log('/home token exists');
     if (email === '') {
-      setEmail(sessionStorage.getItem('email'));
+      setEmail(JSON.parse(sessionStorage.getItem('token')).email);
     }
   }
   return (
