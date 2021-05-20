@@ -156,7 +156,7 @@ const Home = () => {
       }
     })
 
-    // console.log(taskObject)
+    console.log(taskObject)
     fetch('http://localhost:3003/api/update/'+userId, {
                     method: 'POST',
                     headers: {
@@ -166,7 +166,7 @@ const Home = () => {
                     body: JSON.stringify({
                         
                         update: 'taskSettings', 
-                        taskID: taskObject.id,
+                        taskId: taskObject.id,
                         date: taskObject.date,
                         discordSelected: taskObject.discordSelected,
                         emailSelected: taskObject.emailSelected,
@@ -184,11 +184,9 @@ const Home = () => {
                     if(response.status===404){
                         return "Error: 404"
                     }else{
-                        console.log(response)
-                        console.log(typeof(response))
-                        return response}
-                }).then(data=>{console.log(data); JSON.stringify(data)});
-    refreshTasks();
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
 
   
