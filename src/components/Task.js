@@ -25,7 +25,7 @@ const Task = (props) => {
             <div className='task' >
                 <div className="task-flex-left">
                     <h3 onClick={() => { props.changeTask(props.id); }}>{props.task.text}{' '}</h3>
-                    <p>{moment(props.task.date).format("M/D h:MM A")}</p>
+                    <p>{moment(props.task.date.slice(0,-1)).format("M/D h:MM A")}</p>
                 </div>
                 <div className="task-flex-mid" onClick={() => setShowSubTasks(!showSubTasks)}>
                     {subTasks.length > 0 ? (!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />) : ''}
