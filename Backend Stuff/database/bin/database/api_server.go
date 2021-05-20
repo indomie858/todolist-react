@@ -44,6 +44,15 @@ func (a *App) homePage(w http.ResponseWriter, r *http.Request) {
 	//fmt.Printf("Endpoint Hit: homePage")
 }
 
+type Result struct {
+    User *request.UserJSON
+    List *request.ListJSON
+    Lists []*request.ListJSON
+    Task *request.TaskJSON
+    Tasks []*request.TaskJSON
+    AllTasks [][]*request.TaskJSON
+}
+
 // Create a new user in the Firstore database wih the provided name
 //
 // Example:
@@ -75,6 +84,7 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusInternalServerError, err.Error())
         return
     }
+
     lists, err := a.Request.GetLists()
     if err != nil {
         respondWithError(w, http.StatusBadRequest,  err.Error())
@@ -87,7 +97,12 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
         tasks = append(tasks, t)
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks})
+    var res Result
+    res.User = user
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Create a new list in the Firstore database with the provided name & params
@@ -126,7 +141,11 @@ func (a *App) createList(w http.ResponseWriter, r *http.Request) {
     }
     tasks, _ := a.Request.GetTasks(list.Id)
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"list": list, "tasks": tasks})
+    var res Result
+    res.List = list
+    res.Tasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Create a new task in the Firstore database
@@ -164,7 +183,11 @@ func (a *App) createTask(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"task": task})
+
+    var res Result
+    res.Task = task
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Create a new sub task in the Firstore database with the provided name
@@ -201,7 +224,11 @@ func (a *App) createSubtask(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"task": task})
+
+    var res Result
+    res.Task = task
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Remove a user from the Firstore database, specified by UID
@@ -316,7 +343,12 @@ func (a *App) getUser(w http.ResponseWriter, r *http.Request) {
         tasks = append(tasks, t)
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks})
+    var res Result
+    res.User = user
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Get a list from the Firstore database with the specified list name
@@ -345,7 +377,11 @@ func (a *App) getList(w http.ResponseWriter, r *http.Request) {
 
     tasks, _ := a.Request.GetTasks(id)
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"list": list, "tasks": tasks})
+    var res Result
+    res.List = list
+    res.Tasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Get ALL lists from the Firstore database with that has an owner with
@@ -378,7 +414,11 @@ func (a *App) getLists(w http.ResponseWriter, r *http.Request) {
         tasks = append(tasks, t)
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"lists": lists, "tasks": tasks})
+    var res Result
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Get ALL lists from the Firstore database that have been shared with
@@ -410,7 +450,11 @@ func (a *App) getSharedLists(w http.ResponseWriter, r *http.Request) {
         tasks = append(tasks, t)
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"lists": lists, "tasks": tasks})
+    var res Result
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Get a task from the Firstore database with the specified task name
@@ -441,7 +485,11 @@ func (a *App) getTask(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"task": task})
+
+    var res Result
+    res.Task = task
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Returns all tasks in a given list that the user owns
@@ -467,7 +515,11 @@ func (a *App) getTasks(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string][]*request.TaskJSON{"tasks": tasks})
+
+    var res Result
+    res.Tasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Update a Firestore user data
@@ -515,7 +567,12 @@ func (a *App) updateUser(w http.ResponseWriter, r *http.Request) {
         tasks = append(tasks, t)
     }
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"user": user, "lists": lists, "tasks": tasks})
+    var res Result
+    res.User = user
+    res.Lists = lists
+    res.AllTasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Update a Firestore list data
@@ -554,7 +611,11 @@ func (a *App) updateList(w http.ResponseWriter, r *http.Request) {
 
     tasks, _ := a.Request.GetTasks(id)
 
-    respondWithJSON(w, http.StatusOK, map[string]interface{}{"list": list, "tasks": tasks})
+    var res Result
+    res.List = list
+    res.Tasks = tasks
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 // Update a Firestore task data
@@ -589,7 +650,11 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
         respondWithError(w, http.StatusBadRequest,  err.Error())
         return
     }
-    respondWithJSON(w, http.StatusOK, map[string]*request.TaskJSON{"task": task})
+
+    var res Result
+    res.Task = task
+
+    respondWithJSON(w, http.StatusOK, map[string]*Result{"result": &res})
 }
 
 func (a *App) initializeRoutes() {
