@@ -11,6 +11,7 @@ const AddTask = (props) => {
 
     const [userLists, setUserLists] = useState(props.userLists)
     const [templateValue, setTemplateValue] = useState('');
+    const [id, setId] = useState(props.id ? props.id : '');
     const [taskValue, setTaskValue] = useState(props.text ? props.text : "");
     const [dateValue, setDateValue] = useState(props.date ? new Date(props.date) : new Date());
     const [listValue, setListValue] = useState(props.list ? props.list : "Main");
@@ -20,9 +21,7 @@ const AddTask = (props) => {
     const [repeatFrequency, setRepeatFrequency] = useState(props.repeatFrequency ? props.repeatFrequency : "Never");
     const [emailSelected, setEmailSelected] = useState(props.emailSelected ? props.emailSelected : props.defaultReminders['email']);
     const [discordSelected, setDiscordSelected] = useState(props.discordSelected !== undefined ? props.discordSelected : props.defaultReminders['discord']);
-    const [endDate, setEndDate] = useState(props.endRepeat ? new Date(props.endRepeat) : new Date());
-
-    console.log(userLists)
+    const [endRepeat, setEndRepeat] = useState(props.endRepeat ? new Date(props.endRepeat) : new Date());
     const [showSubtasks, setShowSubtasks] = useState(false);
     const [subtaskValue, setSubtaskValue] = useState('');
 
@@ -67,8 +66,8 @@ const AddTask = (props) => {
                 {showTime && <MailOutlineIcon className={emailSelected ? "outlined icon" : "icon"} onClick={() => setEmailSelected(!emailSelected)}/>}
                 {showTime && <img alt="discord icon" className={discordSelected ? "discord outlined icon" : "discord icon"} onClick={() => setDiscordSelected(!discordSelected)} src={discordImage}/>}
                 {willRepeat && <RepeatPicker 
-                    frequency={repeatFrequency} changeRepeats={(e) => setRepeatFrequency(e.target.value)} endDate={endDate}
-                    changeEndDate={setEndDate}/>}
+                    frequency={repeatFrequency} changeRepeats={(e) => setRepeatFrequency(e.target.value)} endDate={endRepeat}
+                    changeEndDate={setEndRepeat}/>}
                 <label className="addTaskInput">List: &nbsp;
                     <select value={listValue} onChange={(e) => setListValue(e.target.value)}>
                         {userLists.map((name, id) => (
@@ -84,8 +83,20 @@ const AddTask = (props) => {
                 </div>
                 {showSubtasks && <AddSubForm setSubtaskValue={setSubtaskValue} />}
                 <div className="addTaskInput">
-                    <button className="addTaskInput addTaskButton" onClick={props.onAdd}>Add</button>
-                    <button className="addTaskInput addTaskButton" onClick={props.onCancel}>Cancel</button>
+                    <button className="addTaskInput addTaskButton" onClick={() => props.onAdd({
+                        id: id,
+                        date: dateValue,
+                        discordSelected: discordSelected,
+                        emailSelected: emailSelected,
+                        end_repeat: endRepeat,
+                        list: listValue,
+                        remind: showTime,
+                        reminder_time: time,
+                        repeatFrequency: repeatFrequency,
+                        text: taskValue,
+                        willRepeat: willRepeat
+                    })}>Add</button>
+                    <button className="addTaskInput addTaskButton" onClick={() => props.onCancel()}>Cancel</button>
                 </div>
             </div>
             <div className="popoverTag1 popoverRight1"></div>

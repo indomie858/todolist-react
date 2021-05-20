@@ -101,13 +101,11 @@ const Home = () => {
       data => data.text().then(
         value => {
           const userData = JSON.parse(value).result;
-          console.log(userData)
           const listsFromDb = userData.Lists;
-          var listNames = []; 
+          let listNames = []; 
           listsFromDb.forEach(list => {
             listNames.push([list.list_name, list.id])
           })
-          console.log(listNames)
           setUserLists(listNames);
           let newTasks = []
           userData.AllTasks[0].forEach(task => {
@@ -129,6 +127,16 @@ const Home = () => {
 
   useEffect(() => {
     refreshTasks();
+    if (!getToken()) {
+      console.log('/home token does not exist');
+      return (<Redirect to="/login" />);
+    } else {
+      console.log('/home token exists');
+      if (email === '') {
+        setEmail(sessionStorage.getItem('email'));
+        
+      }
+    }
   }, []);
 
   const [showListNav, setListNav] = useState(false);
@@ -138,27 +146,57 @@ const Home = () => {
   const [changingTask, setChangingTask] = useState(0);
   const [email, setEmail] = useState('');
 
-  function testFunction(id) {
-    console.log(id)
+  function updateTask(taskObject) {
+    console.log("updating")
+    setChangeTask(false);
+    let parentId;
+    userLists.forEach(([name, id]) => {
+      if (name == taskObject.list) {
+        parentId = id;
+      }
+    })
+
+    console.log(taskObject)
+    fetch('http://localhost:3003/api/update/'+userId,{
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        
+                        update: 'taskSettings', 
+                        date: taskObject.date,
+                        taskId: taskObject.id,
+                        discordSelected: taskObject.discordSelected,
+                        emailSelected: taskObject.emailSelected,
+                        end_repeat: taskObject.end_repeat,
+                        parent_id: parentId,
+                        remind: taskObject.remind,
+                        reminder_time: taskObject.reminder_time,
+                        repeatFrequency: taskObject.repeatFrequency,
+                        text: taskObject.text,
+                        willRepeat: taskObject.willRepeat
+                        
+                    })
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response.json()}
+                }).then(data=>JSON.stringify(data));
   }
 
-  if (!getToken()) {
-    console.log('/home token does not exist');
-    return (<Redirect to="/login" />);
-  } else {
-    console.log('/home token exists');
-    if (email === '') {
-      setEmail(sessionStorage.getItem('email'));
-      
-    }
-  }
+  
   return (
     <>
       {/* <Container maxWidth="xs"> */}
       <p>Welcome {email}</p>
       <div className="mainContainer">
         {showAddTask && <AddTask userLists={userLists} onAdd={() => {setAddTask(false); refreshTasks()}} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
-        {showChangeTask && <AddTask userLists={userLists} onAdd={() => setAddTask(false)} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)}
+        {showChangeTask && <AddTask userLists={userLists} onAdd={updateTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setChangeTask(false)}
+          id={changingTask.id}
           date={changingTask.date}
           text={changingTask.text}
           list={changingTask.list}
@@ -175,12 +213,9 @@ const Home = () => {
           {/* displays placeholder list and title "Today" */}
           {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' changeTask={
             (id) => {
-              // console.log("Changing task")
-              // console.log("id: " + id)
               for (let i = 0; i < tasks.length; i++) {
                 if (tasks[i].id === id) {
                   setChangingTask(tasks[i])
-                  // console.log(changingTask)
                 }
               }
               setChangeTask(!showChangeTask);
