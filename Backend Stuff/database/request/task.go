@@ -706,7 +706,7 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             data["repeat"] = val
             break
         case "end_repeat":
-            data[k], _ = time.Parse("01/02/2006", val)
+            data[k], _ = time.Parse("01/02/2006 3:04:05 PM", val)
             break
         case "reminder":
             // I am going to set the time we need to remind them at right here
