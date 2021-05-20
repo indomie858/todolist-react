@@ -63,8 +63,8 @@ const Options = (props) => {
                     </div>
                 <div className="listHeader">Account Options:</div>
                     <div className="optionsOption">
-                        <button className="addTaskButton addTaskInput" onClick={logOut} >Reset Password</button>
-                    </div>
+                        <span className="clickableText blue">Reset Password</span></div>
+                        <button className="addTaskInput addTaskButton" onClick={() => logOut()}>Logout</button>
             </div>
             <div className="popoverTag1 popoverCenter1"></div>
             <div className="popoverTag2 popoverCenter2"></div>
