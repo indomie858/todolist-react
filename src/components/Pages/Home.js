@@ -121,10 +121,15 @@ const Home = () => {
                 parentList = list.list_name
               }
             })
+            console.log(task.date)
+            task.date = moment(task.date).toDate();
+            task.date = moment(task.date).add(7, 'h').toDate();
+            console.log(task.date)
             task.list = parentList;
             task.subTasks = [];
             newTasks.push(task);
           });
+          console.log(newTasks)
           setTasks(newTasks);
         }
       )
@@ -153,7 +158,7 @@ const Home = () => {
   const [email, setEmail] = useState('');
 
   function updateTask(taskObject) {
-    // console.log("updating")
+    console.log("updating")
     setChangeTask(false);
     let parentId;
     userLists.forEach(([name, id]) => {
@@ -162,9 +167,10 @@ const Home = () => {
       }
     })
 
-    taskObject.date = moment(taskObject.date).format("MM/DD/YYYY h:MM:SS A")
-    taskObject.end_repeat = moment(taskObject.end_repeat).format("MM/DD/YYYY h:MM:SS A")
-    taskObject.reminder_time = moment(taskObject.reminder_time).format("MM/DD/YYYY h:MM:SS A")
+    // taskObject.date = moment(taskObject.date).format("MM/DD/YYYY hh:MM:ss A")
+    // console.log(taskObject.date)
+    taskObject.end_repeat = moment(taskObject.end_repeat).format("MM/DD/YYYY hh:MM:ss A")
+    console.log(taskObject.end_repeat)
 
     console.log(taskObject)
     fetch('http://localhost:3003/api/update/'+userId, {
@@ -183,10 +189,10 @@ const Home = () => {
                         end_repeat: taskObject.end_repeat,
                         parent_id: parentId,
                         remind: taskObject.remind,
-                        reminder_time: taskObject.reminder_time,
+                        reminder_time: taskObject.date,
                         repeatFrequency: taskObject.repeatFrequency,
+                        willRepeat: taskObject.willRepeat,
                         text: taskObject.text,
-                        willRepeat: taskObject.willRepeat
                         
                     })
             
@@ -199,16 +205,87 @@ const Home = () => {
                 }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
 
+  function createTask(taskObject) {
+    console.log("creating")
+    setAddTask(false); 
+    let parentId;
+    userLists.forEach(([name, id]) => {
+      if (name == taskObject.list) {
+        parentId = id;
+      }
+    })
+
+    // taskObject.date = moment(taskObject.date).format("MM/DD/YYYY hh:MM:ss A")
+    // console.log(taskObject.date)
+    taskObject.end_repeat = moment(taskObject.end_repeat).format("MM/DD/YYYY hh:MM:ss A")
+
+    console.log(taskObject)
+    fetch('http://localhost:3003/api/create/'+userId, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        
+                        create: 'task', 
+                        date: taskObject.date,
+                        discordSelected: taskObject.discordSelected,
+                        emailSelected: taskObject.emailSelected,
+                        end_repeat: taskObject.end_repeat,
+                        parent_id: parentId,
+                        remind: taskObject.remind,
+                        reminder_time: taskObject.date,
+                        repeatFrequency: taskObject.repeatFrequency,
+                        willRepeat: taskObject.willRepeat,
+                        text: taskObject.text,
+                        
+                    })
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
+  }
+
+  function updateUserSettings(userObject) {
+    fetch('http://localhost:3003/api/update/'+userId, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        
+                        update: 'userSettings', 
+                        default_list: userObject.default_list,
+                        discord_reminder: userObject.discord_reminder,
+                        email_reminder: userObject.email_reminder
+                        
+                    })
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
+  }
   
   return (
     <>
       {/* <Container maxWidth="xs"> */}
       <p>Welcome {email}</p>
       <div className="mainContainer">
-        {showAddTask && <AddTask userLists={userLists} onAdd={() => {setAddTask(false); refreshTasks()}} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
+        {showAddTask && <AddTask userLists={userLists} onAdd={createTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
         {showChangeTask && <AddTask userLists={userLists} onAdd={updateTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setChangeTask(false)}
           id={changingTask.id}
           date={changingTask.date}
+          time={changingTask.date}
           text={changingTask.text}
           list={changingTask.list}
           willRepeat={changingTask.willRepeat}
@@ -219,7 +296,7 @@ const Home = () => {
           subtasks={changingTask.subTasks}
         />}
         {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main List" }, { name: "Some Shared List" }, { name: "Some Other List" }]} />}
-        {showOptions && <Options userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
+        {showOptions && <Options onChooseOption={updateUserSettings} userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
