@@ -11,14 +11,14 @@ import firebase from "firebase";
 
 
 //passes user login info to backend
-async function loginUser(credentials) {
+async function loginUser(credentials, callback) {
     //logs in with firebase and gets credentials
-  let user
+  //let user
   firebase.auth().signInWithEmailAndPassword( credentials.username, credentials.password)
   .then((userCredential) => {
     // Signed in 
-    user = userCredential.user;
-
+    let user = userCredential.user;
+    callback(user);
     // ...
   })
   .catch((error) => {
@@ -29,7 +29,7 @@ async function loginUser(credentials) {
     // ..
   });
 
-  return user ? user:-1;
+  //return user ? user:null;
     
     // return fetch('http://localhost:3003/userLogin', {
     //     method: 'POST',
@@ -61,7 +61,7 @@ async function registerUser(credentials) {
     // ..
   });
   console.log(user)
-  return user ? user:-1;
+  return user ? user:null;
 
     // return fetch('http://localhost:3003/userCreate', {
     //     method: 'POST',
@@ -100,9 +100,9 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
             username,
             password,
             isRegistered
-        });
-        setToken(token);
-        console.log(token);
+        }, (token) => setToken(token));
+        //setToken(token);
+        //console.log(token);
         //once token is set, home page renders
     }
 
