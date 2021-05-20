@@ -8,6 +8,7 @@ const AddSubForm = (props) => {
         console.log(props.subtaskValue);
         //adds subtask to subtask array in AddTask
         props.setSubtaskArr([...props.subtaskArr, props.subtaskValue]);
+        e.target.reset();
     }
 
     return (
