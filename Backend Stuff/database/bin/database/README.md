@@ -8,31 +8,31 @@ return (so far) -
 ```
 (base) sabra@Sabras-MacBook-Pro database % go test -v
 === RUN   TestCreateUser
---- PASS: TestCreateUser (0.95s)
+--- PASS: TestCreateUser (1.38s)
 === RUN   TestCreateList
---- PASS: TestCreateList (0.83s)
+--- PASS: TestCreateList (1.06s)
 === RUN   TestCreateListWithPayload
---- PASS: TestCreateListWithPayload (0.86s)
+--- PASS: TestCreateListWithPayload (1.18s)
 === RUN   TestCreateTaskWithPaylod
---- PASS: TestCreateTaskWithPaylod (0.51s)
+--- PASS: TestCreateTaskWithPaylod (0.54s)
 === RUN   TestCreateSubTask
---- PASS: TestCreateSubTask (0.57s)
+--- PASS: TestCreateSubTask (0.35s)
 === RUN   TestGetUser
---- PASS: TestGetUser (0.93s)
+--- PASS: TestGetUser (0.98s)
 === RUN   TestGetList
---- PASS: TestGetList (0.28s)
+--- PASS: TestGetList (0.47s)
 === RUN   TestGetLists
---- PASS: TestGetLists (0.17s)
+--- PASS: TestGetLists (0.81s)
 === RUN   TestGetTask
---- PASS: TestGetTask (0.19s)
+--- PASS: TestGetTask (0.21s)
 === RUN   TestUpdateTask
---- PASS: TestUpdateTask (0.37s)
+--- PASS: TestUpdateTask (0.39s)
 === RUN   TestGetTasks
---- PASS: TestGetTasks (0.41s)
+--- PASS: TestGetTasks (0.37s)
 === RUN   TestDestroyUser
---- PASS: TestDestroyUser (2.39s)
+--- PASS: TestDestroyUser (2.50s)
 PASS
-ok  	database/bin/database	8.479s
+ok  	database/bin/database	10.261s
 ```
 
 ***I DO NOT GUARANTEE ANY OTHER FUNCTION WILL WORK IF IT DOES NOT HAVE A PASSING TEST***
@@ -77,13 +77,28 @@ TestEditList(t *testing.T)
 # API REQUESTS
 
 # USERS
-*documentation coming soon*
+*full documentation coming soon*
+
+## AddUser(name string, fields url.Values) (*TaskJSON, error)
+Adds a new user to the Users Collection in Firebase, setting any fields that are provided
+
+Possible `fields` are:
+
+|        field     |   type    | required | notes                                                                  |
+| :--------------: | :-------: | :------: | ---------------------------------------------------------------------- |
+| name             | string    |   NO     | Not required in the payload                                            |
+| email            | string    |   NO     | Users email that they signed up with                                   |
+| status           | string    |   NO     | Users status to be shown to friends *later feature*                    |
+| lists            | []string  |   NO     | the ids of the users lists                                             |
+| default_list     | string    |   NO     | the default list to add tasks to                                       |
+| default_reminder | string    |   NO     | the default reminder - email or discord                                |
+
+
 
 # LISTS
-*full documentatin coming soon*
 
 ## AddList(list_name string, fields url.Values) (*TaskJSON, error)
-Adds a new list to the List Collection in Firebase, setting any fields that are provided
+Adds a new list to the Lists Collection in Firebase, setting any fields that are provided
 
 Possible `fields` are:
 
@@ -96,10 +111,37 @@ Possible `fields` are:
 | shared        | bool      |   NO     | default = `false`                                                      |
 | shared_users  | []string  |   NO     | default = [""]                                                         |
 
+## GetListByName(listname string) (*ListJSON, error)
+Returns a list using the list name. Ensures we get the correct list by specifying the list owner
+
+## GetListByID(lid string) (*ListJSON, error)
+Returns a list using the lists id. Checks that the user requesting the list has proper access before returning it.
+
+## GetLists() ([]*ListJSON, error)
+Returns all of a users lists
+
+## GetSharedLists() ([]*ListJSON, error)
+Returns all lists shared with the requesting user
+
+## UpdateList(id string, fields url.Values) (*ListJSON, error)
+Updates the list with the given fields and returns the updated list
+
+## DestroyList(name string) error
+Destroys the list and any of its tasks, returning any error that occurred
+
+## DestroyListById(id string) error
+Destroys the list and any of its tasks, returning any error that occurred
+
+## ListToJSON() *ListJSON
+Parses the list structure into a JSON structure
+
+## UpdateListTasks(listid, id string)
+Updates the tasks array in the list
+
 # TASKS
 
-## AddTask(task_name string, fields url.Values) (*TaskJSON, error)
-Adds a new task to the Task Collection in Firebase, setting any fields that are provided
+## AddTask(task_name, parentid string, fields url.Values) (*TaskJSON, error)
+Adds a new task to the Tasks Collection in Firebase, setting any fields that are provided
 
 Possible `fields` are:
 
@@ -123,7 +165,6 @@ Possible `fields` are:
 | url           | string    |   NO     | default = ""                                                           |
 | shared        | bool      |   NO     | default = `false`                                                      |
 | shared_users  | []string  |   NO     | default = [""]                                                         |
-| sub_task      | bool      |   NO     | default = false                                                        |
 | sub_tasks     | []string  |   NO     | default = [""]                                                         |
 
 Fields must be listed exactly as you see them above.
@@ -132,13 +173,13 @@ Fields must be listed exactly as you see them above.
 The parent of the task is required to ensure we get the correct task
 
 ## GetTaskByID(id string) (*TaskJSON, error)
-Called on by DestroyTaskById
+Returns the specified task
 
 ## GetTasks(parentid string) ([]*TaskJSON, error)
 Returns all tasks that have the provided parentid
 
-## UpdateTask(name, parentid string, fields url.Values) (*TaskJSON, error)
-The parent of the task is required to ensure we get the correct task
+## UpdateTask(id string, fields url.Values) (*TaskJSON, error)
+The id of the task is required
 
 ## DestroyTask(name, parentid string) error
 Checks for any subtasks and deletes those as well
@@ -155,3 +196,6 @@ Parses the url fields into a map that we can send to Firestore
 
 ## TaskToJSON() *TaskJSON
 Converts the Task structure we use for firestore into a Task structure encoded for JSON
+
+## UpdateTaskSubtasks(taskid, id string) (*TaskJSON, error)
+Update the tasks subtasks array

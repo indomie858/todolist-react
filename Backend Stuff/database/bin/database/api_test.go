@@ -68,7 +68,7 @@ func TestCreateUser(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create User Response: %v\n",response)
+    //fmt.Printf("Create User Response: %v\n",response)
 
     var m map[string]request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -87,7 +87,7 @@ func TestCreateList(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create List Response: %v\n",response)
+    //fmt.Printf("Create List Response: %v\n",response)
 
     var m map[string]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -119,7 +119,7 @@ func TestCreateListWithPayload(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create List with Payload Response: %v\n",response)
+    //fmt.Printf("Create List with Payload Response: %v\n",response)
 
     var m map[string]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -147,7 +147,7 @@ func TestCreateTaskWithPaylod(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create Task with Payload Response: %v\n",response)
+    //fmt.Printf("Create Task with Payload Response: %v\n",response)
 
     var m map[string]request.TaskJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -164,19 +164,16 @@ func TestCreateTaskWithPaylod(t *testing.T) {
     if task.Lock {
         t.Errorf("Expected lock field to be set to 'false'. Got '%v' instead.", task.Lock)
     }
-    if task.Subtask {
-        t.Errorf("Expected subtask field to be set to 'false'. Got '%v' instead.", task.Subtask)
-    }
 }
 
 func TestCreateSubTask(t *testing.T) {
     url := fmt.Sprintf("/create/%s/subtask/sub_task_1/parent/%s", testuid, testtid)
     req, _ := http.NewRequest("POST", url, nil)
-    fmt.Printf("Create Subtask Request: %v\n", req)
+    //fmt.Printf("Create Subtask Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create Subtask Response: %v\n",response)
+    //fmt.Printf("Create Subtask Response: %v\n",response)
 
     var m map[string]request.TaskJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -195,7 +192,7 @@ func TestGetUser(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get User Response: %v\n",response)
+    //fmt.Printf("Get User Response: %v\n",response)
 
     var m map[string]request.UserJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -213,7 +210,7 @@ func TestGetList(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get List Response: %v\n",response)
+    //fmt.Printf("Get List Response: %v\n",response)
 
     var m map[string]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -231,7 +228,7 @@ func TestGetLists(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get Lists Response: %v\n",response)
+    //fmt.Printf("Get Lists Response: %v\n",response)
 
     var m map[string][]request.ListJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -249,7 +246,7 @@ func TestGetTask(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get Task Response: %v\n",response)
+    //fmt.Printf("Get Task Response: %v\n",response)
 
     var m map[string]request.TaskJSON
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -265,7 +262,7 @@ func TestGetTask(t *testing.T) {
 }
 
 func TestUpdateTask(t *testing.T) {
-    url := fmt.Sprintf("/update/%s/task/%s?done=true&remind_type=discord", testuid, testtid)
+    url := fmt.Sprintf("/update/%s/task/%s?done=true&discord=true", testuid, testtid)
     req, _ := http.NewRequest("GET", url, nil)
     //fmt.Printf("Update Task Request: %v\n", req)
 

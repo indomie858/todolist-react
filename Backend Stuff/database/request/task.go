@@ -80,8 +80,8 @@ type Task struct {
     Remind      bool        `firestore:"remind"`
 
     // What type of reminder they want, discord or email
-    Email       bool        `firestore:"email_selected"`
-    Discord     bool        `firestore:"discord_selected"`
+    Email       bool        `firestore:"email"`
+    Discord     bool        `firestore:"discord"`
 
     // Time frame before task to remind the user -- string
     // Similar to 'Alert' in Google Calendar
@@ -107,9 +107,6 @@ type Task struct {
 
     // Array of user IDs of the users this task has been shared with
     SharedUsers []string    `firestore:"shared_users,omitempty"`
-
-    // Whether or not this is a subtask
-    Subtask     bool        `firestore:"sub_task"`
 
     // IDs of assoociated Subtasks
     Subtasks    []string    `firestore:"sub_tasks,omitempty"`
@@ -184,9 +181,6 @@ type TaskJSON struct {
     // Array of user IDs of the users this list has been shared with
     SharedUsers []string    `json:"shared_users,omitempty"`
 
-    // Whether or not this is a subtask
-    Subtask     bool        `json:"sub_task"`
-
     // IDs of assoociated Subtasks
     Subtasks    []string    `json:"subTasks,omitempty"`
 }
@@ -224,7 +218,6 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
     data["description"] = ""
     data["url"] = ""
     data["shared"] = false
-    data["sub_task"] = false
 
     // Now let's update our map to reflect the values we were given
     data = r.ParseTaskFields(fields, data)
@@ -238,9 +231,7 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
         return tjson, errors.New(e)
     }
 
-    if data["sub_task"].(bool) {
-        r.UpdateTaskSubtasks(data["parent_id"].(string), ref.ID)
-    } else if name != "first_task" {
+    if name != "first_task" {
         r.UpdateListTasks(data["parent_id"].(string), ref.ID)
     }
 
@@ -742,9 +733,6 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
         case "shared_users":
             data[k] = val
             break
-        case "sub_task":
-            data[k], _ = strconv.ParseBool(val)
-            break
         case "sub_tasks":
             data[k] = val
             break
@@ -780,7 +768,6 @@ func (r *Request) TaskToJSON() *TaskJSON {
     taskjson.Shared      = r.Task.Shared
     taskjson.SharedUsers = r.Task.SharedUsers
     taskjson.Subtasks    = r.Task.Subtasks
-    taskjson.Subtask     = r.Task.Subtask
 
     return &taskjson
 } // }}}
