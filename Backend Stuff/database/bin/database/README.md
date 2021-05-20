@@ -91,7 +91,8 @@ Possible `fields` are:
 | status           | string    |   NO     | Users status to be shown to friends *later feature*                    |
 | lists            | []string  |   NO     | the ids of the users lists                                             |
 | default_list     | string    |   NO     | the default list to add tasks to                                       |
-| default_reminder | string    |   NO     | the default reminder - email or discord                                |
+| discord_reminder | bool      |   NO     | Whether or not discord is the default reminder                         |
+| email_reminder   | bool      |   NO     | Whether or not email is the default reminder                           |
 
 
 
