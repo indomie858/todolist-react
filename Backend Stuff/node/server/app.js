@@ -170,39 +170,64 @@ app.post('/api/create/:uid', (req, res) => {
   let body = req.body
 
   switch (body.create) {
-    case 'user':
+    case 'user': {
       delete body.create //remove the update parameter to simplify object
-      console.log(body)
-      createAPIJSON(req.params.uid, body, (result) => {
+      console.log(body) //there should be nothing left in the body here
+      createAPI(req.params.uid, (result) => {
         console.log(result)
         res.send(result)
       })
 
       break;
-    case 'listSettings':
-      // delete body.update //remove the update parameter to simplify object
-      // const listId = body.listId;
-      // delete body.listId;
-      // updateAPIJSON(req.params.uid + `/list/${body.listId}`, body, (result) => { //add /List/:ID to url
-      //   console.log(result)
-      //   res.send(result)
-      // })
+    } //http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/list/test_list_2?lock=true&shared=false`
+    case 'list': {
+      delete body.create //remove the update parameter to simplify object
+      const list_name = body.list_name;
+      delete body.list_name;
+      createAPIJSON(req.params.uid + `/list/${list_name}`, body, (result) => { //add /List/:ID to url
+        console.log(result)
+        res.send(result)
+      })
 
       break;
-    case 'task':
+    }
+
+    case 'task': {
       delete body.create //remove the update parameter to simplify object
       const task_name = body.task_name;
       const parentId = body.parentId;
       delete body.task_name;
       delete body.parentId;
-      updateAPIJSON(req.params.uid + `/task/${task_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
+      createAPIJSON(req.params.uid + `/task/${task_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
         console.log(result)
         res.send(result)
       })
 
+      //http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/subtask/sub_task_1/parent/mOCohcha1i6sInCJPeEp
+
       // http://localhost:10000/update/{uid}/task/{id}?
 
       break;
+    }
+
+    case 'subtask': {
+      delete body.create //remove the update parameter to simplify object
+      const subtask_name = body.subtask_name;
+      const parentId = body.parentId;
+      delete body.subtask_name;
+      delete body.parentId;
+      createAPIJSON(req.params.uid + `/task/${subtask_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
+        console.log(result)
+        res.send(result)
+      })
+
+      //http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/subtask/sub_task_1/parent/mOCohcha1i6sInCJPeEp
+
+      // http://localhost:10000/update/{uid}/task/{id}?
+      break;
+    }
+
+
     default:
       console.log('default case hit')
   }
@@ -229,17 +254,18 @@ app.post('/api/update/:uid', (req, res) => {
       })
 
       break;
-    case 'listSettings':
+    case 'listSettings': {
       delete body.update //remove the update parameter to simplify object
       const listId = body.listId;
       delete body.listId;
-      updateAPIJSON(req.params.uid + `/list/${body.listId}`, body, (result) => { //add /List/:ID to url
+      updateAPIJSON(req.params.uid + `/list/${listId}`, body, (result) => { //add /List/:ID to url
         console.log(result)
         res.send(result)
       })
 
       break;
-    case 'taskSettings':
+    }
+    case 'taskSettings': {
       delete body.update //remove the update parameter to simplify object
       const taskId = body.taskId;
       delete body.taskId;
@@ -251,6 +277,19 @@ app.post('/api/update/:uid', (req, res) => {
       // http://localhost:10000/update/{uid}/task/{id}?
 
       break;
+    }
+
+    case 'subtasks': {
+      delete body.update;
+      const taskId = body.taskId;
+      delete body.taskId;
+      updateAPISubtasks(req.params.uid, `/task/${taskId}`, body.sub_tasks, (result) => { //add /Task/:ID to url
+        console.log(result)
+        res.send(result)
+      })
+      break;
+    }
+
     default:
       console.log('default case hit')
   }
@@ -261,6 +300,8 @@ app.post('/api/update/:uid', (req, res) => {
 
 })
 
+
+
 app.get('/api/update/:uid/list/:list_id', (req, res) => {
   updateAPI(req.params.uid, `/list/${req.params.list_id}`, req.query, (output) => {
     console.log(output)
@@ -269,7 +310,75 @@ app.get('/api/update/:uid/list/:list_id', (req, res) => {
 
 })
 
+
+
+
+app.delete('/api/delete/:uid', (req, res) => {
+  let body = req.body
+
+  switch (body.delete) {
+    case 'user':
+      delete body.delete //remove the update parameter to simplify object
+      console.log(body)
+      destroyAPI(req.params.uid, "", (result) => {
+        console.log(result)
+        res.send(result)
+      })
+
+      break;
+    case 'list':
+      delete body.delete //remove the update parameter to simplify object
+      const listId = body.listId;
+      delete body.listId;
+      destroyAPI(req.params.uid, `/list/${listId}`, (result) => { //add /List/:ID to url
+        console.log(result)
+        res.send(result)
+      })
+
+      break;
+    case 'task':
+      delete body.delete //remove the update parameter to simplify object
+      const taskId = body.taskId;
+      delete body.taskId;
+      destroyAPI(req.params.uid, `/task/${taskId}`, (result) => { //add /Task/:ID to url
+        console.log(result)
+        res.send(result)
+      })
+
+
+      break;
+    case 'subtask':
+      delete body.delete //remove the update parameter to simplify object
+
+      //make this just edit the array
+
+      // const task_name = body.task_name;
+      // const parentId = body.parentId;
+      // delete body.task_name;
+      // delete body.parentId;
+      // updateAPIJSON(req.params.uid + `/task/${task_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
+      //   console.log(result)
+      //   res.send(result)
+      // })
+
+      // http://localhost:10000/update/{uid}/task/{id}?
+
+      break;
+    default:
+      console.log('default case hit')
+  }
+
+})
+
 //http://localhost:10000/create/{uid}/task/{name}/parents/{pid}?<params>
+function createAPI(uid, callback) {
+  var url = 'http://localhost:10000/create/' + uid
+
+  apiCall(url, (output) => {
+    callback(output) //return output to the passed in callback function
+  })
+}
+
 function createAPIJSON(uid, json, callback) {
   var url = 'http://localhost:10000/create/' + uid + "?"
 
@@ -304,6 +413,18 @@ function updateAPI(uid, parameters, queries, callback) {
   })
 }
 
+function updateAPISubtasks(uid, parameters, subtasks, callback) {
+  var url = 'http://localhost:10000/update/' + uid + parameters
+
+
+
+
+  console.log(url)
+  apiCallWithPayload(url, subtasks, (output) => {
+    callback(output)
+  })
+}
+
 function updateAPIJSON(uid, json, callback) {
   var url = 'http://localhost:10000/update/' + uid + "?"
 
@@ -312,6 +433,17 @@ function updateAPIJSON(uid, json, callback) {
   }
 
   url = url.substr(0, url.length - 1)
+
+  console.log(url)
+
+  apiCall(url, (output) => {
+    callback(output) //return output to the passed in callback function
+  })
+}
+//http://localhost:10000/destroy/MIUVfleqSkxAtzwNeW0W/list/364DgExvwpE4lNC7JV59`
+
+function destroyAPI(uid, parameters, callback) {
+  var url = 'http://localhost:10000/destroy/' + uid + parameters
 
   console.log(url)
 
@@ -343,6 +475,73 @@ function apiCall(url, callback) {
     console.log("Error: " + err.message)
   })
 }
+
+function apiCallWithPayload(url, payload, callback) {
+
+  // const options = {
+  //   method: 'GET',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'Content-Type': 'application/json'
+  //   },
+  //   body: JSON.stringify(payload)
+  // }
+  url += `?sub_tasks=[`
+
+  for (const item in payload) {
+    url += `${item}, `
+  }
+  url = url.substr(0, url.length - 2) + "]"
+
+  http.get(url, (resp) => {
+    let data = ''
+
+    // A chunk of data has been received.
+    resp.on('data', (chunk) => {
+      data += chunk
+    })
+
+    // The whole response has been received. Print out the result.
+    resp.on('end', () => {
+      // console.log(JSON.parse(data).explanation)
+      callback(data)
+      // return output
+    });
+
+  }).on("error", (err) => {
+    console.log("Error: " + err.message)
+  })
+}
+// function apiCallWithPayload(url, payload, callback) {
+
+//   const options = {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify(payload)
+//   }
+
+//   http.request(url, options, (resp) => {
+//     let data = ''
+
+//     // A chunk of data has been received.
+//     resp.on('data', (chunk) => {
+//       data += chunk
+//     })
+
+//     // The whole response has been received. Print out the result.
+//     resp.on('end', () => {
+//       // console.log(JSON.parse(data).explanation)
+//       callback(data)
+//       // return output
+//     });
+
+//   }).on("error", (err) => {
+//     console.log("Error: " + err.message)
+//   })
+// }
 
 function getTasks(callback) {
   // var output =1
