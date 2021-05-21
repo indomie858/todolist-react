@@ -246,10 +246,13 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
 // Ensures we get the correct task by specifying the parent list
 func (r *Request) GetTaskByName(name, parentid string) (*TaskJSON, error) {
     var tjson *TaskJSON
-    var task Task
 
-    // Get all tasks from Firestore where the task_name is the same as the one provided
-    iter := r.Client.Collection("tasks").Where("task_name", "==", name).Where("parent_id", "==", parentid).Documents(r.Ctx)
+    // Get all tasks from Firestore where the task_name
+    // is the same as the one provided
+    iter := r.Client.Collection("tasks")
+                    .Where("task_name", "==", name)
+                    .Where("parent_id", "==", parentid)
+                    .Documents(r.Ctx)
 
     // For each document
     for {
@@ -267,7 +270,9 @@ func (r *Request) GetTaskByName(name, parentid string) (*TaskJSON, error) {
             return tjson, errors.New(e)
         }
 
-        // Put data into our task structure
+        var task Task
+
+        // Put data into our firestore task structure
         docsnap.DataTo(&task)
 
         // Make sure we're getting a task the user actually owns
@@ -396,7 +401,7 @@ func (r *Request) GetRemindTasks() ([]*TaskJSON, error) {
     var tasks []*TaskJSON
 
     // Get all tasks from Firestore where the owner is the requesting user and the parent is the same as the one provided
-    iter := r.Client.Collection("tasks").Where("parent_id", "!=", "x").Documents(r.Ctx)
+    iter := r.Client.Collection("tasks").Where("reminder_time", "<=", time.Now()).Documents(r.Ctx)
 
     // For each document
     for {
