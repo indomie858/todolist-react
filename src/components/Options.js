@@ -57,7 +57,8 @@ async function setDefaultListGlobal(listValue){
 
 
 const Options = (props) => {
-
+    const [showShareInput, setShowShareInput] = useState(false);
+    const [shareListInput, setShareListInput] = useState('');
     const [listValue, setListValue] = useState(props.defaultList);
     const [emailSelected, setEmailSelected] = useState(props.defaultReminders['email']);
     const [discordSelected, setDiscordSelected] = useState(props.defaultReminders['discord']);
@@ -80,25 +81,51 @@ const Options = (props) => {
         });
     }
 
+    function sendOptions(partialUserObject) {
+        console.log("sneding")
+        console.log(partialUserObject.discord_reminder)
+
+        props.onChooseOption({
+            default_list: partialUserObject.hasOwnProperty('default_list') ? partialUserObject.default_list : listValue,
+            discord_reminder: partialUserObject.hasOwnProperty('discord_reminder') ? partialUserObject.discord_reminder : discordSelected,
+            email_reminder: partialUserObject.hasOwnProperty('email_reminder') ? partialUserObject.email_reminder : emailSelected
+        })
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        e.target.reset();
+        //handle share submit here
+        //variable for input is shareListInput
+        alert(`Shared list to ${shareListInput}`)
+    }
+
     return ( 
         <div>
             <div className="popover" >
                 <div className="listHeader">List Options:</div>
-                    <div className="optionsOption"><span className="clickableText green">Share</span> this list</div>
+                    <div className="optionsOption"><span className="clickableText green" onClick={() => setShowShareInput(!showShareInput)}>Share</span> this list</div>
+                    {showShareInput && 
+                       <form className="addSubForm" onSubmit={handleSubmit}>
+                           <input type="text" placeholder="User email" onChange={(e)=> setShareListInput(e.target.value)} />
+                           <button type="submit">Share</button>
+                       </form> 
+                    }
                     <div className="optionsOption"><span className="clickableText red">Delete</span> this list</div>
 
                 <div className="listHeader">Global Options:</div>
                     <div className="optionsOption">Default List: &nbsp;
-                        <select value={listValue} onChange={(e) => {setListValue(e.target.value); setDefaultListGlobal(e.target.value)}}>
-                            <option value="Main">Main</option>
-                            <option value="Shared">Shared</option>
-                            <option value="Other List">Other List</option>
+                        <select value={listValue} onChange={(e) => {setListValue(e.target.value); sendOptions({default_list: e.target.value});}}>
+                            {props.userLists.map((name, id) => (
+                                <option value={name[0]} key={id[1]}>{name[0]}</option>
+                            ))}
+                            
                         </select>
                     </div>
                     <div className="optionsOption">Default Reminder Method: 
                         <div className="remindersContainer">
-                            <MailOutlineIcon className={emailSelected ? "outlined icon" : "icon"} onClick={() => {setEmailGlobal(!emailSelected); setEmailSelected(!emailSelected);}}/>
-                            <img alt="discord icon" className={discordSelected ? "discord outlined icon" : "discord icon"} onClick={() => setDiscordSelected(!discordSelected)} src={discordImage}/>
+                            <MailOutlineIcon className={emailSelected ? "outlined icon" : "icon"} onClick={() => { const newValue = !emailSelected; setEmailSelected(newValue); sendOptions({email_reminder: newValue});}}/>
+                            <img alt="discord icon" className={discordSelected ? "discord outlined icon" : "discord icon"} onClick={() => { const newValue = !discordSelected; setDiscordSelected(newValue); sendOptions({discord_reminder: newValue});}} src={discordImage}/>
                         </div>
                     </div>
                 <div className="listHeader">Account Options:</div>

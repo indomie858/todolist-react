@@ -9,10 +9,12 @@ import ListNav from '../ListNav.js'
 import Options from '../Options.js'
 import Container from '@material-ui/core/Container';
 import { LensTwoTone } from '@material-ui/icons';
+import moment from 'moment'
 
 const Home = () => {
 
-  const userId = "a3a1hWUx5geKB8qeR6fbk5LZZGI2"; // TODO: Get this from them being logged in
+  const userId = JSON.parse(sessionStorage.getItem("token")).uid; // TODO: Get this from them being logged in
+
   // const listId = 'updated_isolated_list';
 
   let viewingList = 'mJmia9sdFy6yfb134ygs';
@@ -47,7 +49,7 @@ const Home = () => {
     [
       {
         id: "FAKE1",
-        text: "Starter 1",
+        text: " ",
         date: "0001-01-01T00:00:00Z",
         parent_id: "mJmia9sdFy6yfb134ygs",
         list: "updated_isolated_list",
@@ -64,7 +66,7 @@ const Home = () => {
         reminder_time: "0001-01-01T00:00:00Z",
         shared: false,
         subTasks: [],
-        sub_task: false,
+        sub_task: true,
         task_owner: "a3a1hWUx5geKB8qeR6fbk5LZZGI2"
       },
       {
@@ -85,7 +87,7 @@ const Home = () => {
         sub_task: false,
         subTasks: [],
         task_owner: "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-        text: "Starter 2",
+        text: " ",
         willRepeat: false
       }
     ]
@@ -95,30 +97,52 @@ const Home = () => {
   const [userLists, setUserLists] = useState([]);
   const [discordDefault, setDiscordDefault] = useState(false);
   const [emailDefault, setEmailDefault] = useState(false);
+  const [defaultList, setDefaultList] = useState("Main");
+  const [selectedList, setSelectedList] = useState("Main");
 
   function refreshTasks() {
     fetch(`http://localhost:3003/api/userData/${userId}`).then(
       data => data.text().then(
         value => {
           const userData = JSON.parse(value).result;
+          console.log("user:")
+          console.log(userData.User)
+          setDefaultList(userData.User.default_list)
+          setDiscordDefault(userData.User.discord_reminder)
+          setEmailDefault(userData.User.email_reminder)
           const listsFromDb = userData.Lists;
           let listNames = []; 
           listsFromDb.forEach(list => {
             listNames.push([list.list_name, list.id])
           })
           setUserLists(listNames);
-          let newTasks = []
-          userData.AllTasks[0].forEach(task => {
-            let parentList = null;
-            listsFromDb.forEach(list => {
-              if (list.id == task.parent_id) {
-                parentList = list.list_name
-              }
-            })
-            task.list = parentList;
-            task.subTasks = [];
-            newTasks.push(task);
-          });
+          let newTasks = [];
+          console.log("AllTasks")
+          console.log(userData.AllTasks)
+          if (userData.AllTasks[0]) {
+            userData.AllTasks.forEach( someList =>
+              someList.forEach(task => {
+                let parentList = null;
+                listsFromDb.forEach(list => {
+                  if (list.id == task.parent_id) {
+                    parentList = list.list_name
+                  }
+                })
+                console.log(task.date)
+                task.date = moment(task.date).toDate();
+                task.date = moment(task.date).add(7, 'h').toDate();
+                console.log(task.date)
+                task.list = parentList;
+                console.log("parent list info");
+                console.log(task.list + selectedList)
+                task.subTasks = [];
+                if (task.list == selectedList) {
+                  newTasks.push(task);
+                }
+              })
+            );
+          }
+          console.log(newTasks)
           setTasks(newTasks);
         }
       )
@@ -147,7 +171,7 @@ const Home = () => {
   const [email, setEmail] = useState('');
 
   function updateTask(taskObject) {
-    // console.log("updating")
+    console.log("updating")
     setChangeTask(false);
     let parentId;
     userLists.forEach(([name, id]) => {
@@ -156,7 +180,12 @@ const Home = () => {
       }
     })
 
-    // console.log(taskObject)
+    // taskObject.date = moment(taskObject.date).format("MM/DD/YYYY hh:MM:ss A")
+    // console.log(taskObject.date)
+    taskObject.end_repeat = moment(taskObject.end_repeat).format("MM/DD/YYYY hh:MM:ss A")
+    console.log(taskObject.end_repeat)
+
+    console.log(taskObject)
     fetch('http://localhost:3003/api/update/'+userId, {
                     method: 'POST',
                     headers: {
@@ -166,17 +195,17 @@ const Home = () => {
                     body: JSON.stringify({
                         
                         update: 'taskSettings', 
-                        taskID: taskObject.id,
+                        taskId: taskObject.id,
                         date: taskObject.date,
                         discordSelected: taskObject.discordSelected,
                         emailSelected: taskObject.emailSelected,
                         end_repeat: taskObject.end_repeat,
                         parent_id: parentId,
                         remind: taskObject.remind,
-                        reminder_time: taskObject.reminder_time,
+                        reminder_time: taskObject.date,
                         repeatFrequency: taskObject.repeatFrequency,
+                        willRepeat: taskObject.willRepeat,
                         text: taskObject.text,
-                        willRepeat: taskObject.willRepeat
                         
                     })
             
@@ -184,23 +213,130 @@ const Home = () => {
                     if(response.status===404){
                         return "Error: 404"
                     }else{
-                        console.log(response)
-                        console.log(typeof(response))
-                        return response}
-                }).then(data=>{console.log(data); JSON.stringify(data)});
-    refreshTasks();
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
 
+  function createTask(taskObject) {
+    console.log("creating")
+    setAddTask(false); 
+    let parentId;
+    userLists.forEach(([name, id]) => {
+      console.log(id + name)
+      if (name == taskObject.list) {
+        parentId = id;
+      }
+      console.log(parentId)
+    })
+
+    // taskObject.date = moment(taskObject.date).format("MM/DD/YYYY hh:MM:ss A")
+    // console.log(taskObject.date)
+    taskObject.end_repeat = moment(taskObject.end_repeat).format("MM/DD/YYYY hh:MM:ss A")
+
+    console.log(taskObject)
+    fetch('http://localhost:3003/api/create/'+userId, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        
+                        create: 'task', 
+                        date: taskObject.date,
+                        discordSelected: taskObject.discordSelected,
+                        emailSelected: taskObject.emailSelected,
+                        end_repeat: taskObject.end_repeat,
+                        parentId: parentId,
+                        remind: taskObject.remind,
+                        reminder_time: taskObject.date,
+                        repeatFrequency: taskObject.repeatFrequency,
+                        sub_task: true,
+                        willRepeat: taskObject.willRepeat,
+                        task_name: taskObject.text,
+                        
+                    })
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
+  }
+
+  function updateUserSettings(userObject) {
+    fetch('http://localhost:3003/api/update/'+userId, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        
+                        update: 'userSettings', 
+                        default_list: userObject.default_list,
+                        discord_reminder: userObject.discord_reminder,
+                        email_reminder: userObject.email_reminder
+                        
+                    })
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
+  }
+
+  function deleteTask(id) {
+    console.log("delete this:")
+    console.log(id)
+    console.log('http://localhost:3003/api/delete/'+userId)
+    fetch('http://localhost:3003/api/delete/'+userId, {
+                    method: 'DELETE',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        
+                        delete: 'task', 
+                        taskId: id
+                        
+                    })
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
+  }
+
+  function choseAList(chosen) {
+    setListNav(false); 
+    setSelectedList(chosen);
+    
+  }
+
+  useEffect(() => {
+    refreshTasks();
+ }, [selectedList]);
   
   return (
     <>
       {/* <Container maxWidth="xs"> */}
-      <p>Welcome {email}</p>
       <div className="mainContainer">
-        {showAddTask && <AddTask userLists={userLists} onAdd={() => {setAddTask(false); refreshTasks()}} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
+        {showAddTask && <AddTask userLists={userLists} list={defaultList} onAdd={createTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
         {showChangeTask && <AddTask userLists={userLists} onAdd={updateTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setChangeTask(false)}
           id={changingTask.id}
           date={changingTask.date}
+          time={changingTask.date}
           text={changingTask.text}
           list={changingTask.list}
           willRepeat={changingTask.willRepeat}
@@ -208,13 +344,14 @@ const Home = () => {
           repeatFrequency={changingTask.repeatFrequency}
           emailSelected={changingTask.emailSelected}
           discordSelected={changingTask.discordSelected}
+          subtasks={changingTask.subTasks}
         />}
-        {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main List" }, { name: "Some Shared List" }, { name: "Some Other List" }]} />}
-        {showOptions && <Options defaultList={"Shared"} defaultReminders={{ "discord": true, "email": false }} />}
+        {showListNav && <ListNav onChooseList={choseAList} lists={[{ name: "Main" }, { name: "Shared" }]} />}
+        {showOptions && <Options onChooseOption={updateUserSettings} userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
-          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' changeTask={
+          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle={selectedList} markCompleted={deleteTask} changeTask={
             (id) => {
               for (let i = 0; i < tasks.length; i++) {
                 if (tasks[i].id === id) {

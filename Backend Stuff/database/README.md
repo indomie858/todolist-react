@@ -24,25 +24,11 @@
 
 # Getting Started with Database Server
 
-## The GOPATH environment variable
-[snippet from here](https://golang.org/doc/gopath_code#GOPATH)
-
-The GOPATH environment variable specifies the location of your workspace. It defaults to a directory named go inside your home directory, so $HOME/go on Unix, $home/go on Plan 9, and %USERPROFILE%\go (usually C:\Users\YourName\go) on Windows.
-
-_If you would like to work in a different location, you will need to set GOPATH to the path to that directory._ (Another common setup is to set GOPATH=$HOME). Note that GOPATH must not be the same path as your Go installation.
-
-The command `go env GOPATH` prints the effective current GOPATH; it prints the default location if the environment variable is unset.
-
-For convenience, add the workspace's bin subdirectory to your PATH:
-
-`$ export PATH=$PATH:$(go env GOPATH)/bin`
-
-To learn more about the GOPATH environment variable, see 'go help gopath'.
-
 ## .env File
 I believe you need to make a .env file in `database/bin` ... I don't know how to make it so it just auto works like the server *r i p*
 
-File should contain
+File should contain the same fields from the service account private key, which can be generated from the [project settings page]( https://console.firebase.google.com/u/0/project/friday-584/settings/serviceaccounts/adminsdk)
+
 ```env
    # .env file
    # Configuration for Firestore SDK
@@ -68,68 +54,105 @@ In terminal navigate to `database/bin` and run `go run api_server.go`
 ## Adding Data to a Collection
 
 ### Add User
-`http://localhost:10000/create/user/{name}`
+`http://localhost:10000/create/user/{uid}`
 
 **Example**
 
 URL
 
-`http://localhost:10000/create/user/testing_user_1`
+`http://localhost:10000/create/user/fa3454dga5y`
 
 Return (new user)
 
 ```json
-"result": {
-    "User": {
-        "id": "XIatYAGJBbZgJwBVEYJ3",
-        "name": "testing_user_1",
-        "lists": [
-            "wYb9jQqrLQERkDEjdtHI"
-        ],
-        "discord_reminder": false,
-        "email_reminder": false
-    },
-    "List": null,
-    "Lists": [
-        {
-            "id": "wYb9jQqrLQERkDEjdtHI",
-            "list_name": "first_list",
-            "list_owner": "XIatYAGJBbZgJwBVEYJ3",
-            "shared_users": [
-                ""
+{
+    "result": {
+        "User": {
+            "id": "fa3454dga5y",
+            "lists": [
+                "mUxacmXhI5dpETXL3FE7",
+                "OvwusB67jFk5h8ToVnFZ"
             ],
-            "tasks": [
-                "3C8lL89d4cGi3aZ3OokE"
-            ]
-        }
-    ],
-    "Task": null,
-    "Tasks": null,
-    "AllTasks": [
-        [
+            "discord_reminder": false,
+            "email_reminder": false
+        },
+        "List": null,
+        "Lists": [
             {
-                "id": "3C8lL89d4cGi3aZ3OokE",
-                "text": "first_task",
-                "task_owner": "XIatYAGJBbZgJwBVEYJ3",
-                "parent_id": "wYb9jQqrLQERkDEjdtHI",
-                "date": "0001-01-01T00:00:00Z",
-                "isComplete": false,
-                "willRepeat": false,
-                "repeatFrequency": "never",
-                "end_repeat": "0001-01-01T00:00:00Z",
-                "remind": false,
-                "emailSelected": false,
-                "discordSelected": false,
-                "reminder": "none",
-                "reminder_time": "0001-01-01T00:00:00Z",
-                "priority": "none",
-                "shared": false,
-                "subTasks": [
+                "id": "OvwusB67jFk5h8ToVnFZ",
+                "list_name": "Shared",
+                "list_owner": "fa3454dga5y",
+                "shared": true,
+                "shared_users": [
                     ""
+                ],
+                "tasks": [
+                    "LaOy8UGuZQ8G5nyk3ESn"
+                ]
+            },
+            {
+                "id": "mUxacmXhI5dpETXL3FE7",
+                "list_name": "Main",
+                "list_owner": "fa3454dga5y",
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "o8GzmaxRNv67FzUFYGqW"
                 ]
             }
+        ],
+        "Task": null,
+        "Tasks": null,
+        "AllTasks": [
+            [
+                {
+                    "id": "LaOy8UGuZQ8G5nyk3ESn",
+                    "text": "First Task !",
+                    "task_owner": "fa3454dga5y",
+                    "parent_id": "OvwusB67jFk5h8ToVnFZ",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ],
+            [
+                {
+                    "id": "o8GzmaxRNv67FzUFYGqW",
+                    "text": "First Task !",
+                    "task_owner": "fa3454dga5y",
+                    "parent_id": "mUxacmXhI5dpETXL3FE7",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ]
         ]
-    ]
+    }
 }
 ```
 
@@ -287,13 +310,13 @@ Return (new list)
 ```
 
 ### Add Task
-`http://localhost:10000/create/{uid}/task/{name}/parents/{pid}?<params>`
+`http://localhost:10000/create/{uid}/task/{name}/parent/{pid}?<params>`
 
 **Example**
 
 URL
 
-`http://localhost:10000//create/gNMA6TlIOCdB52LPSuL5/task/test_task_1/parent/fQksVGJzgTUc6FervXa4?sub_task=false&lock=false&date_due=01/02/2006 3:04:05 PM`
+`http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/task/test_task_1/parent/fQksVGJzgTUc6FervXa4?sub_task=false&lock=false&date_due=01/02/2006 3:04:05 PM`
 
 
 Return (new task)

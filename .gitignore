@@ -17,6 +17,7 @@ go.sum
 /build
 
 # misc
+/hello-world-firestore
 /Backend Stuff/database/bin/database/.env
 .DS_Store
 .env.local

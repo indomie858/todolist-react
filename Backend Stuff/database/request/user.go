@@ -16,13 +16,14 @@ const (
     FREE = "free"
 )
 
-// Structure for user data
+// Firstore structure for user data
 type User struct {
     // Firestore generated user ID
     Id              string   `firestore:"id,omitempty"`
 
     // Name of the user
-    Name            string   `firestore:"name,omitempty"`
+    FirstName       string   `firestore:"first_name,omitempty"`
+    LastName        string   `firestore:"last_name,omitempty"`
 
     // Email of the user -- could possibly be an array if desired
     Email           string   `firestore:"email,omitempty"`
@@ -41,12 +42,14 @@ type User struct {
     EmailReminder   bool     `firestore:"email_reminder"`
 }
 
+// JSON Structure for user data 
 type UserJSON struct {
     // Firestore generated user ID
     Id              string   `json:"id,omitempty"`
 
     // Name of the user
-    Name            string   `json:"name,omitempty"`
+    FirstName       string   `json:"first_name,omitempty"`
+    LastName        string   `json:"last_name,omitempty"`
 
     // Email of the user -- could possibly be an array if desired
     Email           string   `json:"email,omitempty"`
@@ -67,34 +70,40 @@ type UserJSON struct {
 
 // func AddUser {{{
 //
-func (r *Request) AddUser(name string, fields url.Values) (*UserJSON, error) {
+func (r *Request) AddUser(id string, fields url.Values) (*UserJSON, error) {
     var ujson *UserJSON
-    // Create a new doc & set our UserId to that doc's ID
-    ref := r.Client.Collection("users").NewDoc()
-    r.UserId = ref.ID
+
+    r.UserId = id
 
     // Parse the url fields into a map for Firestore
-    data := ParseUserFields(fields)
+    var data = make(map[string]interface{})
+    data["discord_reminder"] = false
+    data["email_reminder"] = false
+    data = ParseUserFields(fields, data)
 
     // If this wasn't passed in the payload, then let's create a default list array
     if data["lists"] == nil {
         // f is a url.Values variable, which is required for r.AddList
         f := url.Values{}
-        list, _ := r.AddList("first_list", f)
+        mainlist, _ := r.AddList("Main", f)
+
+        f.Add("shared", "true")
+        sharedlist, _ := r.AddList("Shared", f)
 
         var lists []string
-        lists = append(lists, list.Id)
+        lists = append(lists, mainlist.Id)
+        lists = append(lists, sharedlist.Id)
         data["lists"] = lists
     }
 
-    if data["name"] == nil {
-        data["name"] = name
+    if data["id"] == nil {
+        data["id"] = id
     }
 
     //fmt.Printf("%v\n", data)
 
     // Pass the field data to Firestore
-    _, err := ref.Set(r.Ctx, data, firestore.MergeAll)
+    _, err := r.Client.Collection("users").Doc(id).Set(r.Ctx, data)
     if err != nil {
         e := fmt.Sprintf("err setting new user data: %v", err)
         return ujson, errors.New(e)
@@ -188,7 +197,8 @@ func (r *Request) UpdateUser(fields url.Values) (*UserJSON, error) {
     //fmt.Printf("%v", fields)
 
     // Parse the url fields into a map for Firestore
-    data := ParseUserFields(fields)
+    var data = make(map[string]interface{})
+    data = ParseUserFields(fields, data)
 
     //fmt.Printf("%v", data)
 
@@ -231,9 +241,8 @@ func (r *Request) DestroyUser() error {
 
 // func ParseUserFields {{{
 //
-func ParseUserFields(fields url.Values) map[string]interface{} {
+func ParseUserFields(fields url.Values, data map[string]interface{}) map[string]interface{} {
     // log.Printf(fields)
-    var data = make(map[string]interface{})
 
     for k, v := range fields {
         // Ensure the key is lower case
@@ -244,7 +253,10 @@ func ParseUserFields(fields url.Values) map[string]interface{} {
 
         // We want to check the key to ensure we don't just add a bunch of new fields
         switch k {
-        case "name":
+        case "first_name":
+            data[k] = val
+            break
+        case "last_name":
             data[k] = val
             break
         case "email":
@@ -277,7 +289,8 @@ func (r *Request) UserToJSON() *UserJSON {
     var userjson UserJSON
 
     userjson.Id              = r.User.Id
-    userjson.Name            = r.User.Name
+    userjson.FirstName       = r.User.FirstName
+    userjson.LastName        = r.User.LastName
     userjson.Email           = r.User.Email
     userjson.Status          = r.User.Status
     userjson.Lists           = r.User.Lists

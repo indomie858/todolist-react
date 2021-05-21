@@ -2,7 +2,6 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Home from './components/Pages/Home';
-import Demo from './components/Pages/Demo';
 //import Preferences from './components/Pages/Preferences';
 import Login from './components/login/Login';
 import useToken from './components/login/useToken';
@@ -36,13 +35,7 @@ const App = ({ handleGoogleAuth }) => {
             <Route
               exact
               path="/"
-              render={() => (<Home />)}
-            />
-            {/* for in class "Hello world demo" */}
-            <Route
-              exact
-              path="/demo"
-              render={() => (<Demo />)} 
+              render={() => (<Login setToken={setToken} handleGoogleAuth={handleGoogleAuth} />)}
             />
           </Switch>
         </Router>

@@ -56,15 +56,13 @@ type Result struct {
 // Create a new user in the Firstore database wih the provided name
 //
 // Example:
-// http://localhost:10000/create/user/{name}
-// http://localhost:10000/create/user/sabra
+// http://localhost:10000/create/user/{uid}
 func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
     //fmt.Println("Endpoint Hit: createUser")
 
     // Read the variables passed
     vars := mux.Vars(r)
 	uid := vars["uid"]
-	name := vars["name"]
 
     // Create a new request for the app
     a.Request = request.NewRequest("create", uid)
@@ -79,7 +77,7 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Perform the requested action
-    user, err := a.Request.AddUser(name, payload)
+    user, err := a.Request.AddUser(id, payload)
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, err.Error())
         return
@@ -717,7 +715,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/", a.homePage)
 
     // Create functions
-	a.Router.HandleFunc("/create/user/{name}", a.createUser).Methods("GET", "POST")
+	a.Router.HandleFunc("/create/user/{uid}", a.createUser).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/list/{name}", a.createList).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/task/{name}/parent/{pid}", a.createTask).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/subtask/{name}/parent/{pid}", a.createSubtask).Methods("GET", "POST")
@@ -726,7 +724,7 @@ func (a *App) initializeRoutes() {
     // We can use one for destroying both tasks and subtasks due to requiring the parent id
 	a.Router.HandleFunc("/destroy/{uid}", a.destroyUser).Methods("GET","DELETE")
     a.Router.HandleFunc("/destroy/{uid}/list/{id}", a.destroyList).Methods("GET", "DELETE")
-    a.Router.HandleFunc("/destroy/{uid}/task/{name}/parent/{pid}", a.destroyTask).Methods("GET", "DELETE")
+    a.Router.HandleFunc("/destroy/{uid}/task/{id}", a.destroyTask).Methods("GET", "DELETE")
 
     // Read functions
     // Only one for tasks & subtaks, as we get both using just the parent id, not user id

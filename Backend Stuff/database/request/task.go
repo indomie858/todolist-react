@@ -3,6 +3,7 @@ package request
 import (
     "time"
     "fmt"
+    "regexp"
     "net/url"
     "errors"
     "strings"
@@ -208,7 +209,6 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
     data["parent_id"] = parentid
     data["lock"] = false
     data["done"] = false
-    data["repeating"] = false
     data["repeat"] = NEVER
     data["remind"] = false
     data["discord"] = false
@@ -233,7 +233,7 @@ func (r *Request) AddTask(name, parentid string, fields url.Values) (*TaskJSON, 
         return tjson, errors.New(e)
     }
 
-    if name != "first_task" {
+    if name != "First Task !" {
         r.UpdateListTasks(data["parent_id"].(string), ref.ID)
     }
 
@@ -396,7 +396,7 @@ func (r *Request) GetRemindTasks() ([]*TaskJSON, error) {
     var tasks []*TaskJSON
 
     // Get all tasks from Firestore where the owner is the requesting user and the parent is the same as the one provided
-    iter := r.Client.Collection("tasks").Where("parent_id", "!=", "x").Documents(r.Ctx)
+    iter := r.Client.Collection("tasks").Where("reminder_time", "<=", time.Now()).Documents(r.Ctx)
 
     // For each document
     for {
@@ -455,6 +455,8 @@ func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
     var data = make(map[string]interface{})
     data = r.ParseTaskFields(fields, data)
 
+    fmt.Printf("%v\n",data)
+
     // Get a reference to our task
     ref := r.Client.Collection("tasks").Doc(tjson.Id)
 
@@ -466,7 +468,8 @@ func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
     }
 
     if data["task_name"] != nil {
-        return r.GetTaskByName(data["task_name"].(string), tjson.Parent)
+        tjson, err = r.GetTaskByName(data["task_name"].(string), tjson.Parent)
+        return tjson, err
     }
 
     tjson, err = r.GetTaskByName(tjson.Name, tjson.Parent)
@@ -662,7 +665,7 @@ func (r *Request) DestroyTaskById(id string) error {
 //
 // Parses the fields of the request payload
 func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}) map[string]interface{} {
-    //fmt.Printf("task fields: %v\n", fields)
+    fmt.Printf("task fields: %v\n", fields)
 
     // Parse url fields
     for k, v := range fields {
@@ -697,18 +700,14 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
         case "done":
             data[k], _ = strconv.ParseBool(val)
             break
-        case "willRepeat":
-            data["reapting"], _ = strconv.ParseBool(val)
+        case "willrepeat":
+            data["repeating"], _ = strconv.ParseBool(val)
             break
-        case "repeatFrequency":
+        case "repeatfrequency":
             data["repeat"] = val
-            if val != NEVER {
-                data["repeating"] = true
-            }
-            // Need function to update date_due at the repeat interval
             break
         case "end_repeat":
-            data[k], _ = time.Parse("01/02/2006", val)
+            data[k], _ = time.Parse("01/02/2006 3:04:05 PM", val)
             break
         case "reminder":
             // I am going to set the time we need to remind them at right here
@@ -721,13 +720,13 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             if len(reminder) == 4 {
                 // Only way this could be the case is if it's "At time of event"
                 data["reminder"] = ATOE
-                data["reminder_time"] = data["date_due"]
-                data["remind"] = true
+                //data["reminder_time"] = data["date_due"]
+                //data["remind"] = true
                 break
             }
 
             // So reminder must be some time before the event
-            timeBefore, _ := strconv.Atoi(reminder[0])
+            //timeBefore, _ := strconv.Atoi(reminder[0])
 
             // Let's determine if it's minutes, days, or weeks before
             // which is indicated by the second word in the reminder
@@ -737,31 +736,31 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             i := interval[0]
             if i == 'd' {
                 data["reminder"] = reminder[0] + DBE
-                var remindTime time.Time
+                /*var remindTime time.Time
                 due := data["date_due"].(time.Time)
 
                 remindTime = due.AddDate(0, 0, -timeBefore)
-                data["reminder_time"] = remindTime
+                data["reminder_time"] = remindTime*/
             }
 
             if i == 'm' {
                 data["reminder"] = reminder[0] + MBE
-                var remindTime time.Time
+                /*var remindTime time.Time
                 due := data["date_due"].(time.Time)
                 var before time.Duration
                 before = time.Duration(timeBefore)
                 remindTime = due.Add(-before * time.Minute)
-                data["reminder_time"] = remindTime
+                data["reminder_time"] = remindTime*/
             }
 
             if i == 'w' {
                 data["reminder"] = reminder[0] + WBE
-                var remindTime time.Time
+                /*var remindTime time.Time
                 due := data["date_due"].(time.Time)
                 remindTime = due.AddDate(0, 0, -7 * timeBefore)
-                data["reminder_time"] = remindTime
+                data["reminder_time"] = remindTime*/
             }
-            data["remind"] = true
+            //data["remind"] = true
             break
         case "reminder_time":
             data[k], _ = time.Parse("01/02/2006 3:04:05 PM", val)
@@ -769,10 +768,10 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
         case "remind":
             data[k], _ = strconv.ParseBool(val)
             break
-        case "emailSelected":
+        case "emailselected":
             data["email"], _ = strconv.ParseBool(val)
             break
-        case "discordSelected":
+        case "discordselected":
             data["discord"], _ = strconv.ParseBool(val)
             break
         case "priority":
@@ -794,7 +793,17 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             data[k] = val
             break
         case "sub_tasks":
-            data[k] = val
+            var values []string
+            re := regexp.MustCompile(`\[([^\[\]]*)\]`)
+            submatchall := re.FindAllString(val, -1)
+        	for _, element := range submatchall {
+        		element = strings.Trim(element, "[")
+        		element = strings.Trim(element, "]")
+                vals := strings.Split(element, ",")
+                values = vals
+        	}
+            fmt.Printf("%v\n", values)
+            data[k] = values
             break
         }
     }
