@@ -204,6 +204,7 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
         // setToken(token);
         // console.log(token);
         //once token is set, home page renders
+        alert('User created. Please login');
     }
 
     const handleGoogleSignIn = async e => {
