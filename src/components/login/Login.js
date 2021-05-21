@@ -89,7 +89,7 @@ async function registerUser(credentials,callback) {
   .then((userCredential) => {
     // Registered.  Maybe return user to sign in?
     user = userCredential.user;
-    user.displayName = `${credentials.firstName} ${credentials.lastName}`
+    // user.displayName = `${credentials.firstName} ${credentials.lastName}`
     callback(user)
     
     // ...
@@ -163,7 +163,29 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
             lastName,
             isRegistered
         },(user)=>{if (user){
-          user.displayName=firstName+" "+lastName;
+          // user.displayName=firstName+" "+lastName;
+          console.log(user)
+          console.log("user id is"+user.uid)
+          fetch('http://localhost:3003/api/create/'+user.uid, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        
+                        create: 'user'
+
+                        
+                    })
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data))});
 
           firebase.auth().signOut().then(() => {
             // Sign-out successful.
