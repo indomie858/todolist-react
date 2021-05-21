@@ -28,7 +28,7 @@ const ListNav = (props) => {
                                     <Draggable key={name} draggableId={name} index={index}>
                                         {(provided) => (                                            
                                             <li {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                                <ListNavItem list={name}/>
+                                                <ListNavItem onChooseList={props.onChooseList} list={name}/>
                                             </li>
                                         )}
                                     </Draggable>

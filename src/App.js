@@ -35,7 +35,7 @@ const App = ({ handleGoogleAuth }) => {
             <Route
               exact
               path="/"
-              render={() => (<Login />)}
+              render={() => (<Login setToken={setToken} handleGoogleAuth={handleGoogleAuth} />)}
             />
           </Switch>
         </Router>

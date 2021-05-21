@@ -98,6 +98,7 @@ const Home = () => {
   const [discordDefault, setDiscordDefault] = useState(false);
   const [emailDefault, setEmailDefault] = useState(false);
   const [defaultList, setDefaultList] = useState("Main");
+  const [selectedList, setSelectedList] = useState("Main");
 
   function refreshTasks() {
     fetch(`http://localhost:3003/api/userData/${userId}`).then(
@@ -116,22 +117,30 @@ const Home = () => {
           })
           setUserLists(listNames);
           let newTasks = [];
+          console.log("AllTasks")
+          console.log(userData.AllTasks)
           if (userData.AllTasks[0]) {
-            userData.AllTasks[0].forEach(task => {
-              let parentList = null;
-              listsFromDb.forEach(list => {
-                if (list.id == task.parent_id) {
-                  parentList = list.list_name
+            userData.AllTasks.forEach( someList =>
+              someList.forEach(task => {
+                let parentList = null;
+                listsFromDb.forEach(list => {
+                  if (list.id == task.parent_id) {
+                    parentList = list.list_name
+                  }
+                })
+                console.log(task.date)
+                task.date = moment(task.date).toDate();
+                task.date = moment(task.date).add(7, 'h').toDate();
+                console.log(task.date)
+                task.list = parentList;
+                console.log("parent list info");
+                console.log(task.list + selectedList)
+                task.subTasks = [];
+                if (task.list == selectedList) {
+                  newTasks.push(task);
                 }
               })
-            console.log(task.date)
-            task.date = moment(task.date).toDate();
-            task.date = moment(task.date).add(7, 'h').toDate();
-            console.log(task.date)
-            task.list = parentList;
-            task.subTasks = [];
-            newTasks.push(task);
-          });
+            );
           }
           console.log(newTasks)
           setTasks(newTasks);
@@ -214,9 +223,11 @@ const Home = () => {
     setAddTask(false); 
     let parentId;
     userLists.forEach(([name, id]) => {
+      console.log(id + name)
       if (name == taskObject.list) {
         parentId = id;
       }
+      console.log(parentId)
     })
 
     // taskObject.date = moment(taskObject.date).format("MM/DD/YYYY hh:MM:ss A")
@@ -306,11 +317,20 @@ const Home = () => {
                       }
                 }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
+
+  function choseAList(chosen) {
+    setListNav(false); 
+    setSelectedList(chosen);
+    
+  }
+
+  useEffect(() => {
+    refreshTasks();
+ }, [selectedList]);
   
   return (
     <>
       {/* <Container maxWidth="xs"> */}
-      <p>Welcome {email}</p>
       <div className="mainContainer">
         {showAddTask && <AddTask userLists={userLists} list={defaultList} onAdd={createTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
         {showChangeTask && <AddTask userLists={userLists} onAdd={updateTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setChangeTask(false)}
@@ -326,12 +346,12 @@ const Home = () => {
           discordSelected={changingTask.discordSelected}
           subtasks={changingTask.subTasks}
         />}
-        {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main List" }, { name: "Some Shared List" }, { name: "Some Other List" }]} />}
+        {showListNav && <ListNav onChooseList={choseAList} lists={[{ name: "Main" }, { name: "Shared" }]} />}
         {showOptions && <Options onChooseOption={updateUserSettings} userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
-          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' markCompleted={deleteTask} changeTask={
+          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle={selectedList} markCompleted={deleteTask} changeTask={
             (id) => {
               for (let i = 0; i < tasks.length; i++) {
                 if (tasks[i].id === id) {
