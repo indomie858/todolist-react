@@ -17,9 +17,10 @@
       - [Read Task w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-task)
       - [Read Tasks w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#read-tasks)
    - [Editing Data](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#editing-values-in-the-database)
-      - [Edit User](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-user)
+      - [Edit User w/ ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-user)
       - [Edit List](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-list)
       - [Edit Task w/ Ex!](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#edit-task)
+- [Database Testing](https://github.com/indomie858/todolist-react/tree/dev/Backend%20Stuff/database#tests)
 
 
 # Getting Started with Database Server
@@ -54,7 +55,7 @@ In terminal navigate to `database/bin` and run `go run api_server.go`
 Payload keys must exactly match the fields for each collection type.\
 Possible `fields` are
 
-## USER 
+## USER
 
 |        field     |   type    | required | notes                                                                  |
 | :--------------: | :-------: | :------: | ---------------------------------------------------------------------- |
@@ -67,7 +68,7 @@ Possible `fields` are
 | discord_reminder | bool      |   NO     | Whether or not discord is the default reminder                         |
 | email_reminder   | bool      |   NO     | Whether or not email is the default reminder                           |
 
-## LIST 
+## LIST
 
 |     field     |   type    | required | notes                                                                  |
 | :-----------: | :-------: | :------: | ---------------------------------------------------------------------- |
@@ -108,105 +109,106 @@ Possible `fields` are
 ## Adding Data to a Collection
 
 ### Add User
-`http://localhost:10000/create/user/{uid}`
+`http://localhost:10000/create/user/{uid}?<params>`
 
 **Example**
 
 URL
 
-`http://localhost:10000/create/user/fa3454dga5y`
+`http://localhost:10000/create/user/q0nQCfPpjneYyCXAbXkK?first_name=Sabra&last_name=Bilodeau&email=testing.email.352@my.csun.edu`
 
-Return (new user)
+Return
 
 ```json
-{
-    "result": {
-        "User": {
-            "id": "fa3454dga5y",
-            "lists": [
-                "mUxacmXhI5dpETXL3FE7",
-                "OvwusB67jFk5h8ToVnFZ"
+"result": {
+    "User": {
+        "id": "q0nQCfPpjneYyCXAbXkK",
+        "first_name": "Sabra",
+        "last_name": "Bilodeau",
+        "email": "testing.email.352@my.csun.edu",
+        "lists": [
+            "iBYGoFECohgBloBCEgC4",
+            "BhG0RwO5vx1DZxNvyPik"
+        ],
+        "discord_reminder": false,
+        "email_reminder": false
+    },
+    "List": null,
+    "Lists": [
+        {
+            "id": "BhG0RwO5vx1DZxNvyPik",
+            "list_name": "Shared",
+            "list_owner": "q0nQCfPpjneYyCXAbXkK",
+            "shared": true,
+            "shared_users": [
+                ""
             ],
-            "discord_reminder": false,
-            "email_reminder": false
+            "tasks": [
+                "Kwb57EsDB68QiXguacEd"
+            ]
         },
-        "List": null,
-        "Lists": [
+        {
+            "id": "iBYGoFECohgBloBCEgC4",
+            "list_name": "Main",
+            "list_owner": "q0nQCfPpjneYyCXAbXkK",
+            "shared_users": [
+                ""
+            ],
+            "tasks": [
+                "gs7rdjwRrBQwGahGjLYB"
+            ]
+        }
+    ],
+    "Task": null,
+    "Tasks": null,
+    "AllTasks": [
+        [
             {
-                "id": "OvwusB67jFk5h8ToVnFZ",
-                "list_name": "Shared",
-                "list_owner": "fa3454dga5y",
-                "shared": true,
-                "shared_users": [
+                "id": "Kwb57EsDB68QiXguacEd",
+                "text": "First Task !",
+                "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                "parent_id": "BhG0RwO5vx1DZxNvyPik",
+                "date": "0001-01-01T00:00:00Z",
+                "isComplete": false,
+                "willRepeat": false,
+                "repeatFrequency": "never",
+                "end_repeat": "0001-01-01T00:00:00Z",
+                "remind": false,
+                "emailSelected": false,
+                "discordSelected": false,
+                "reminder": "none",
+                "reminder_time": "0001-01-01T00:00:00Z",
+                "priority": "none",
+                "shared": false,
+                "subTasks": [
                     ""
-                ],
-                "tasks": [
-                    "LaOy8UGuZQ8G5nyk3ESn"
-                ]
-            },
-            {
-                "id": "mUxacmXhI5dpETXL3FE7",
-                "list_name": "Main",
-                "list_owner": "fa3454dga5y",
-                "shared_users": [
-                    ""
-                ],
-                "tasks": [
-                    "o8GzmaxRNv67FzUFYGqW"
                 ]
             }
         ],
-        "Task": null,
-        "Tasks": null,
-        "AllTasks": [
-            [
-                {
-                    "id": "LaOy8UGuZQ8G5nyk3ESn",
-                    "text": "First Task !",
-                    "task_owner": "fa3454dga5y",
-                    "parent_id": "OvwusB67jFk5h8ToVnFZ",
-                    "date": "0001-01-01T00:00:00Z",
-                    "isComplete": false,
-                    "willRepeat": false,
-                    "repeatFrequency": "never",
-                    "end_repeat": "0001-01-01T00:00:00Z",
-                    "remind": false,
-                    "emailSelected": false,
-                    "discordSelected": false,
-                    "reminder": "none",
-                    "reminder_time": "0001-01-01T00:00:00Z",
-                    "priority": "none",
-                    "shared": false,
-                    "subTasks": [
-                        ""
-                    ]
-                }
-            ],
-            [
-                {
-                    "id": "o8GzmaxRNv67FzUFYGqW",
-                    "text": "First Task !",
-                    "task_owner": "fa3454dga5y",
-                    "parent_id": "mUxacmXhI5dpETXL3FE7",
-                    "date": "0001-01-01T00:00:00Z",
-                    "isComplete": false,
-                    "willRepeat": false,
-                    "repeatFrequency": "never",
-                    "end_repeat": "0001-01-01T00:00:00Z",
-                    "remind": false,
-                    "emailSelected": false,
-                    "discordSelected": false,
-                    "reminder": "none",
-                    "reminder_time": "0001-01-01T00:00:00Z",
-                    "priority": "none",
-                    "shared": false,
-                    "subTasks": [
-                        ""
-                    ]
-                }
-            ]
+        [
+            {
+                "id": "gs7rdjwRrBQwGahGjLYB",
+                "text": "First Task !",
+                "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                "parent_id": "iBYGoFECohgBloBCEgC4",
+                "date": "0001-01-01T00:00:00Z",
+                "isComplete": false,
+                "willRepeat": false,
+                "repeatFrequency": "never",
+                "end_repeat": "0001-01-01T00:00:00Z",
+                "remind": false,
+                "emailSelected": false,
+                "discordSelected": false,
+                "reminder": "none",
+                "reminder_time": "0001-01-01T00:00:00Z",
+                "priority": "none",
+                "shared": false,
+                "subTasks": [
+                    ""
+                ]
+            }
         ]
-    }
+    ]
 }
 ```
 
@@ -219,147 +221,103 @@ URL
 
 `http://localhost:10000/create/8MFkaIrLbLjkxpzGMCwH/list/test_list_1`
 
-Return (new list)
+Return
 
 ```json
-"result": {
-    "User": null,
-    "List": {
-        "id": "GqU6uVezdZlBYtK4MW72",
-        "list_name": "test_list_1",
-        "list_owner": "XIatYAGJBbZgJwBVEYJ3",
-        "shared_users": [
-            ""
-        ],
-        "tasks": [
-            "pzs73PE2dsGYHHjrIRKq"
-        ]
-    },
-    "Lists": null,
-    "Task": null,
-    "Tasks": [
-        {
-            "id": "pzs73PE2dsGYHHjrIRKq",
-            "text": "first_task",
-            "task_owner": "XIatYAGJBbZgJwBVEYJ3",
-            "parent_id": "GqU6uVezdZlBYtK4MW72",
-            "date": "0001-01-01T00:00:00Z",
-            "isComplete": false,
-            "willRepeat": false,
-            "repeatFrequency": "never",
-            "end_repeat": "0001-01-01T00:00:00Z",
-            "remind": false,
-            "emailSelected": false,
-            "discordSelected": false,
-            "reminder": "none",
-            "reminder_time": "0001-01-01T00:00:00Z",
-            "priority": "none",
-            "shared": false,
-            "subTasks": [
+{
+    "result": {
+        "User": null,
+        "List": {
+            "id": "ZhDmSusiguNCIp9A9H8x",
+            "list_name": "test_list_1",
+            "list_owner": "q0nQCfPpjneYyCXAbXkK",
+            "shared_users": [
                 ""
+            ],
+            "tasks": [
+                "CwLns7muiQ0u3PKA8OkD"
             ]
-        }
-    ],
-    "AllTasks": null
+        },
+        "Lists": null,
+        "Task": null,
+        "Tasks": [
+            {
+                "id": "CwLns7muiQ0u3PKA8OkD",
+                "text": "First Task !",
+                "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                "parent_id": "ZhDmSusiguNCIp9A9H8x",
+                "date": "0001-01-01T00:00:00Z",
+                "isComplete": false,
+                "willRepeat": false,
+                "repeatFrequency": "never",
+                "end_repeat": "0001-01-01T00:00:00Z",
+                "remind": false,
+                "emailSelected": false,
+                "discordSelected": false,
+                "reminder": "none",
+                "reminder_time": "0001-01-01T00:00:00Z",
+                "priority": "none",
+                "shared": false,
+                "subTasks": [
+                    ""
+                ]
+            }
+        ],
+        "AllTasks": null
+    }
 }
 ```
 
+Create list with payload\
 URL
 
 `http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/list/test_list_2?lock=true&shared=false`
 
-Return (new list)
+Return
 
 ```json
-"result": {
-    "User": null,
-    "List": {
-        "id": "97Fagi9Jk74BrlBXXGK0",
-        "list_name": "test_list_1",
-        "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
-        "shared_users": [
-            ""
-        ],
-        "tasks": [
-            "RDGP7OLhxpBvv7DJ3BnA"
-        ]
-    },
-    "Lists": null,
-    "Task": null,
-    "Tasks": [
-        {
-            "id": "RDGP7OLhxpBvv7DJ3BnA",
-            "text": "first_task",
-            "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "parent_id": "97Fagi9Jk74BrlBXXGK0",
-            "date": "0001-01-01T00:00:00Z",
-            "isComplete": false,
-            "willRepeat": false,
-            "repeatFrequency": "never",
-            "end_repeat": "0001-01-01T00:00:00Z",
-            "remind": false,
-            "emailSelected": false,
-            "discordSelected": false,
-            "reminder": "none",
-            "reminder_time": "0001-01-01T00:00:00Z",
-            "priority": "none",
-            "shared": false,
-            "subTasks": [
+{
+    "result": {
+        "User": null,
+        "List": {
+            "id": "s4LFfNmxchYpSops4zlU",
+            "list_name": "test_list_2",
+            "list_owner": "q0nQCfPpjneYyCXAbXkK",
+            "lock": true,
+            "shared_users": [
                 ""
+            ],
+            "tasks": [
+                "3vg86jNhau3Szgo9EwTc"
             ]
-        }
-    ],
-    "AllTasks": null
-}
-```
-
-URL
-
-`http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/list/test_list_2?lock=true&shared=false`
-
-Return (new list)
-
-```json
-"result": {
-    "User": null,
-    "List": {
-        "id": "lAbqHRKJ9OH2Dw9G3TVq",
-        "list_name": "test_list_2",
-        "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
-        "lock": true,
-        "shared_users": [
-            ""
+        },
+        "Lists": null,
+        "Task": null,
+        "Tasks": [
+            {
+                "id": "3vg86jNhau3Szgo9EwTc",
+                "text": "First Task !",
+                "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                "parent_id": "s4LFfNmxchYpSops4zlU",
+                "date": "0001-01-01T00:00:00Z",
+                "isComplete": false,
+                "willRepeat": false,
+                "repeatFrequency": "never",
+                "end_repeat": "0001-01-01T00:00:00Z",
+                "remind": false,
+                "emailSelected": false,
+                "discordSelected": false,
+                "reminder": "none",
+                "reminder_time": "0001-01-01T00:00:00Z",
+                "priority": "none",
+                "shared": false,
+                "subTasks": [
+                    ""
+                ]
+            }
         ],
-        "tasks": [
-            "mLIyPR7T8VBfBj9Fzu8D"
-        ]
-    },
-    "Lists": null,
-    "Task": null,
-    "Tasks": [
-        {
-            "id": "mLIyPR7T8VBfBj9Fzu8D",
-            "text": "first_task",
-            "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "parent_id": "lAbqHRKJ9OH2Dw9G3TVq",
-            "date": "0001-01-01T00:00:00Z",
-            "isComplete": false,
-            "willRepeat": false,
-            "repeatFrequency": "never",
-            "end_repeat": "0001-01-01T00:00:00Z",
-            "remind": false,
-            "emailSelected": false,
-            "discordSelected": false,
-            "reminder": "none",
-            "reminder_time": "0001-01-01T00:00:00Z",
-            "priority": "none",
-            "shared": false,
-            "subTasks": [
-                ""
-            ]
-        }
-    ],
-    "AllTasks": null
+        "AllTasks": null
+    }
 }
 ```
 
@@ -373,36 +331,38 @@ URL
 `http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/task/test_task_1/parent/fQksVGJzgTUc6FervXa4?sub_task=false&lock=false&date_due=01/02/2006 3:04:05 PM`
 
 
-Return (new task)
+Return
 
 ```json
-"result": {
-    "User": null,
-    "List": null,
-    "Lists": null,
-    "Task": {
-        "id": "K6yP1uL8pVRBz0hcCN4u",
-        "text": "test_task_1",
-        "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-        "parent_id": "97Fagi9Jk74BrlBXXGK0",
-        "date": "2006-01-02T15:04:05Z",
-        "isComplete": false,
-        "willRepeat": false,
-        "repeatFrequency": "never",
-        "end_repeat": "0001-01-01T00:00:00Z",
-        "remind": false,
-        "emailSelected": false,
-        "discordSelected": false,
-        "reminder": "none",
-        "reminder_time": "0001-01-01T00:00:00Z",
-        "priority": "none",
-        "shared": false,
-        "subTasks": [
-            ""
-        ]
-    },
-    "Tasks": null,
-    "AllTasks": null
+{
+    "result": {
+        "User": null,
+        "List": null,
+        "Lists": null,
+        "Task": {
+            "id": "cMYyUwSbLDZ9Vl2WZIGe",
+            "text": "test_task_1",
+            "task_owner": "q0nQCfPpjneYyCXAbXkK",
+            "parent_id": "ZhDmSusiguNCIp9A9H8x",
+            "date": "2006-01-02T15:04:05Z",
+            "isComplete": false,
+            "willRepeat": false,
+            "repeatFrequency": "never",
+            "end_repeat": "0001-01-01T00:00:00Z",
+            "remind": false,
+            "emailSelected": false,
+            "discordSelected": false,
+            "reminder": "none",
+            "reminder_time": "0001-01-01T00:00:00Z",
+            "priority": "none",
+            "shared": false,
+            "subTasks": [
+                ""
+            ]
+        },
+        "Tasks": null,
+        "AllTasks": null
+    }
 }
 ```
 
@@ -415,36 +375,38 @@ URL
 
 `http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/subtask/sub_task_1/parent/mOCohcha1i6sInCJPeEp`
 
-Return (task)
+Return
 
 ```json
-"result": {
-    "User": null,
-    "List": null,
-    "Lists": null,
-    "Task": {
-        "id": "K6yP1uL8pVRBz0hcCN4u",
-        "text": "test_task_1",
-        "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-        "parent_id": "97Fagi9Jk74BrlBXXGK0",
-        "date": "2006-01-02T15:04:05Z",
-        "isComplete": false,
-        "willRepeat": false,
-        "repeatFrequency": "never",
-        "end_repeat": "0001-01-01T00:00:00Z",
-        "remind": false,
-        "emailSelected": false,
-        "discordSelected": false,
-        "reminder": "none",
-        "reminder_time": "0001-01-01T00:00:00Z",
-        "priority": "none",
-        "shared": false,
-        "subTasks": [
-            "sub_task_1"
-        ]
-    },
-    "Tasks": null,
-    "AllTasks": null
+{
+    "result": {
+        "User": null,
+        "List": null,
+        "Lists": null,
+        "Task": {
+            "id": "cMYyUwSbLDZ9Vl2WZIGe",
+            "text": "test_task_1",
+            "task_owner": "q0nQCfPpjneYyCXAbXkK",
+            "parent_id": "ZhDmSusiguNCIp9A9H8x",
+            "date": "2006-01-02T15:04:05Z",
+            "isComplete": false,
+            "willRepeat": false,
+            "repeatFrequency": "never",
+            "end_repeat": "0001-01-01T00:00:00Z",
+            "remind": false,
+            "emailSelected": false,
+            "discordSelected": false,
+            "reminder": "none",
+            "reminder_time": "0001-01-01T00:00:00Z",
+            "priority": "none",
+            "shared": false,
+            "subTasks": [
+                "sub_task_1"
+            ]
+        },
+        "Tasks": null,
+        "AllTasks": null
+    }
 }
 ```
 
@@ -504,16 +466,20 @@ URL
 
 `http://localhost:10000/read/gNMA6TlIOCdB52LPSuL5`
 
-Return (user)
+Return
 ```json
-"result": {
+{
+    "result": {
         "User": {
-            "id": "Fbk67C0uIfQ1Q3EepFBv",
-            "name": "testing_user_1",
+            "id": "q0nQCfPpjneYyCXAbXkK",
+            "first_name": "Sabra",
+            "last_name": "Bilodeau",
+            "email": "testing.email.352@my.csun.edu",
             "lists": [
-                "smtthiZ3VkQ59qlSAC0r",
-                "97Fagi9Jk74BrlBXXGK0",
-                "lAbqHRKJ9OH2Dw9G3TVq"
+                "iBYGoFECohgBloBCEgC4",
+                "BhG0RwO5vx1DZxNvyPik",
+                "ZhDmSusiguNCIp9A9H8x",
+                "s4LFfNmxchYpSops4zlU"
             ],
             "discord_reminder": false,
             "email_reminder": false
@@ -521,38 +487,50 @@ Return (user)
         "List": null,
         "Lists": [
             {
-                "id": "97Fagi9Jk74BrlBXXGK0",
-                "list_name": "test_list_1",
-                "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
+                "id": "BhG0RwO5vx1DZxNvyPik",
+                "list_name": "Shared",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "shared": true,
                 "shared_users": [
                     ""
                 ],
                 "tasks": [
-                    "RDGP7OLhxpBvv7DJ3BnA",
-                    "K6yP1uL8pVRBz0hcCN4u"
+                    "Kwb57EsDB68QiXguacEd"
                 ]
             },
             {
-                "id": "lAbqHRKJ9OH2Dw9G3TVq",
+                "id": "ZhDmSusiguNCIp9A9H8x",
+                "list_name": "test_list_1",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "CwLns7muiQ0u3PKA8OkD",
+                    "cMYyUwSbLDZ9Vl2WZIGe"
+                ]
+            },
+            {
+                "id": "iBYGoFECohgBloBCEgC4",
+                "list_name": "Main",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "gs7rdjwRrBQwGahGjLYB"
+                ]
+            },
+            {
+                "id": "s4LFfNmxchYpSops4zlU",
                 "list_name": "test_list_2",
-                "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
                 "lock": true,
                 "shared_users": [
                     ""
                 ],
                 "tasks": [
-                    "mLIyPR7T8VBfBj9Fzu8D"
-                ]
-            },
-            {
-                "id": "smtthiZ3VkQ59qlSAC0r",
-                "list_name": "first_list",
-                "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                "shared_users": [
-                    ""
-                ],
-                "tasks": [
-                    "HHA5h22N7f4WIa1p4IRl"
+                    "3vg86jNhau3Szgo9EwTc"
                 ]
             }
         ],
@@ -561,10 +539,54 @@ Return (user)
         "AllTasks": [
             [
                 {
-                    "id": "K6yP1uL8pVRBz0hcCN4u",
+                    "id": "Kwb57EsDB68QiXguacEd",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "BhG0RwO5vx1DZxNvyPik",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ],
+            [
+                {
+                    "id": "CwLns7muiQ0u3PKA8OkD",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "ZhDmSusiguNCIp9A9H8x",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                },
+                {
+                    "id": "cMYyUwSbLDZ9Vl2WZIGe",
                     "text": "test_task_1",
-                    "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                    "parent_id": "97Fagi9Jk74BrlBXXGK0",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "ZhDmSusiguNCIp9A9H8x",
                     "date": "2006-01-02T15:04:05Z",
                     "isComplete": false,
                     "willRepeat": false,
@@ -580,12 +602,14 @@ Return (user)
                     "subTasks": [
                         "sub_task_1"
                     ]
-                },
+                }
+            ],
+            [
                 {
-                    "id": "RDGP7OLhxpBvv7DJ3BnA",
-                    "text": "first_task",
-                    "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                    "parent_id": "97Fagi9Jk74BrlBXXGK0",
+                    "id": "gs7rdjwRrBQwGahGjLYB",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "iBYGoFECohgBloBCEgC4",
                     "date": "0001-01-01T00:00:00Z",
                     "isComplete": false,
                     "willRepeat": false,
@@ -605,33 +629,10 @@ Return (user)
             ],
             [
                 {
-                    "id": "mLIyPR7T8VBfBj9Fzu8D",
-                    "text": "first_task",
-                    "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                    "parent_id": "lAbqHRKJ9OH2Dw9G3TVq",
-                    "date": "0001-01-01T00:00:00Z",
-                    "isComplete": false,
-                    "willRepeat": false,
-                    "repeatFrequency": "never",
-                    "end_repeat": "0001-01-01T00:00:00Z",
-                    "remind": false,
-                    "emailSelected": false,
-                    "discordSelected": false,
-                    "reminder": "none",
-                    "reminder_time": "0001-01-01T00:00:00Z",
-                    "priority": "none",
-                    "shared": false,
-                    "subTasks": [
-                        ""
-                    ]
-                }
-            ],
-            [
-                {
-                    "id": "HHA5h22N7f4WIa1p4IRl",
-                    "text": "first_task",
-                    "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                    "parent_id": "smtthiZ3VkQ59qlSAC0r",
+                    "id": "3vg86jNhau3Szgo9EwTc",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "s4LFfNmxchYpSops4zlU",
                     "date": "0001-01-01T00:00:00Z",
                     "isComplete": false,
                     "willRepeat": false,
@@ -651,6 +652,7 @@ Return (user)
             ]
         ]
     }
+}
 ```
 
 ### Read All Users
@@ -730,82 +732,13 @@ URL
 
 `http://localhost:10000/read/gNMA6TlIOCdB52LPSuL5/list/fQksVGJzgTUc6FervXa4`
 
-Return (list)
+Return
 
 ```json
-"result": {
-    "User": null,
-    "List": {
-        "id": "lAbqHRKJ9OH2Dw9G3TVq",
-        "list_name": "test_list_2",
-        "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
-        "lock": true,
-        "shared_users": [
-            ""
-        ],
-        "tasks": [
-            "mLIyPR7T8VBfBj9Fzu8D"
-        ]
-    },
-    "Lists": null,
-    "Task": null,
-    "Tasks": [
-        {
-            "id": "mLIyPR7T8VBfBj9Fzu8D",
-            "text": "first_task",
-            "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "parent_id": "lAbqHRKJ9OH2Dw9G3TVq",
-            "date": "0001-01-01T00:00:00Z",
-            "isComplete": false,
-            "willRepeat": false,
-            "repeatFrequency": "never",
-            "end_repeat": "0001-01-01T00:00:00Z",
-            "remind": false,
-            "emailSelected": false,
-            "discordSelected": false,
-            "reminder": "none",
-            "reminder_time": "0001-01-01T00:00:00Z",
-            "priority": "none",
-            "shared": false,
-            "subTasks": [
-                ""
-            ]
-        }
-    ],
-    "AllTasks": null
-}
-```
-
-### Read List*s*
-( emphasis on the s )
-
-`http://localhost:10000/read/{uid}/lists`
-
-**Example**
-
-URL
-`http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/list/test_list_2?lock=true&shared=false`
-
-Return (all users lists)
-
-```json
-"result": {
-    "User": null,
-    "List": null,
-    "Lists": [
-        {
-            "id": "97Fagi9Jk74BrlBXXGK0",
-            "list_name": "test_list_1",
-            "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "shared_users": [
-                ""
-            ],
-            "tasks": [
-                "RDGP7OLhxpBvv7DJ3BnA",
-                "K6yP1uL8pVRBz0hcCN4u"
-            ]
-        },
-        {
+{
+    "result": {
+        "User": null,
+        "List": {
             "id": "lAbqHRKJ9OH2Dw9G3TVq",
             "list_name": "test_list_2",
             "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
@@ -817,66 +750,9 @@ Return (all users lists)
                 "mLIyPR7T8VBfBj9Fzu8D"
             ]
         },
-        {
-            "id": "smtthiZ3VkQ59qlSAC0r",
-            "list_name": "first_list",
-            "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "shared_users": [
-                ""
-            ],
-            "tasks": [
-                "HHA5h22N7f4WIa1p4IRl"
-            ]
-        }
-    ],
-    "Task": null,
-    "Tasks": null,
-    "AllTasks": [
-        [
-            {
-                "id": "K6yP1uL8pVRBz0hcCN4u",
-                "text": "test_task_1",
-                "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                "parent_id": "97Fagi9Jk74BrlBXXGK0",
-                "date": "2006-01-02T15:04:05Z",
-                "isComplete": false,
-                "willRepeat": false,
-                "repeatFrequency": "never",
-                "end_repeat": "0001-01-01T00:00:00Z",
-                "remind": false,
-                "emailSelected": false,
-                "discordSelected": false,
-                "reminder": "none",
-                "reminder_time": "0001-01-01T00:00:00Z",
-                "priority": "none",
-                "shared": false,
-                "subTasks": [
-                    "sub_task_1"
-                ]
-            },
-            {
-                "id": "RDGP7OLhxpBvv7DJ3BnA",
-                "text": "first_task",
-                "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                "parent_id": "97Fagi9Jk74BrlBXXGK0",
-                "date": "0001-01-01T00:00:00Z",
-                "isComplete": false,
-                "willRepeat": false,
-                "repeatFrequency": "never",
-                "end_repeat": "0001-01-01T00:00:00Z",
-                "remind": false,
-                "emailSelected": false,
-                "discordSelected": false,
-                "reminder": "none",
-                "reminder_time": "0001-01-01T00:00:00Z",
-                "priority": "none",
-                "shared": false,
-                "subTasks": [
-                    ""
-                ]
-            }
-        ],
-        [
+        "Lists": null,
+        "Task": null,
+        "Tasks": [
             {
                 "id": "mLIyPR7T8VBfBj9Fzu8D",
                 "text": "first_task",
@@ -899,12 +775,269 @@ Return (all users lists)
                 ]
             }
         ],
-        [
+        "AllTasks": null
+    }
+}
+```
+
+### Read List*s*
+( emphasis on the s )
+
+`http://localhost:10000/read/{uid}/lists`
+
+**Example**
+
+URL
+`http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/list/test_list_2?lock=true&shared=false`
+
+Return
+
+```json
+{
+    "result": {
+        "User": null,
+        "List": null,
+        "Lists": [
             {
-                "id": "HHA5h22N7f4WIa1p4IRl",
-                "text": "first_task",
-                "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                "parent_id": "smtthiZ3VkQ59qlSAC0r",
+                "id": "BhG0RwO5vx1DZxNvyPik",
+                "list_name": "Shared",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "shared": true,
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "Kwb57EsDB68QiXguacEd"
+                ]
+            },
+            {
+                "id": "ZhDmSusiguNCIp9A9H8x",
+                "list_name": "test_list_1",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "CwLns7muiQ0u3PKA8OkD",
+                    "cMYyUwSbLDZ9Vl2WZIGe"
+                ]
+            },
+            {
+                "id": "iBYGoFECohgBloBCEgC4",
+                "list_name": "Main",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "gs7rdjwRrBQwGahGjLYB"
+                ]
+            },
+            {
+                "id": "s4LFfNmxchYpSops4zlU",
+                "list_name": "test_list_2",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "lock": true,
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "3vg86jNhau3Szgo9EwTc"
+                ]
+            }
+        ],
+        "Task": null,
+        "Tasks": null,
+        "AllTasks": [
+            [
+                {
+                    "id": "Kwb57EsDB68QiXguacEd",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "BhG0RwO5vx1DZxNvyPik",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ],
+            [
+                {
+                    "id": "CwLns7muiQ0u3PKA8OkD",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "ZhDmSusiguNCIp9A9H8x",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                },
+                {
+                    "id": "cMYyUwSbLDZ9Vl2WZIGe",
+                    "text": "test_task_1",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "ZhDmSusiguNCIp9A9H8x",
+                    "date": "2006-01-02T15:04:05Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        "sub_task_1"
+                    ]
+                }
+            ],
+            [
+                {
+                    "id": "gs7rdjwRrBQwGahGjLYB",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "iBYGoFECohgBloBCEgC4",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ],
+            [
+                {
+                    "id": "3vg86jNhau3Szgo9EwTc",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "s4LFfNmxchYpSops4zlU",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ]
+        ]
+    }
+}
+
+```
+
+### Read Task
+`http://localhost:10000/read/{uid}/task/{id}`
+
+**Example**
+
+URL
+
+`http://localhost:10000/read/gNMA6TlIOCdB52LPSuL5/task/mOCohcha1i6sInCJPeEp`
+
+Return
+
+```json
+{
+    "result": {
+        "User": null,
+        "List": null,
+        "Lists": null,
+        "Task": {
+            "id": "cMYyUwSbLDZ9Vl2WZIGe",
+            "text": "test_task_1",
+            "task_owner": "q0nQCfPpjneYyCXAbXkK",
+            "parent_id": "ZhDmSusiguNCIp9A9H8x",
+            "date": "2006-01-02T15:04:05Z",
+            "isComplete": false,
+            "willRepeat": false,
+            "repeatFrequency": "never",
+            "end_repeat": "0001-01-01T00:00:00Z",
+            "remind": false,
+            "emailSelected": false,
+            "discordSelected": false,
+            "reminder": "none",
+            "reminder_time": "0001-01-01T00:00:00Z",
+            "priority": "none",
+            "shared": false,
+            "subTasks": [
+                "sub_task_1"
+            ]
+        },
+        "Tasks": null,
+        "AllTasks": null
+    }
+}
+```
+
+### Read Task*s*
+( emphasis on the s )
+
+`http://localhost:10000/read/{uid}/tasks/{pid}`
+
+**Example**
+
+URL
+
+`http://localhost:10000/read/pSdsua0LrFB4IiGIsI3j/tasks/Tju8b4Deg2f5lHvgE4PJ`
+
+Return
+
+```json
+{
+    "result": {
+        "User": null,
+        "List": null,
+        "Lists": null,
+        "Task": null,
+        "Tasks": [
+            {
+                "id": "CwLns7muiQ0u3PKA8OkD",
+                "text": "First Task !",
+                "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                "parent_id": "ZhDmSusiguNCIp9A9H8x",
                 "date": "0001-01-01T00:00:00Z",
                 "isComplete": false,
                 "willRepeat": false,
@@ -920,119 +1053,31 @@ Return (all users lists)
                 "subTasks": [
                     ""
                 ]
+            },
+            {
+                "id": "cMYyUwSbLDZ9Vl2WZIGe",
+                "text": "test_task_1",
+                "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                "parent_id": "ZhDmSusiguNCIp9A9H8x",
+                "date": "2006-01-02T15:04:05Z",
+                "isComplete": true,
+                "willRepeat": false,
+                "repeatFrequency": "never",
+                "end_repeat": "0001-01-01T00:00:00Z",
+                "remind": false,
+                "emailSelected": false,
+                "discordSelected": false,
+                "reminder": "none",
+                "reminder_time": "0001-01-01T00:00:00Z",
+                "priority": "none",
+                "shared": false,
+                "subTasks": [
+                    "sub_task_1"
+                ]
             }
-        ]
-    ]
-}
-
-```
-
-### Read Task
-`http://localhost:10000/read/{uid}/task/{id}`
-
-**Example**
-
-URL
-
-`http://localhost:10000/read/gNMA6TlIOCdB52LPSuL5/task/mOCohcha1i6sInCJPeEp`
-
-Return (task)
-
-```json
-"result": {
-    "User": null,
-    "List": null,
-    "Lists": null,
-    "Task": {
-        "id": "K6yP1uL8pVRBz0hcCN4u",
-        "text": "test_task_1",
-        "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-        "parent_id": "97Fagi9Jk74BrlBXXGK0",
-        "date": "2006-01-02T15:04:05Z",
-        "isComplete": false,
-        "willRepeat": false,
-        "repeatFrequency": "never",
-        "end_repeat": "0001-01-01T00:00:00Z",
-        "remind": false,
-        "emailSelected": false,
-        "discordSelected": false,
-        "reminder": "none",
-        "reminder_time": "0001-01-01T00:00:00Z",
-        "priority": "none",
-        "shared": false,
-        "subTasks": [
-            "sub_task_1"
-        ]
-    },
-    "Tasks": null,
-    "AllTasks": null
-}
-```
-
-### Read Task*s*
-( emphasis on the s )
-
-`http://localhost:10000/read/{uid}/tasks/{pid}`
-
-**Example**
-
-URL
-
-`http://localhost:10000/read/pSdsua0LrFB4IiGIsI3j/tasks/Tju8b4Deg2f5lHvgE4PJ`
-
-Return (all tasks in the list)
-
-```json
-"result": {
-    "User": null,
-    "List": null,
-    "Lists": null,
-    "Task": null,
-    "Tasks": [
-        {
-            "id": "K6yP1uL8pVRBz0hcCN4u",
-            "text": "test_task_1",
-            "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "parent_id": "97Fagi9Jk74BrlBXXGK0",
-            "date": "2006-01-02T15:04:05Z",
-            "isComplete": true,
-            "willRepeat": false,
-            "repeatFrequency": "never",
-            "end_repeat": "0001-01-01T00:00:00Z",
-            "remind": false,
-            "emailSelected": false,
-            "discordSelected": true,
-            "reminder": "none",
-            "reminder_time": "0001-01-01T00:00:00Z",
-            "priority": "none",
-            "shared": false,
-            "subTasks": [
-                "sub_task_1"
-            ]
-        },
-        {
-            "id": "RDGP7OLhxpBvv7DJ3BnA",
-            "text": "first_task",
-            "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "parent_id": "97Fagi9Jk74BrlBXXGK0",
-            "date": "0001-01-01T00:00:00Z",
-            "isComplete": false,
-            "willRepeat": false,
-            "repeatFrequency": "never",
-            "end_repeat": "0001-01-01T00:00:00Z",
-            "remind": false,
-            "emailSelected": false,
-            "discordSelected": false,
-            "reminder": "none",
-            "reminder_time": "0001-01-01T00:00:00Z",
-            "priority": "none",
-            "shared": false,
-            "subTasks": [
-                ""
-            ]
-        }
-    ],
-    "AllTasks": null
+        ],
+        "AllTasks": null
+    }
 }
 ```
 
@@ -1048,153 +1093,193 @@ URL
 
 `http://localhost:10000/update/Fbk67C0uIfQ1Q3EepFBv?discord_reminder=true`
 
-Return (updated user)
+Return
 
 ```json
-"result": {
-    "User": {
-        "id": "Fbk67C0uIfQ1Q3EepFBv",
-        "name": "testing_user_1",
-        "lists": [
-            "smtthiZ3VkQ59qlSAC0r",
-            "97Fagi9Jk74BrlBXXGK0",
-            "lAbqHRKJ9OH2Dw9G3TVq"
-        ],
-        "discord_reminder": true,
-        "email_reminder": false
-    },
-    "List": null,
-    "Lists": [
-        {
-            "id": "97Fagi9Jk74BrlBXXGK0",
-            "list_name": "test_list_1",
-            "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "shared_users": [
-                ""
+{
+    "result": {
+        "User": {
+            "id": "q0nQCfPpjneYyCXAbXkK",
+            "first_name": "Sabra",
+            "last_name": "Bilodeau",
+            "email": "testing.email.352@my.csun.edu",
+            "lists": [
+                "iBYGoFECohgBloBCEgC4",
+                "BhG0RwO5vx1DZxNvyPik",
+                "ZhDmSusiguNCIp9A9H8x",
+                "s4LFfNmxchYpSops4zlU"
             ],
-            "tasks": [
-                "RDGP7OLhxpBvv7DJ3BnA",
-                "K6yP1uL8pVRBz0hcCN4u"
-            ]
+            "discord_reminder": true,
+            "email_reminder": false
         },
-        {
-            "id": "lAbqHRKJ9OH2Dw9G3TVq",
-            "list_name": "test_list_2",
-            "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "lock": true,
-            "shared_users": [
-                ""
-            ],
-            "tasks": [
-                "mLIyPR7T8VBfBj9Fzu8D"
-            ]
-        },
-        {
-            "id": "smtthiZ3VkQ59qlSAC0r",
-            "list_name": "first_list",
-            "list_owner": "Fbk67C0uIfQ1Q3EepFBv",
-            "shared_users": [
-                ""
-            ],
-            "tasks": [
-                "HHA5h22N7f4WIa1p4IRl"
-            ]
-        }
-    ],
-    "Task": null,
-    "Tasks": null,
-    "AllTasks": [
-        [
+        "List": null,
+        "Lists": [
             {
-                "id": "K6yP1uL8pVRBz0hcCN4u",
-                "text": "test_task_1",
-                "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                "parent_id": "97Fagi9Jk74BrlBXXGK0",
-                "date": "2006-01-02T15:04:05Z",
-                "isComplete": true,
-                "willRepeat": false,
-                "repeatFrequency": "never",
-                "end_repeat": "0001-01-01T00:00:00Z",
-                "remind": false,
-                "emailSelected": false,
-                "discordSelected": true,
-                "reminder": "none",
-                "reminder_time": "0001-01-01T00:00:00Z",
-                "priority": "none",
-                "shared": false,
-                "subTasks": [
-                    "sub_task_1"
+                "id": "BhG0RwO5vx1DZxNvyPik",
+                "list_name": "Shared",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "shared": true,
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "Kwb57EsDB68QiXguacEd"
                 ]
             },
             {
-                "id": "RDGP7OLhxpBvv7DJ3BnA",
-                "text": "first_task",
-                "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                "parent_id": "97Fagi9Jk74BrlBXXGK0",
-                "date": "0001-01-01T00:00:00Z",
-                "isComplete": false,
-                "willRepeat": false,
-                "repeatFrequency": "never",
-                "end_repeat": "0001-01-01T00:00:00Z",
-                "remind": false,
-                "emailSelected": false,
-                "discordSelected": false,
-                "reminder": "none",
-                "reminder_time": "0001-01-01T00:00:00Z",
-                "priority": "none",
-                "shared": false,
-                "subTasks": [
+                "id": "ZhDmSusiguNCIp9A9H8x",
+                "list_name": "test_list_1",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "shared_users": [
                     ""
+                ],
+                "tasks": [
+                    "CwLns7muiQ0u3PKA8OkD",
+                    "cMYyUwSbLDZ9Vl2WZIGe"
+                ]
+            },
+            {
+                "id": "iBYGoFECohgBloBCEgC4",
+                "list_name": "Main",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "gs7rdjwRrBQwGahGjLYB"
+                ]
+            },
+            {
+                "id": "s4LFfNmxchYpSops4zlU",
+                "list_name": "test_list_2",
+                "list_owner": "q0nQCfPpjneYyCXAbXkK",
+                "lock": true,
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "3vg86jNhau3Szgo9EwTc"
                 ]
             }
         ],
-        [
-            {
-                "id": "mLIyPR7T8VBfBj9Fzu8D",
-                "text": "first_task",
-                "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                "parent_id": "lAbqHRKJ9OH2Dw9G3TVq",
-                "date": "0001-01-01T00:00:00Z",
-                "isComplete": false,
-                "willRepeat": false,
-                "repeatFrequency": "never",
-                "end_repeat": "0001-01-01T00:00:00Z",
-                "remind": false,
-                "emailSelected": false,
-                "discordSelected": false,
-                "reminder": "none",
-                "reminder_time": "0001-01-01T00:00:00Z",
-                "priority": "none",
-                "shared": false,
-                "subTasks": [
-                    ""
-                ]
-            }
-        ],
-        [
-            {
-                "id": "HHA5h22N7f4WIa1p4IRl",
-                "text": "first_task",
-                "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-                "parent_id": "smtthiZ3VkQ59qlSAC0r",
-                "date": "0001-01-01T00:00:00Z",
-                "isComplete": false,
-                "willRepeat": false,
-                "repeatFrequency": "never",
-                "end_repeat": "0001-01-01T00:00:00Z",
-                "remind": false,
-                "emailSelected": false,
-                "discordSelected": false,
-                "reminder": "none",
-                "reminder_time": "0001-01-01T00:00:00Z",
-                "priority": "none",
-                "shared": false,
-                "subTasks": [
-                    ""
-                ]
-            }
+        "Task": null,
+        "Tasks": null,
+        "AllTasks": [
+            [
+                {
+                    "id": "Kwb57EsDB68QiXguacEd",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "BhG0RwO5vx1DZxNvyPik",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ],
+            [
+                {
+                    "id": "CwLns7muiQ0u3PKA8OkD",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "ZhDmSusiguNCIp9A9H8x",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                },
+                {
+                    "id": "cMYyUwSbLDZ9Vl2WZIGe",
+                    "text": "test_task_1",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "ZhDmSusiguNCIp9A9H8x",
+                    "date": "2006-01-02T15:04:05Z",
+                    "isComplete": true,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        "sub_task_1"
+                    ]
+                }
+            ],
+            [
+                {
+                    "id": "gs7rdjwRrBQwGahGjLYB",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "iBYGoFECohgBloBCEgC4",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ],
+            [
+                {
+                    "id": "3vg86jNhau3Szgo9EwTc",
+                    "text": "First Task !",
+                    "task_owner": "q0nQCfPpjneYyCXAbXkK",
+                    "parent_id": "s4LFfNmxchYpSops4zlU",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ]
         ]
-    ]
+    }
 }
 ```
 
@@ -1207,7 +1292,7 @@ URL
 
 `http://localhost:10000/update/a3a1hWUx5geKB8qeR6fbk5LZZGI2/list/364DgExvwpE4lNC7JV59?list_name=list1updated&lock=false`
 
-Return (updated list)
+Return
 
 ```json
 
@@ -1222,35 +1307,78 @@ URL
 
 `http://localhost:10000/update/SFCCBJMyEA3NyBnCRe4j/task/jHExtupOREWA1CyHcEUX?done=true&discord=true`
 
-Return (updated task)
+Return
 
 ```json
-"result": {
-    "User": null,
-    "List": null,
-    "Lists": null,
-    "Task": {
-        "id": "K6yP1uL8pVRBz0hcCN4u",
-        "text": "test_task_1",
-        "task_owner": "Fbk67C0uIfQ1Q3EepFBv",
-        "parent_id": "97Fagi9Jk74BrlBXXGK0",
-        "date": "2006-01-02T15:04:05Z",
-        "isComplete": true,
-        "willRepeat": false,
-        "repeatFrequency": "never",
-        "end_repeat": "0001-01-01T00:00:00Z",
-        "remind": false,
-        "emailSelected": false,
-        "discordSelected": true,
-        "reminder": "none",
-        "reminder_time": "0001-01-01T00:00:00Z",
-        "priority": "none",
-        "shared": false,
-        "subTasks": [
-            "sub_task_1"
-        ]
-    },
-    "Tasks": null,
-    "AllTasks": null
+{
+    "result": {
+        "User": null,
+        "List": null,
+        "Lists": null,
+        "Task": {
+            "id": "cMYyUwSbLDZ9Vl2WZIGe",
+            "text": "test_task_1",
+            "task_owner": "q0nQCfPpjneYyCXAbXkK",
+            "parent_id": "ZhDmSusiguNCIp9A9H8x",
+            "date": "2006-01-02T15:04:05Z",
+            "isComplete": true,
+            "willRepeat": false,
+            "repeatFrequency": "never",
+            "end_repeat": "0001-01-01T00:00:00Z",
+            "remind": false,
+            "emailSelected": false,
+            "discordSelected": false,
+            "reminder": "none",
+            "reminder_time": "0001-01-01T00:00:00Z",
+            "priority": "none",
+            "shared": false,
+            "subTasks": [
+                "sub_task_1"
+            ]
+        },
+        "Tasks": null,
+        "AllTasks": null
+    }
 }
 ```
+
+# TESTS
+navigate to `bin/database`
+
+run `go test -v`
+
+return (so far) -
+
+```
+(base) sabra@Sabras-MacBook-Pro database % go test -v
+=== RUN   TestCreateUser
+--- PASS: TestCreateUser (2.57s)
+=== RUN   TestCreateList
+--- PASS: TestCreateList (1.20s)
+=== RUN   TestCreateListWithPayload
+--- PASS: TestCreateListWithPayload (1.10s)
+=== RUN   TestCreateTaskWithPaylod
+--- PASS: TestCreateTaskWithPaylod (0.58s)
+=== RUN   TestCreateSubTask
+--- PASS: TestCreateSubTask (0.40s)
+=== RUN   TestGetUser
+--- PASS: TestGetUser (1.13s)
+=== RUN   TestGetList
+--- PASS: TestGetList (0.54s)
+=== RUN   TestGetLists
+--- PASS: TestGetLists (1.09s)
+=== RUN   TestGetTask
+--- PASS: TestGetTask (0.20s)
+=== RUN   TestUpdateTask
+--- PASS: TestUpdateTask (0.37s)
+=== RUN   TestUpdateUser
+--- PASS: TestUpdateUser (1.45s)
+=== RUN   TestGetTasks
+--- PASS: TestGetTasks (0.47s)
+=== RUN   TestDestroyUser
+--- PASS: TestDestroyUser (3.45s)
+PASS
+ok  	database/bin/database	14.556s
+```
+
+***I DO NOT GUARANTEE ANY OTHER FUNCTION WILL WORK IF IT DOES NOT HAVE A PASSING TEST***

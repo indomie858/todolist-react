@@ -1,43 +1,3 @@
-# TESTS
-navigate to `bin/database`
-
-run `go test -v`
-
-return (so far) -
-
-```
-(base) sabra@Sabras-MacBook-Pro database % go test -v
-=== RUN   TestCreateUser
---- PASS: TestCreateUser (1.38s)
-=== RUN   TestCreateList
---- PASS: TestCreateList (1.06s)
-=== RUN   TestCreateListWithPayload
---- PASS: TestCreateListWithPayload (1.18s)
-=== RUN   TestCreateTaskWithPaylod
---- PASS: TestCreateTaskWithPaylod (0.54s)
-=== RUN   TestCreateSubTask
---- PASS: TestCreateSubTask (0.35s)
-=== RUN   TestGetUser
---- PASS: TestGetUser (0.98s)
-=== RUN   TestGetList
---- PASS: TestGetList (0.47s)
-=== RUN   TestGetLists
---- PASS: TestGetLists (0.81s)
-=== RUN   TestGetTask
---- PASS: TestGetTask (0.21s)
-=== RUN   TestUpdateTask
---- PASS: TestUpdateTask (0.39s)
-=== RUN   TestGetTasks
---- PASS: TestGetTasks (0.37s)
-=== RUN   TestDestroyUser
---- PASS: TestDestroyUser (2.50s)
-PASS
-ok  	database/bin/database	10.261s
-```
-
-***I DO NOT GUARANTEE ANY OTHER FUNCTION WILL WORK IF IT DOES NOT HAVE A PASSING TEST***
-
-
 ## CREATE
 ~~TestCreateUser(t *testing.T)~~
 
@@ -87,7 +47,7 @@ Possible `fields` are:
 |        field     |   type    | required | notes                                                                  |
 | :--------------: | :-------: | :------: | ---------------------------------------------------------------------- |
 | first_name       | string    |   NO     | Not required in the payload                                            |
-| last_name        | string    |   NO     | 
+| last_name        | string    |   NO     |
 | email            | string    |   NO     | Users email that they signed up with                                   |
 | status           | string    |   NO     | Users status to be shown to friends *later feature*                    |
 | lists            | []string  |   NO     | the ids of the users lists                                             |

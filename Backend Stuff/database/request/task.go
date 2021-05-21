@@ -455,7 +455,7 @@ func (r *Request) UpdateTask(id string, fields url.Values) (*TaskJSON, error) {
     var data = make(map[string]interface{})
     data = r.ParseTaskFields(fields, data)
 
-    fmt.Printf("%v\n",data)
+    //fmt.Printf("%v\n",data)
 
     // Get a reference to our task
     ref := r.Client.Collection("tasks").Doc(tjson.Id)
@@ -665,7 +665,7 @@ func (r *Request) DestroyTaskById(id string) error {
 //
 // Parses the fields of the request payload
 func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}) map[string]interface{} {
-    fmt.Printf("task fields: %v\n", fields)
+    //fmt.Printf("task fields: %v\n", fields)
 
     // Parse url fields
     for k, v := range fields {
