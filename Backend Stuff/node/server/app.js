@@ -317,6 +317,8 @@ app.get('/api/update/:uid/list/:list_id', (req, res) => {
 app.delete('/api/delete/:uid', (req, res) => {
   let body = req.body
 
+  console.log(body.delete)
+
   switch (body.delete) {
     case 'user':
       delete body.delete //remove the update parameter to simplify object
@@ -340,6 +342,7 @@ app.delete('/api/delete/:uid', (req, res) => {
     case 'task':
       delete body.delete //remove the update parameter to simplify object
       const taskId = body.taskId;
+      console.log("tdoctor" + taskId)
       delete body.taskId;
       destroyAPI(req.params.uid, `/task/${taskId}`, (result) => { //add /Task/:ID to url
         console.log(result)
