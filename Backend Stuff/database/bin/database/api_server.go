@@ -726,7 +726,7 @@ func (a *App) initializeRoutes() {
     // We can use one for destroying both tasks and subtasks due to requiring the parent id
 	a.Router.HandleFunc("/destroy/{uid}", a.destroyUser).Methods("GET","DELETE")
     a.Router.HandleFunc("/destroy/{uid}/list/{id}", a.destroyList).Methods("GET", "DELETE")
-    a.Router.HandleFunc("/destroy/{uid}/task/{name}/parent/{pid}", a.destroyTask).Methods("GET", "DELETE")
+    a.Router.HandleFunc("/destroy/{uid}/task/{id}", a.destroyTask).Methods("GET", "DELETE")
 
     // Read functions
     // Only one for tasks & subtaks, as we get both using just the parent id, not user id
