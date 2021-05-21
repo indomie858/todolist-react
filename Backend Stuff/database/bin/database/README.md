@@ -86,7 +86,8 @@ Possible `fields` are:
 
 |        field     |   type    | required | notes                                                                  |
 | :--------------: | :-------: | :------: | ---------------------------------------------------------------------- |
-| name             | string    |   NO     | Not required in the payload                                            |
+| first_name       | string    |   NO     | Not required in the payload                                            |
+| last_name        | string    |   NO     | 
 | email            | string    |   NO     | Users email that they signed up with                                   |
 | status           | string    |   NO     | Users status to be shown to friends *later feature*                    |
 | lists            | []string  |   NO     | the ids of the users lists                                             |
