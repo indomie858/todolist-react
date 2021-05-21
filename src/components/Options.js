@@ -94,9 +94,10 @@ const Options = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        e.target.reset();
         //handle share submit here
         //variable for input is shareListInput
-        alert('Shared list')
+        alert(`Shared list to ${shareListInput}`)
     }
 
     return ( 
