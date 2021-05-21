@@ -310,7 +310,6 @@ const Home = () => {
   return (
     <>
       {/* <Container maxWidth="xs"> */}
-      <p>Welcome {email}</p>
       <div className="mainContainer">
         {showAddTask && <AddTask userLists={userLists} list={defaultList} onAdd={createTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
         {showChangeTask && <AddTask userLists={userLists} onAdd={updateTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setChangeTask(false)}
@@ -326,12 +325,12 @@ const Home = () => {
           discordSelected={changingTask.discordSelected}
           subtasks={changingTask.subTasks}
         />}
-        {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main List" }, { name: "Some Shared List" }, { name: "Some Other List" }]} />}
+        {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main" }, { name: "Shared" }]} />}
         {showOptions && <Options onChooseOption={updateUserSettings} userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
-          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' markCompleted={deleteTask} changeTask={
+          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Main' markCompleted={deleteTask} changeTask={
             (id) => {
               for (let i = 0; i < tasks.length; i++) {
                 if (tasks[i].id === id) {
