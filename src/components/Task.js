@@ -31,13 +31,13 @@ const Task = (props) => {
                     }</p>
                 </div>
                 <div className="task-flex-mid" onClick={() => setShowSubTasks(!showSubTasks)}>
-                    {subtaskFlag ? (!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />) : ''}
+                    {subTasks ? (!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />) : ''}
                 </div>
                 <div className="task-flex-right" onClick={() => {
                     setTaskComplete(!taskComplete);
                     console.log(props.task)
                 }}>
-                    {!taskComplete ? <CheckBoxOutlineBlankIcon /> : <CheckBoxIcon />}
+                    {!taskComplete ? <CheckBoxOutlineBlankIcon onClick={() => props.markCompleted(props.id)} /> : <CheckBoxIcon />}
                 </div>
             </div>
             {/* displays list of subtasks when individual task is clicked */}

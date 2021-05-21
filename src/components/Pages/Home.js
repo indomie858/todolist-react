@@ -279,6 +279,32 @@ const Home = () => {
                       }
                 }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
+
+  function deleteTask(id) {
+    console.log("delete this:")
+    console.log(id)
+    console.log('http://localhost:3003/api/delete/'+userId)
+    fetch('http://localhost:3003/api/delete/'+userId, {
+                    method: 'DELETE',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        
+                        delete: 'task', 
+                        taskId: id
+                        
+                    })
+            
+                }).then(response => {
+                    if(response.status===404){
+                        return "Error: 404"
+                    }else{
+                        return response
+                      }
+                }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
+  }
   
   return (
     <>
@@ -304,7 +330,7 @@ const Home = () => {
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
-          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' changeTask={
+          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' markCompleted={deleteTask} changeTask={
             (id) => {
               for (let i = 0; i < tasks.length; i++) {
                 if (tasks[i].id === id) {

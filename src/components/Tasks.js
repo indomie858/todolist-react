@@ -13,7 +13,7 @@ const Tasks = (props) => {
                 }
                 return true;
             }).map((task) => (
-                <Task key={task.id} id={task.id} task={task} changeTask={(id) => props.changeTask(id)} />
+                <Task key={task.id} id={task.id} markCompleted={props.markCompleted} task={task} changeTask={(id) => props.changeTask(id)} />
             ))}
             {/* {props.tasks.map((task) => (
                 <Task key={task.id} id={task.id} task={task} changeTask={(id) => props.changeTask(id)} />
