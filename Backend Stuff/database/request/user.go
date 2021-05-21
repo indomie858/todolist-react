@@ -70,11 +70,9 @@ type UserJSON struct {
 func (r *Request) AddUser(id string, fields url.Values) (*UserJSON, error) {
     var ujson *UserJSON
 
-    // Get the Firestore path for the user
-    useridpath := fmt.Sprintf("users/%s", id)
+    // Create a new document
+    ref := r.Client.Collection("users").NewDoc(id)
 
-    // Pass that to Firestore
-    doc := r.Client.Doc(useridpath)
     r.UserId = id
 
     // Parse the url fields into a map for Firestore
@@ -102,7 +100,7 @@ func (r *Request) AddUser(id string, fields url.Values) (*UserJSON, error) {
     //fmt.Printf("%v\n", data)
 
     // Pass the field data to Firestore
-    _, err := doc.Set(r.Ctx, data, firestore.MergeAll)
+    _, err := ref.Set(r.Ctx, data, firestore.MergeAll)
     if err != nil {
         e := fmt.Sprintf("err setting new user data: %v", err)
         return ujson, errors.New(e)
