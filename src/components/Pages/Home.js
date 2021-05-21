@@ -117,24 +117,30 @@ const Home = () => {
           })
           setUserLists(listNames);
           let newTasks = [];
+          console.log("AllTasks")
+          console.log(userData.AllTasks)
           if (userData.AllTasks[0]) {
-            userData.AllTasks[0].forEach(task => {
-              let parentList = null;
-              listsFromDb.forEach(list => {
-                if (list.id == task.parent_id) {
-                  parentList = list.list_name
+            userData.AllTasks.forEach( someList =>
+              someList.forEach(task => {
+                let parentList = null;
+                listsFromDb.forEach(list => {
+                  if (list.id == task.parent_id) {
+                    parentList = list.list_name
+                  }
+                })
+                console.log(task.date)
+                task.date = moment(task.date).toDate();
+                task.date = moment(task.date).add(7, 'h').toDate();
+                console.log(task.date)
+                task.list = parentList;
+                console.log("parent list info");
+                console.log(task.list + selectedList)
+                task.subTasks = [];
+                if (task.list == selectedList) {
+                  newTasks.push(task);
                 }
               })
-            console.log(task.date)
-            task.date = moment(task.date).toDate();
-            task.date = moment(task.date).add(7, 'h').toDate();
-            console.log(task.date)
-            task.list = parentList;
-            task.subTasks = [];
-            if (task.list == selectedList) {
-              newTasks.push(task);
-            }
-          });
+            );
           }
           console.log(newTasks)
           setTasks(newTasks);
@@ -217,9 +223,11 @@ const Home = () => {
     setAddTask(false); 
     let parentId;
     userLists.forEach(([name, id]) => {
+      console.log(id + name)
       if (name == taskObject.list) {
         parentId = id;
       }
+      console.log(parentId)
     })
 
     // taskObject.date = moment(taskObject.date).format("MM/DD/YYYY hh:MM:ss A")
