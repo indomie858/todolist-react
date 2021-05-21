@@ -57,7 +57,8 @@ async function setDefaultListGlobal(listValue){
 
 
 const Options = (props) => {
-
+    const [showShareInput, setShowShareInput] = useState(false);
+    const [shareListInput, setShareListInput] = useState('');
     const [listValue, setListValue] = useState(props.defaultList);
     const [emailSelected, setEmailSelected] = useState(props.defaultReminders['email']);
     const [discordSelected, setDiscordSelected] = useState(props.defaultReminders['discord']);
@@ -91,11 +92,25 @@ const Options = (props) => {
         })
     }
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        e.target.reset();
+        //handle share submit here
+        //variable for input is shareListInput
+        alert(`Shared list to ${shareListInput}`)
+    }
+
     return ( 
         <div>
             <div className="popover" >
                 <div className="listHeader">List Options:</div>
-                    <div className="optionsOption"><span className="clickableText green">Share</span> this list</div>
+                    <div className="optionsOption"><span className="clickableText green" onClick={() => setShowShareInput(!showShareInput)}>Share</span> this list</div>
+                    {showShareInput && 
+                       <form className="addSubForm" onSubmit={handleSubmit}>
+                           <input type="text" placeholder="User email" onChange={(e)=> setShareListInput(e.target.value)} />
+                           <button type="submit">Share</button>
+                       </form> 
+                    }
                     <div className="optionsOption"><span className="clickableText red">Delete</span> this list</div>
 
                 <div className="listHeader">Global Options:</div>

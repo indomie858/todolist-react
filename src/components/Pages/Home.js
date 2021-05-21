@@ -13,7 +13,8 @@ import moment from 'moment'
 
 const Home = () => {
 
-  const userId = "a3a1hWUx5geKB8qeR6fbk5LZZGI2"; // TODO: Get this from them being logged in
+  const userId = JSON.parse(sessionStorage.getItem("token")).uid; // TODO: Get this from them being logged in
+
   // const listId = 'updated_isolated_list';
 
   let viewingList = 'mJmia9sdFy6yfb134ygs';
@@ -97,6 +98,7 @@ const Home = () => {
   const [discordDefault, setDiscordDefault] = useState(false);
   const [emailDefault, setEmailDefault] = useState(false);
   const [defaultList, setDefaultList] = useState("Main");
+  const [selectedList, setSelectedList] = useState("Main");
 
   function refreshTasks() {
     fetch(`http://localhost:3003/api/userData/${userId}`).then(
@@ -129,7 +131,9 @@ const Home = () => {
             console.log(task.date)
             task.list = parentList;
             task.subTasks = [];
-            newTasks.push(task);
+            if (task.list == selectedList) {
+              newTasks.push(task);
+            }
           });
           }
           console.log(newTasks)
@@ -305,11 +309,20 @@ const Home = () => {
                       }
                 }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
+
+  function choseAList(chosen) {
+    setListNav(false); 
+    setSelectedList(chosen);
+    
+  }
+
+  useEffect(() => {
+    refreshTasks();
+ }, [selectedList]);
   
   return (
     <>
       {/* <Container maxWidth="xs"> */}
-      <p>Welcome {email}</p>
       <div className="mainContainer">
         {showAddTask && <AddTask userLists={userLists} list={defaultList} onAdd={createTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
         {showChangeTask && <AddTask userLists={userLists} onAdd={updateTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setChangeTask(false)}
@@ -325,12 +338,12 @@ const Home = () => {
           discordSelected={changingTask.discordSelected}
           subtasks={changingTask.subTasks}
         />}
-        {showListNav && <ListNav onChooseList={() => setListNav(false)} lists={[{ name: "Main List" }, { name: "Some Shared List" }, { name: "Some Other List" }]} />}
+        {showListNav && <ListNav onChooseList={choseAList} lists={[{ name: "Main" }, { name: "Shared" }]} />}
         {showOptions && <Options onChooseOption={updateUserSettings} userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
         <Header />
         <div className='listContainer'>
           {/* displays placeholder list and title "Today" */}
-          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle='Today' markCompleted={deleteTask} changeTask={
+          {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle={selectedList} markCompleted={deleteTask} changeTask={
             (id) => {
               for (let i = 0; i < tasks.length; i++) {
                 if (tasks[i].id === id) {
