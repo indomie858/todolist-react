@@ -31,7 +31,7 @@ const Task = (props) => {
                     }</p>
                 </div>
                 <div className="task-flex-mid" onClick={() => setShowSubTasks(!showSubTasks)}>
-                    {subtaskFlag ? (!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />) : ''}
+                    {subTasks ? (!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />) : ''}
                 </div>
                 <div className="task-flex-right" onClick={() => {
                     setTaskComplete(!taskComplete);
