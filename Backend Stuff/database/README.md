@@ -24,25 +24,11 @@
 
 # Getting Started with Database Server
 
-## The GOPATH environment variable
-[snippet from here](https://golang.org/doc/gopath_code#GOPATH)
-
-The GOPATH environment variable specifies the location of your workspace. It defaults to a directory named go inside your home directory, so $HOME/go on Unix, $home/go on Plan 9, and %USERPROFILE%\go (usually C:\Users\YourName\go) on Windows.
-
-_If you would like to work in a different location, you will need to set GOPATH to the path to that directory._ (Another common setup is to set GOPATH=$HOME). Note that GOPATH must not be the same path as your Go installation.
-
-The command `go env GOPATH` prints the effective current GOPATH; it prints the default location if the environment variable is unset.
-
-For convenience, add the workspace's bin subdirectory to your PATH:
-
-`$ export PATH=$PATH:$(go env GOPATH)/bin`
-
-To learn more about the GOPATH environment variable, see 'go help gopath'.
-
 ## .env File
 I believe you need to make a .env file in `database/bin` ... I don't know how to make it so it just auto works like the server *r i p*
 
-File should contain
+File should contain the same fields from the service account private key, which can be generated from the [project settings page]( https://console.firebase.google.com/u/0/project/friday-584/settings/serviceaccounts/adminsdk)
+
 ```env
    # .env file
    # Configuration for Firestore SDK
@@ -68,7 +54,7 @@ In terminal navigate to `database/bin` and run `go run api_server.go`
 ## Adding Data to a Collection
 
 ### Add User
-`http://localhost:10000/create/user/{id}`
+`http://localhost:10000/create/user/{uid}`
 
 **Example**
 
