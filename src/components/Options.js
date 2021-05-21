@@ -96,7 +96,7 @@ const Options = (props) => {
         e.preventDefault();
         //handle share submit here
         //variable for input is shareListInput
-
+        alert('Shared list')
     }
 
     return ( 
