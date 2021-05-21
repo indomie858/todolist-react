@@ -4,7 +4,7 @@ import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 const ListNavItem = (props) => {
 
     return ( 
-        <div className="listNavContainer">
+        <div className="listNavContainer" onClick={() => props.onChooseList(props.list)}>
             <DragIndicatorIcon/>
             <div className="listDisplay">        
                 {props.list}
