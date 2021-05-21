@@ -56,16 +56,16 @@ type Result struct {
 // Create a new user in the Firstore database wih the provided name
 //
 // Example:
-// http://localhost:10000/create/user/{id}
+// http://localhost:10000/create/user/{uid}
 func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
     //fmt.Println("Endpoint Hit: createUser")
 
     // Read the variables passed
     vars := mux.Vars(r)
-	id := vars["id"]
+	uid := vars["uid"]
 
     // Create a new request for the app
-    a.Request = request.NewRequest("create", id)
+    a.Request = request.NewRequest("create", uid)
 
     // Get the payload params and display them to the terminal
 	payload := r.URL.Query()
@@ -715,7 +715,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/", a.homePage)
 
     // Create functions
-	a.Router.HandleFunc("/create/user/{id}", a.createUser).Methods("GET", "POST")
+	a.Router.HandleFunc("/create/user/{uid}", a.createUser).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/list/{name}", a.createList).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/task/{name}/parent/{pid}", a.createTask).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/subtask/{name}/parent/{pid}", a.createSubtask).Methods("GET", "POST")
