@@ -196,9 +196,10 @@ app.post('/api/create/:uid', (req, res) => {
       delete body.create //remove the update parameter to simplify object
       const task_name = body.task_name;
       const parentId = body.parentId;
+      console.log(parentId + " " + task_name)
       delete body.task_name;
       delete body.parentId;
-      createAPIJSON(req.params.uid + `/task/${task_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
+      createAPIJSON(req.params.uid + `/task/${task_name}/parent/${parentId}`, body, (result) => { //add /Task/:ID to url
         console.log(result)
         res.send(result)
       })
@@ -216,7 +217,7 @@ app.post('/api/create/:uid', (req, res) => {
       const parentId = body.parentId;
       delete body.subtask_name;
       delete body.parentId;
-      createAPIJSON(req.params.uid + `/task/${subtask_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
+      createAPIJSON(req.params.uid + `/task/${subtask_name}/parent/${parentId}`, body, (result) => { //add /Task/:ID to url
         console.log(result)
         res.send(result)
       })
@@ -387,6 +388,7 @@ function createAPIJSON(uid, json, callback) {
   }
 
   url = url.substr(0, url.length - 1)
+  console.log(url)
   apiCall(url, (output) => {
     callback(output) //return output to the passed in callback function
   })
