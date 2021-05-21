@@ -7,7 +7,7 @@ import { useHistory } from "react-router-dom";
 
   
 
-
+// these functions aren't used currently, but we are keeping them here because they would be good to use once we modularize the code more
 async function setEmailGlobal(emailState){
     let text = "a3a1hWUx5geKB8qeR6fbk5LZZGI2"
     // let options = "emailNotifications="+emailState
@@ -81,6 +81,8 @@ const Options = (props) => {
         });
     }
 
+
+    // We send all the options every time, but only update some.  Hence, we start with a partial user object, then add the missing ones from the defaults they already have
     function sendOptions(partialUserObject) {
         console.log("sneding")
         console.log(partialUserObject.discord_reminder)
@@ -103,6 +105,7 @@ const Options = (props) => {
     return ( 
         <div>
             <div className="popover" >
+                {/* like AddTask, this is all just some complicated html essentially.  Lots of passing around functions to update */}
                 <div className="listHeader">List Options:</div>
                     <div className="optionsOption"><span className="clickableText green" onClick={() => setShowShareInput(!showShareInput)}>Share</span> this list</div>
                     {showShareInput && 

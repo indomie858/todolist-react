@@ -20,6 +20,7 @@ const ListNav = (props) => {
         <div>
             <div className="popover">
                 <div className="listHeader">Change List:</div>
+                {/* I just followed a tutorial for this */}
                 <DragDropContext onDragEnd={handleOnDragEnd}>    
                     <Droppable droppableId="listOfLists">
                         {(provided) => (

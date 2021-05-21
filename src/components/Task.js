@@ -20,11 +20,12 @@ const Task = (props) => {
         console.log(subTask);
     }
 
-    //onClick={() => setShowCompleteButton(!showCompleteButton)}
+    
     return (
         <>
             <div className='task' >
                 <div className="task-flex-left">
+                    {/* when you click the name of a task, you can edit that task */}
                     <h3 onClick={() => { props.changeTask(props.id); }}>{props.task.text}{' '}</h3>
                     <p>{
                         moment(props.task.date).format("M/D h:mm A")
