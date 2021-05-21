@@ -22,7 +22,8 @@ type User struct {
     Id              string   `firestore:"id,omitempty"`
 
     // Name of the user
-    Name            string   `firestore:"name,omitempty"`
+    FirstName       string   `firestore:"first_name,omitempty"`
+    LastName        string   `firestore:"last_name,omitempty"`
 
     // Email of the user -- could possibly be an array if desired
     Email           string   `firestore:"email,omitempty"`
@@ -46,7 +47,8 @@ type UserJSON struct {
     Id              string   `json:"id,omitempty"`
 
     // Name of the user
-    Name            string   `json:"name,omitempty"`
+    FirstName       string   `json:"first_name,omitempty"`
+    LastName        string   `json:"last_name,omitempty"`
 
     // Email of the user -- could possibly be an array if desired
     Email           string   `json:"email,omitempty"`
@@ -73,7 +75,10 @@ func (r *Request) AddUser(id string, fields url.Values) (*UserJSON, error) {
     r.UserId = id
 
     // Parse the url fields into a map for Firestore
-    data := ParseUserFields(fields)
+    var data = make(map[string]interface{})
+    data["discord_reminder"] = false
+    data["email_reminder"] = false
+    data = ParseUserFields(fields, data)
 
     // If this wasn't passed in the payload, then let's create a default list array
     if data["lists"] == nil {
@@ -234,9 +239,8 @@ func (r *Request) DestroyUser() error {
 
 // func ParseUserFields {{{
 //
-func ParseUserFields(fields url.Values) map[string]interface{} {
+func ParseUserFields(fields url.Values, data map[string]interface{}) map[string]interface{} {
     // log.Printf(fields)
-    var data = make(map[string]interface{})
 
     for k, v := range fields {
         // Ensure the key is lower case
@@ -247,7 +251,10 @@ func ParseUserFields(fields url.Values) map[string]interface{} {
 
         // We want to check the key to ensure we don't just add a bunch of new fields
         switch k {
-        case "name":
+        case "first_name":
+            data[k] = val
+            break
+        case "last_name":
             data[k] = val
             break
         case "email":
