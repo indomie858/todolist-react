@@ -321,7 +321,7 @@ app.delete('/api/delete/:uid', (req, res) => {
     case 'user':
       delete body.delete //remove the update parameter to simplify object
       console.log(body)
-      destroyAPI(req.params.uid, "", (result) => {
+      destroyAPI("/user/" + req.params.uid, "", (result) => {
         console.log(result)
         res.send(result)
       })
