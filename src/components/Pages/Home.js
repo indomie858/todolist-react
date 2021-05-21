@@ -48,7 +48,7 @@ const Home = () => {
     [
       {
         id: "FAKE1",
-        text: "Starter 1",
+        text: " ",
         date: "0001-01-01T00:00:00Z",
         parent_id: "mJmia9sdFy6yfb134ygs",
         list: "updated_isolated_list",
@@ -86,7 +86,7 @@ const Home = () => {
         sub_task: false,
         subTasks: [],
         task_owner: "a3a1hWUx5geKB8qeR6fbk5LZZGI2",
-        text: "Starter 2",
+        text: " ",
         willRepeat: false
       }
     ]
@@ -103,6 +103,7 @@ const Home = () => {
       data => data.text().then(
         value => {
           const userData = JSON.parse(value).result;
+          console.log("user:")
           console.log(userData.User)
           setDefaultList(userData.User.default_list)
           setDiscordDefault(userData.User.discord_reminder)
@@ -113,14 +114,15 @@ const Home = () => {
             listNames.push([list.list_name, list.id])
           })
           setUserLists(listNames);
-          let newTasks = []
-          userData.AllTasks[0].forEach(task => {
-            let parentList = null;
-            listsFromDb.forEach(list => {
-              if (list.id == task.parent_id) {
-                parentList = list.list_name
-              }
-            })
+          let newTasks = [];
+          if (userData.AllTasks[0]) {
+            userData.AllTasks[0].forEach(task => {
+              let parentList = null;
+              listsFromDb.forEach(list => {
+                if (list.id == task.parent_id) {
+                  parentList = list.list_name
+                }
+              })
             console.log(task.date)
             task.date = moment(task.date).toDate();
             task.date = moment(task.date).add(7, 'h').toDate();
@@ -129,6 +131,7 @@ const Home = () => {
             task.subTasks = [];
             newTasks.push(task);
           });
+          }
           console.log(newTasks)
           setTasks(newTasks);
         }
@@ -233,12 +236,12 @@ const Home = () => {
                         discordSelected: taskObject.discordSelected,
                         emailSelected: taskObject.emailSelected,
                         end_repeat: taskObject.end_repeat,
-                        parent_id: parentId,
+                        parentId: parentId,
                         remind: taskObject.remind,
                         reminder_time: taskObject.date,
                         repeatFrequency: taskObject.repeatFrequency,
                         willRepeat: taskObject.willRepeat,
-                        text: taskObject.text,
+                        task_name: taskObject.text,
                         
                     })
             
@@ -281,7 +284,7 @@ const Home = () => {
       {/* <Container maxWidth="xs"> */}
       <p>Welcome {email}</p>
       <div className="mainContainer">
-        {showAddTask && <AddTask userLists={userLists} onAdd={createTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
+        {showAddTask && <AddTask userLists={userLists} list={defaultList} onAdd={createTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
         {showChangeTask && <AddTask userLists={userLists} onAdd={updateTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setChangeTask(false)}
           id={changingTask.id}
           date={changingTask.date}
