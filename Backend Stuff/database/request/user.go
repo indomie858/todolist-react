@@ -196,7 +196,8 @@ func (r *Request) UpdateUser(fields url.Values) (*UserJSON, error) {
     //fmt.Printf("%v", fields)
 
     // Parse the url fields into a map for Firestore
-    data := ParseUserFields(fields)
+    var data = make(map[string]interface{})
+    data = ParseUserFields(fields, data)
 
     //fmt.Printf("%v", data)
 
@@ -287,7 +288,8 @@ func (r *Request) UserToJSON() *UserJSON {
     var userjson UserJSON
 
     userjson.Id              = r.User.Id
-    userjson.Name            = r.User.Name
+    userjson.FirstName       = r.User.FirstName
+    userjson.LastName        = r.User.LastName
     userjson.Email           = r.User.Email
     userjson.Status          = r.User.Status
     userjson.Lists           = r.User.Lists
