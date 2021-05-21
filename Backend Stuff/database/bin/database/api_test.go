@@ -1,6 +1,7 @@
 package main
 
 import (
+    "database/request"
 
     "os"
     "fmt"
@@ -38,7 +39,13 @@ import (
 */
 
 var a App
-var testuid, testlid1, testlid2, testtid, teststid string
+const (
+    testuid = "q0nQCfPpjneYyCXAbXkK"
+    fn = "Sabra"
+    ln = "Bilodeau"
+    email = "testing.email.352@my.csun.edu"
+)
+var testlid1, testlid2, testtid, teststid string
 
 // src: https://github.com/TomFern/go-mux-api/blob/master/main_test.go
 func TestMain(m *testing.M) {
@@ -50,21 +57,48 @@ func TestMain(m *testing.M) {
 }
 
 func TestCreateUser(t *testing.T) {
-    req, _ := http.NewRequest("POST", "/create/user/testing_user_1", nil)
+    url := fmt.Sprintf("/create/user/%s?first_name=%s&last_name=%s&email=%s", testuid, fn, ln, email)
+    req, _ := http.NewRequest("POST", url, nil)
     //fmt.Printf("Create User Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create User Response: %v\n",response)
+    //fmt.Printf("Create User Response: %v\n",response)
 
     var m map[string]*Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
     result := m["result"]
     user := result.User
-    testuid = user.Id
-    if user.Name != "testing_user_1" {
-        t.Errorf("Expected the name to be set to 'testing_user_1'. Got '%v' instead.", user.Name)
+    if user.FirstName != fn {
+        t.Errorf("Expected the first name to be set to '%s'. Got '%v' instead.", fn, user.FirstName)
+    }
+
+    if user.LastName != ln {
+        t.Errorf("Expected the last name to be set to '%s'. Got '%v' instead.", ln, user.LastName)
+    }
+
+    if user.Email != email {
+        t.Errorf("Expected email to be set to '%s'. Got '%v' instead.", email, user.Email)
+    }
+
+    i := 0
+    for _, l := range result.Lists {
+        var list *request.ListJSON
+        list = l
+        if list.Name != "Main" {
+            if list.Name != "Shared" {
+                t.Errorf("Expected the lists name to either be 'Main' or 'Shared'. Got '%v' instead.", list.Name)
+            }
+        }
+
+        tasks := result.AllTasks[i]
+        var task *request.TaskJSON
+        task = tasks[0]
+        if task.Name != "First Task !" {
+            t.Errorf("Expected lists first task to be named 'First Task !'. Got '%v' instead.", task.Name)
+        }
+        i++
     }
 }
 
@@ -75,7 +109,7 @@ func TestCreateList(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create List Response: %v\n",response)
+    //fmt.Printf("Create List Response: %v\n",response)
 
     var m map[string]*Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -111,7 +145,7 @@ func TestCreateListWithPayload(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create List with Payload Response: %v\n",response)
+    //fmt.Printf("Create List with Payload Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -140,7 +174,7 @@ func TestCreateTaskWithPaylod(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create Task with Payload Response: %v\n",response)
+    //fmt.Printf("Create Task with Payload Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -167,7 +201,7 @@ func TestCreateSubTask(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Create Subtask Response: %v\n",response)
+    //fmt.Printf("Create Subtask Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -187,15 +221,19 @@ func TestGetUser(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get User Response: %v\n",response)
+    //fmt.Printf("Get User Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
 
     result := m["result"]
     user := result.User
-    if user.Name != "testing_user_1" {
-        t.Errorf("Expected the name to be set to 'testing_user_1'. Got '%v' instead.", user.Name)
+    if user.FirstName != fn {
+        t.Errorf("Expected the first name to be set to '%s'. Got '%v' instead.", fn, user.FirstName)
+    }
+
+    if user.LastName != ln {
+        t.Errorf("Expected the last name to be set to '%s'. Got '%v' instead.", ln, user.LastName)
     }
 }
 
@@ -225,7 +263,7 @@ func TestGetLists(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get Lists Response: %v\n",response)
+    //fmt.Printf("Get Lists Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -244,7 +282,7 @@ func TestGetTask(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get Task Response: %v\n",response)
+    //fmt.Printf("Get Task Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -267,7 +305,7 @@ func TestUpdateTask(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Update Task Response: %v\n",response)
+    //fmt.Printf("Update Task Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -289,13 +327,12 @@ func TestUpdateTask(t *testing.T) {
 
 func TestUpdateUser(t *testing.T) {
     url := fmt.Sprintf("/update/%s?discord_reminder=true", testuid)
-
     req, _ := http.NewRequest("GET", url, nil)
-    fmt.Printf("Update Task Request: %v\n", req)
+    //fmt.Printf("Update Task Request: %v\n", req)
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Update Task Response: %v\n",response)
+    //fmt.Printf("Update Task Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)
@@ -314,7 +351,7 @@ func TestGetTasks(t *testing.T) {
 
     response := executeRequest(req)
     checkResponseCode(t, http.StatusOK, response.Code)
-    fmt.Printf("Get Tasks Response: %v\n",response)
+    //fmt.Printf("Get Tasks Response: %v\n",response)
 
     var m map[string]Result
     json.Unmarshal(response.Body.Bytes(), &m)

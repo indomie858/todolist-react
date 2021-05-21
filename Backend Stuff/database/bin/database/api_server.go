@@ -77,7 +77,7 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Perform the requested action
-    user, err := a.Request.AddUser(id, payload)
+    user, err := a.Request.AddUser(uid, payload)
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, err.Error())
         return
@@ -712,17 +712,17 @@ func (a *App) updateTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) initializeRoutes() {
-	a.Router.HandleFunc("/", a.homePage)
+    a.Router.HandleFunc("/", a.homePage)
 
     // Create functions
-	a.Router.HandleFunc("/create/user/{uid}", a.createUser).Methods("GET", "POST")
-	a.Router.HandleFunc("/create/{uid}/list/{name}", a.createList).Methods("GET", "POST")
-	a.Router.HandleFunc("/create/{uid}/task/{name}/parent/{pid}", a.createTask).Methods("GET", "POST")
-	a.Router.HandleFunc("/create/{uid}/subtask/{name}/parent/{pid}", a.createSubtask).Methods("GET", "POST")
+    a.Router.HandleFunc("/create/user/{uid}", a.createUser).Methods("GET", "POST")
+    a.Router.HandleFunc("/create/{uid}/list/{name}", a.createList).Methods("GET", "POST")
+    a.Router.HandleFunc("/create/{uid}/task/{name}/parent/{pid}", a.createTask).Methods("GET", "POST")
+    a.Router.HandleFunc("/create/{uid}/subtask/{name}/parent/{pid}", a.createSubtask).Methods("GET", "POST")
 
     // Destroy functions
     // We can use one for destroying both tasks and subtasks due to requiring the parent id
-	a.Router.HandleFunc("/destroy/{uid}", a.destroyUser).Methods("GET","DELETE")
+    a.Router.HandleFunc("/destroy/{uid}", a.destroyUser).Methods("GET","DELETE")
     a.Router.HandleFunc("/destroy/{uid}/list/{id}", a.destroyList).Methods("GET", "DELETE")
     a.Router.HandleFunc("/destroy/{uid}/task/{id}", a.destroyTask).Methods("GET", "DELETE")
 
@@ -739,8 +739,8 @@ func (a *App) initializeRoutes() {
 
     // Update functions
     a.Router.HandleFunc("/update/{uid}", a.updateUser).Methods("GET", "PUT", "POST")
-	a.Router.HandleFunc("/update/{uid}/list/{id}", a.updateList).Methods("GET", "PUT", "POST")
-	a.Router.HandleFunc("/update/{uid}/task/{id}", a.updateTask).Methods("GET", "PUT", "POST")
+    a.Router.HandleFunc("/update/{uid}/list/{id}", a.updateList).Methods("GET", "PUT", "POST")
+    a.Router.HandleFunc("/update/{uid}/task/{id}", a.updateTask).Methods("GET", "PUT", "POST")
 }
 
 func main() {
