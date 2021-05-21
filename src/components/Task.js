@@ -11,6 +11,7 @@ const Task = (props) => {
     const [showSubTasks, setShowSubTasks] = useState(false);
     const [subTasks, setSubTasks] = useState(props.task.subTasks);
     const [taskComplete, setTaskComplete] = useState(props.task.isComplete);
+    const [subtaskFlag, setSubtaskFlag] = useState(props.task.sub_task);
 
     //function for adding subtasks.
     //need to handle sending subtask to the backend
@@ -30,7 +31,7 @@ const Task = (props) => {
                     }</p>
                 </div>
                 <div className="task-flex-mid" onClick={() => setShowSubTasks(!showSubTasks)}>
-                    {subTasks.length > 0 ? (!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />) : ''}
+                    {subtaskFlag ? (!showSubTasks ? <ExpandMoreIcon /> : <ExpandLessIcon />) : ''}
                 </div>
                 <div className="task-flex-right" onClick={() => {
                     setTaskComplete(!taskComplete);

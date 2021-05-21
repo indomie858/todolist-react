@@ -65,7 +65,7 @@ const Home = () => {
         reminder_time: "0001-01-01T00:00:00Z",
         shared: false,
         subTasks: [],
-        sub_task: false,
+        sub_task: true,
         task_owner: "a3a1hWUx5geKB8qeR6fbk5LZZGI2"
       },
       {
@@ -240,6 +240,7 @@ const Home = () => {
                         remind: taskObject.remind,
                         reminder_time: taskObject.date,
                         repeatFrequency: taskObject.repeatFrequency,
+                        sub_task: true,
                         willRepeat: taskObject.willRepeat,
                         task_name: taskObject.text,
                         
