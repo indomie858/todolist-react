@@ -90,7 +90,7 @@ async function registerUser(credentials,callback) {
     // Registered.  Maybe return user to sign in?
     user = userCredential.user;
     // user.displayName = `${credentials.firstName} ${credentials.lastName}`
-    callback(user)
+    callback(userCredential,user)
     
     // ...
   })
@@ -162,7 +162,7 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
             firstName,
             lastName,
             isRegistered
-        },(user)=>{if (user){
+        },(creds,user)=>{if (user){
           // user.displayName=firstName+" "+lastName;
           console.log(user)
           console.log("user id is"+user.uid)
@@ -174,7 +174,10 @@ const Login = ({ setToken, handleGoogleAuth /*Function to call for google auth*/
                     },
                     body: JSON.stringify({
                         
-                        create: 'user'
+                        create: 'user',
+                        first_name: creds.firstName,
+                        last_name: creds.lastName
+
 
                         
                     })
