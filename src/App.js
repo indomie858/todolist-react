@@ -1,3 +1,5 @@
+//root component of app
+
 //import { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
@@ -20,6 +22,7 @@ const App = ({ handleGoogleAuth }) => {
   return (
     <>
       <Container maxWidth="xs">
+        {/* routes to login page by default. main to do list is at /home */}
         <Router>
           <Switch>
             <Route

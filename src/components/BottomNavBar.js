@@ -1,4 +1,6 @@
 // component for bottom nav bar
+//uses material ui components - Material UI - https://material-ui.com/
+
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
@@ -22,6 +24,7 @@ const BottomNavBar = (props) => {
     const [value, setValue] = React.useState(0);
 
     return (
+        // bottom navigation bar component from material UI https://material-ui.com/components/bottom-navigation/
         <BottomNavigation
             value={value}
             onChange={(event, newValue) => {
