@@ -68,68 +68,105 @@ In terminal navigate to `database/bin` and run `go run api_server.go`
 ## Adding Data to a Collection
 
 ### Add User
-`http://localhost:10000/create/user/{name}`
+`http://localhost:10000/create/user/{id}`
 
 **Example**
 
 URL
 
-`http://localhost:10000/create/user/testing_user_1`
+`http://localhost:10000/create/user/fa3454dga5y`
 
 Return (new user)
 
 ```json
-"result": {
-    "User": {
-        "id": "XIatYAGJBbZgJwBVEYJ3",
-        "name": "testing_user_1",
-        "lists": [
-            "wYb9jQqrLQERkDEjdtHI"
-        ],
-        "discord_reminder": false,
-        "email_reminder": false
-    },
-    "List": null,
-    "Lists": [
-        {
-            "id": "wYb9jQqrLQERkDEjdtHI",
-            "list_name": "first_list",
-            "list_owner": "XIatYAGJBbZgJwBVEYJ3",
-            "shared_users": [
-                ""
+{
+    "result": {
+        "User": {
+            "id": "fa3454dga5y",
+            "lists": [
+                "mUxacmXhI5dpETXL3FE7",
+                "OvwusB67jFk5h8ToVnFZ"
             ],
-            "tasks": [
-                "3C8lL89d4cGi3aZ3OokE"
-            ]
-        }
-    ],
-    "Task": null,
-    "Tasks": null,
-    "AllTasks": [
-        [
+            "discord_reminder": false,
+            "email_reminder": false
+        },
+        "List": null,
+        "Lists": [
             {
-                "id": "3C8lL89d4cGi3aZ3OokE",
-                "text": "first_task",
-                "task_owner": "XIatYAGJBbZgJwBVEYJ3",
-                "parent_id": "wYb9jQqrLQERkDEjdtHI",
-                "date": "0001-01-01T00:00:00Z",
-                "isComplete": false,
-                "willRepeat": false,
-                "repeatFrequency": "never",
-                "end_repeat": "0001-01-01T00:00:00Z",
-                "remind": false,
-                "emailSelected": false,
-                "discordSelected": false,
-                "reminder": "none",
-                "reminder_time": "0001-01-01T00:00:00Z",
-                "priority": "none",
-                "shared": false,
-                "subTasks": [
+                "id": "OvwusB67jFk5h8ToVnFZ",
+                "list_name": "Shared",
+                "list_owner": "fa3454dga5y",
+                "shared": true,
+                "shared_users": [
                     ""
+                ],
+                "tasks": [
+                    "LaOy8UGuZQ8G5nyk3ESn"
+                ]
+            },
+            {
+                "id": "mUxacmXhI5dpETXL3FE7",
+                "list_name": "Main",
+                "list_owner": "fa3454dga5y",
+                "shared_users": [
+                    ""
+                ],
+                "tasks": [
+                    "o8GzmaxRNv67FzUFYGqW"
                 ]
             }
+        ],
+        "Task": null,
+        "Tasks": null,
+        "AllTasks": [
+            [
+                {
+                    "id": "LaOy8UGuZQ8G5nyk3ESn",
+                    "text": "First Task !",
+                    "task_owner": "fa3454dga5y",
+                    "parent_id": "OvwusB67jFk5h8ToVnFZ",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ],
+            [
+                {
+                    "id": "o8GzmaxRNv67FzUFYGqW",
+                    "text": "First Task !",
+                    "task_owner": "fa3454dga5y",
+                    "parent_id": "mUxacmXhI5dpETXL3FE7",
+                    "date": "0001-01-01T00:00:00Z",
+                    "isComplete": false,
+                    "willRepeat": false,
+                    "repeatFrequency": "never",
+                    "end_repeat": "0001-01-01T00:00:00Z",
+                    "remind": false,
+                    "emailSelected": false,
+                    "discordSelected": false,
+                    "reminder": "none",
+                    "reminder_time": "0001-01-01T00:00:00Z",
+                    "priority": "none",
+                    "shared": false,
+                    "subTasks": [
+                        ""
+                    ]
+                }
+            ]
         ]
-    ]
+    }
 }
 ```
 
