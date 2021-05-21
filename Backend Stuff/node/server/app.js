@@ -198,7 +198,7 @@ app.post('/api/create/:uid', (req, res) => {
       const parentId = body.parentId;
       delete body.task_name;
       delete body.parentId;
-      createAPIJSON(req.params.uid + `/task/${task_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
+      createAPIJSON(req.params.uid + `/task/${task_name}/parent/${parentId}`, body, (result) => { //add /Task/:ID to url
         console.log(result)
         res.send(result)
       })
@@ -216,7 +216,7 @@ app.post('/api/create/:uid', (req, res) => {
       const parentId = body.parentId;
       delete body.subtask_name;
       delete body.parentId;
-      createAPIJSON(req.params.uid + `/task/${subtask_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
+      createAPIJSON(req.params.uid + `/task/${subtask_name}/parent/${parentId}`, body, (result) => { //add /Task/:ID to url
         console.log(result)
         res.send(result)
       })

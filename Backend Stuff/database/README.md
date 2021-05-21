@@ -287,7 +287,7 @@ Return (new list)
 ```
 
 ### Add Task
-`http://localhost:10000/create/{uid}/task/{name}/parents/{pid}?<params>`
+`http://localhost:10000/create/{uid}/task/{name}/parent/{pid}?<params>`
 
 **Example**
 

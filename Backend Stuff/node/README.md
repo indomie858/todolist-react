@@ -60,3 +60,14 @@ if taskSettings:
 if subtasks: //note: MUST ONLY HAVE `update, taskID, sub_tasks`.
     taskId: "taskId"
     sub_tasks: ["array", "of", "string", "subtasks"]
+
+#Delete:
+URL: `/api/delete/{useridcode}`
+Method: delete
+delete: {user||list||task||subtask}
+if list:
+    listId: "listid"
+if task:
+    taskId: "taskid"
+if subtask:
+    sub_tasks: ["array", "of", "string", "subtasks"]
