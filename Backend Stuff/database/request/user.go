@@ -16,7 +16,7 @@ const (
     FREE = "free"
 )
 
-// Structure for user data
+// Firstore structure for user data
 type User struct {
     // Firestore generated user ID
     Id              string   `firestore:"id,omitempty"`
@@ -42,6 +42,7 @@ type User struct {
     EmailReminder   bool     `firestore:"email_reminder"`
 }
 
+// JSON Structure for user data 
 type UserJSON struct {
     // Firestore generated user ID
     Id              string   `json:"id,omitempty"`

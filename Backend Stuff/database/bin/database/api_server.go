@@ -56,18 +56,16 @@ type Result struct {
 // Create a new user in the Firstore database wih the provided name
 //
 // Example:
-// http://localhost:10000/create/user/{name}
-// http://localhost:10000/create/user/sabra
+// http://localhost:10000/create/user/{id}
 func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
     //fmt.Println("Endpoint Hit: createUser")
 
     // Read the variables passed
     vars := mux.Vars(r)
-	uid := vars["uid"]
-	name := vars["name"]
+	id := vars["id"]
 
     // Create a new request for the app
-    a.Request = request.NewRequest("create", uid)
+    a.Request = request.NewRequest("create", id)
 
     // Get the payload params and display them to the terminal
 	payload := r.URL.Query()
@@ -79,7 +77,7 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Perform the requested action
-    user, err := a.Request.AddUser(name, payload)
+    user, err := a.Request.AddUser(id, payload)
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, err.Error())
         return
@@ -717,7 +715,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/", a.homePage)
 
     // Create functions
-	a.Router.HandleFunc("/create/user/{name}", a.createUser).Methods("GET", "POST")
+	a.Router.HandleFunc("/create/user/{id}", a.createUser).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/list/{name}", a.createList).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/task/{name}/parent/{pid}", a.createTask).Methods("GET", "POST")
 	a.Router.HandleFunc("/create/{uid}/subtask/{name}/parent/{pid}", a.createSubtask).Methods("GET", "POST")
