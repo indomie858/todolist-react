@@ -36,7 +36,7 @@ const Task = (props) => {
                     setTaskComplete(!taskComplete);
                     console.log(props.task)
                 }}>
-                    {!taskComplete ? <CheckBoxOutlineBlankIcon /> : <CheckBoxIcon />}
+                    {!taskComplete ? <CheckBoxOutlineBlankIcon onClick={() => props.markCompleted(props.id)} /> : <CheckBoxIcon />}
                 </div>
             </div>
             {/* displays list of subtasks when individual task is clicked */}

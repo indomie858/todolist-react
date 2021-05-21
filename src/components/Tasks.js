@@ -8,7 +8,7 @@ const Tasks = (props) => {
             <h2>{props.listTitle}</h2>
             {/* iterates through tasks object and passes key/values to task component */}
             {props.tasks.map((task) => (
-                <Task key={task.id} id={task.id} task={task} changeTask={(id) => props.changeTask(id)} />
+                <Task key={task.id} markCompleted={props.markCompleted} id={task.id} task={task} changeTask={(id) => props.changeTask(id)} />
             ))}
         </>
     )
