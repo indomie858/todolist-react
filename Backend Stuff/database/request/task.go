@@ -3,7 +3,7 @@ package request
 import (
     "time"
     "fmt"
-    //"regexp"
+    "regexp"
     "net/url"
     "errors"
     "strings"
@@ -793,9 +793,17 @@ func (r *Request) ParseTaskFields(fields url.Values, data map[string]interface{}
             data[k] = val
             break
         case "sub_tasks":
-        //    arraychars := regexp.MustCompile(`[]"*`)
-            fmt.Printf("%t\n", v)
-            //data[k] = v
+            var values []string
+            re := regexp.MustCompile(`\[([^\[\]]*)\]`)
+            submatchall := re.FindAllString(val, -1)
+        	for _, element := range submatchall {
+        		element = strings.Trim(element, "[")
+        		element = strings.Trim(element, "]")
+                vals := strings.Split(element, ",")
+                values = vals
+        	}
+            fmt.Printf("%v\n", values)
+            data[k] = values
             break
         }
     }
