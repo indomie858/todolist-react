@@ -66,8 +66,8 @@ URL: `/api/delete/{useridcode}`
 Method: delete
 delete: {user||list||task||subtask}
 if list:
-    listId: "listid"
+    listId: "listidcode"
 if task:
-    taskId: "taskid"
+    taskId: "taskidcode"
 if subtask:
     sub_tasks: ["array", "of", "string", "subtasks"]
