@@ -173,7 +173,7 @@ app.post('/api/create/:uid', (req, res) => {
     case 'user': {
       delete body.create //remove the update parameter to simplify object
       console.log(body) //there should be nothing left in the body here
-      createAPI("/user/" + req.params.uid, (result) => {
+      createAPI("user/" + req.params.uid, (result) => {
         console.log(result)
         res.send(result)
       })
