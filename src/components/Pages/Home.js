@@ -13,7 +13,8 @@ import moment from 'moment'
 
 const Home = () => {
 
-  const userId = "a3a1hWUx5geKB8qeR6fbk5LZZGI2"; // TODO: Get this from them being logged in
+  const userId = JSON.parse(sessionStorage.getItem("token")).uid; // TODO: Get this from them being logged in
+
   // const listId = 'updated_isolated_list';
 
   let viewingList = 'mJmia9sdFy6yfb134ygs';
