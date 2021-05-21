@@ -153,6 +153,7 @@ body {
 }
 
 /* Modified from: https://codepen.io/kirstenallen/pen/MWwPYYm */
+/* this creates the little bubbles below the window */
 .popoverTag1 {
   z-index: 1;
   background:black;
@@ -190,6 +191,8 @@ body {
   bottom: 55px;
   box-shadow: 5px 5px lightblue;
 }
+
+/* all the directional popovers are for creating the bubbles in different places */
 
 .popoverRight1 {
   text-align: right;
@@ -327,6 +330,8 @@ body {
 .moveDown {
   transform: rotate(180deg);
 }
+
+/* we use a media query to keep the bubbles in the right place when the screen is smaller */
 
 @media only screen and (max-width: 500px) {
   

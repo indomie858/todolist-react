@@ -13,30 +13,8 @@ import moment from 'moment'
 
 const Home = () => {
 
-  const userId = JSON.parse(sessionStorage.getItem("token")).uid; // TODO: Get this from them being logged in
-
-  // const listId = 'updated_isolated_list';
-
-  let viewingList = 'mJmia9sdFy6yfb134ygs';
-  
-  
-  // fetch(`http://localhost:3003/api/userData/${userId}/list/${listId}`).then(
-  //     data => {
-  //       console.log(data); 
-  //       data.text().then(
-  //         value => { 
-  //           console.log(value)
-  //           let response = JSON.parse(value); 
-  //           console.log(response)
-  //           console.log(JSON.parse(response).result)
-  //         }
-  //       );
-  //     }
-  // );
-
-
-  //setEmail(JSON.stringify(JSON.parse(value).result.name))
-
+  // Current user id is stored in the session object
+  const userId = JSON.parse(sessionStorage.getItem("token")).uid;
 
   const getToken = () => {
     //tokens are stored locally so user doesn't have to keep logging in
@@ -44,7 +22,7 @@ const Home = () => {
     return token
   };
 
-  //state for displaying tasks. currently has placeholder objects. will replace with tasks from database
+  //state for displaying tasks. Starts with empty placeholders while the page loads, but is quickly replaced
   const [tasks, setTasks] = useState(
     [
       {
@@ -94,12 +72,14 @@ const Home = () => {
   )
 
 
+  // A bunch of state-aware variables
   const [userLists, setUserLists] = useState([]);
   const [discordDefault, setDiscordDefault] = useState(false);
   const [emailDefault, setEmailDefault] = useState(false);
   const [defaultList, setDefaultList] = useState("Main");
   const [selectedList, setSelectedList] = useState("Main");
 
+  // The most important function!  Whenever something happens that updates the database, this is called afterward.
   function refreshTasks() {
     fetch(`http://localhost:3003/api/userData/${userId}`).then(
       data => data.text().then(
@@ -119,16 +99,20 @@ const Home = () => {
           let newTasks = [];
           console.log("AllTasks")
           console.log(userData.AllTasks)
+          // There are some weird edge cases with variables not existing, so we have to check that the user has tasks first
           if (userData.AllTasks[0]) {
             userData.AllTasks.forEach( someList =>
               someList.forEach(task => {
                 let parentList = null;
+
+                // parent lists in the db are stored by id, not name, so we get their name for display purposes by cross-referencing the user's lists
                 listsFromDb.forEach(list => {
                   if (list.id == task.parent_id) {
                     parentList = list.list_name
                   }
                 })
                 console.log(task.date)
+                //dates are stored in the db in a different format than the datepickers can use, so they are converted here
                 task.date = moment(task.date).toDate();
                 task.date = moment(task.date).add(7, 'h').toDate();
                 console.log(task.date)
@@ -136,6 +120,7 @@ const Home = () => {
                 console.log("parent list info");
                 console.log(task.list + selectedList)
                 task.subTasks = [];
+                // we check if the user is on the same list for each task before adding it to the display.  This allows switching between separate lists.
                 if (task.list == selectedList) {
                   newTasks.push(task);
                 }
@@ -149,6 +134,7 @@ const Home = () => {
     );
   }
 
+  // useEffect makes this basically happen on load, but not get called whenever React decides the page needs to refresh
   useEffect(() => {
     refreshTasks();
     if (!getToken()) {
@@ -170,6 +156,7 @@ const Home = () => {
   const [changingTask, setChangingTask] = useState(0);
   const [email, setEmail] = useState('');
 
+  // We update the database entry for a task here.  
   function updateTask(taskObject) {
     console.log("updating")
     setChangeTask(false);
@@ -180,8 +167,6 @@ const Home = () => {
       }
     })
 
-    // taskObject.date = moment(taskObject.date).format("MM/DD/YYYY hh:MM:ss A")
-    // console.log(taskObject.date)
     taskObject.end_repeat = moment(taskObject.end_repeat).format("MM/DD/YYYY hh:MM:ss A")
     console.log(taskObject.end_repeat)
 
@@ -218,6 +203,7 @@ const Home = () => {
                 }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
 
+// very similar to above, but we don't pass in an id because the db will create one
   function createTask(taskObject) {
     console.log("creating")
     setAddTask(false); 
@@ -230,8 +216,6 @@ const Home = () => {
       console.log(parentId)
     })
 
-    // taskObject.date = moment(taskObject.date).format("MM/DD/YYYY hh:MM:ss A")
-    // console.log(taskObject.date)
     taskObject.end_repeat = moment(taskObject.end_repeat).format("MM/DD/YYYY hh:MM:ss A")
 
     console.log(taskObject)
@@ -267,6 +251,7 @@ const Home = () => {
                 }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
 
+  // again, similar to above, but for user settings
   function updateUserSettings(userObject) {
     fetch('http://localhost:3003/api/update/'+userId, {
                     method: 'POST',
@@ -292,6 +277,7 @@ const Home = () => {
                 }).then(data=>{ console.log(JSON.stringify(data)); refreshTasks(); });
   }
 
+  // Right now, this is called whenever a task is marked as completed.  In the future, we'd like to make this be separate from completion marking
   function deleteTask(id) {
     console.log("delete this:")
     console.log(id)
@@ -324,15 +310,17 @@ const Home = () => {
     
   }
 
+  // this is called whenever selectedList is updated (by React)
   useEffect(() => {
     refreshTasks();
  }, [selectedList]);
   
   return (
     <>
-      {/* <Container maxWidth="xs"> */}
       <div className="mainContainer">
+        {/* for all these overlay windows, we check whether or not to show them with a boolean */}
         {showAddTask && <AddTask userLists={userLists} list={defaultList} onAdd={createTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setAddTask(false)} />}
+        {/* if a task is being changed, we show the task adder, but with a bunch of extra data from that task */}
         {showChangeTask && <AddTask userLists={userLists} onAdd={updateTask} defaultReminders={{ "discord": true, "email": false }} onCancel={() => setChangeTask(false)}
           id={changingTask.id}
           date={changingTask.date}
@@ -350,7 +338,7 @@ const Home = () => {
         {showOptions && <Options onChooseOption={updateUserSettings} userLists={userLists} defaultList={defaultList} defaultReminders={{ "discord": discordDefault, "email": emailDefault }} />}
         <Header />
         <div className='listContainer'>
-          {/* displays placeholder list and title "Today" */}
+          {/* displays placeholder list and title */}
           {tasks.length > 0 ? (<Tasks tasks={tasks} listTitle={selectedList} markCompleted={deleteTask} changeTask={
             (id) => {
               for (let i = 0; i < tasks.length; i++) {
@@ -367,6 +355,8 @@ const Home = () => {
            />) : ('No tasks to show')}
         </div>
       </div>
+
+      {/* this could be simplified greatly by abstracting/modularizing these functions, but hey it works. */}
       <BottomNavBar onAddTask={() => { setAddTask(!showAddTask); setChangeTask(false); setListNav(false); setOptions(false) }} onListNav={() => { setListNav(!showListNav); setChangeTask(false); setAddTask(false); setOptions(false) }} onOptions={() => { setListNav(false); setChangeTask(false); setAddTask(false); setOptions(!showOptions) }} />
       {/* </Container> */}
     </>
