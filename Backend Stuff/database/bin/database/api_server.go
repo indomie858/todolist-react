@@ -77,7 +77,7 @@ func (a *App) createUser(w http.ResponseWriter, r *http.Request) {
     }*/
 
     // Perform the requested action
-    user, err := a.Request.AddUser(id, payload)
+    user, err := a.Request.AddUser(uid, payload)
     if err != nil {
         respondWithError(w, http.StatusInternalServerError, err.Error())
         return
