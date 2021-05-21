@@ -51,6 +51,60 @@ In terminal navigate to `database/bin` and run `go run api_server.go`
 
 `http://localhost:10000/`
 
+Payload keys must exactly match the fields for each collection type.\
+Possible `fields` are
+
+## USER 
+
+|        field     |   type    | required | notes                                                                  |
+| :--------------: | :-------: | :------: | ---------------------------------------------------------------------- |
+| first_name       | string    |   NO     | Not required in the payload                                            |
+| last_name        | string    |   NO     | Not required in the payload                                            |
+| email            | string    |   NO     | Users email that they signed up with                                   |
+| status           | string    |   NO     | Users status to be shown to friends *later feature*                    |
+| lists            | []string  |   NO     | the ids of the users lists                                             |
+| default_list     | string    |   NO     | the default list to add tasks to                                       |
+| discord_reminder | bool      |   NO     | Whether or not discord is the default reminder                         |
+| email_reminder   | bool      |   NO     | Whether or not email is the default reminder                           |
+
+## LIST 
+
+|     field     |   type    | required | notes                                                                  |
+| :-----------: | :-------: | :------: | ---------------------------------------------------------------------- |
+| list_name     | string    |   NO     | Not required in the payload                                            |
+| list_owner    | string    |   YES    | Must be given the id of the parent list, or the parent task if subtask |
+| lock          | bool      |   NO     | default = false                                                        |
+| tasks         | []string  |   NO     | Tasks in the list                                                      |
+| shared        | bool      |   NO     | default = `false`                                                      |
+| shared_users  | []string  |   NO     | default = [""]                                                         |
+
+## TASK
+
+|     field       |   type    | required | notes                                                                  |
+| :-----------:   | :-------: | :------: | ---------------------------------------------------------------------- |
+| text            | string    |   NO     | Not required in the *payload*                                          |
+| parent_id       | string    |   NO     | Not required in the *payload*                                          |
+| lock            | bool      |   NO     | default = false                                                        |
+| list            | string    |   NO     | list name                                                              |
+| date            | date      |   YES    | Must be given BEFORE end_repeat date, format: `01/02/2006 3:04:05 PM`  |
+| done            | bool      |   NO     | Whether or not it's done - default false                               |
+| willRepeat      | bool      |   NO     | default = `false`  - autoset when given repeat                         |
+| repeatFrequency | string    |   NO     | default = `never` example: `every week`                                |
+| end_repeat      | date      |   NO     | format: `01/02/2006`                                                   |
+| discordSelected | bool      |   NO     | Whether or not discord was selected as a reminder                      |
+| emailSelected   | bool      |   NO     | Whether or not email was selected as a reminder                        |
+| reminder        | string    |   NO     | default = `false` options: `at time of event`, `days/mins/weeks before`|
+| remind          | bool      |   NO     | Whether or not we should remind the user                               |
+| reminder_time   | date      |   NO     | What time to remind the user at - auto determined when given reminder  |
+| priority        | string    |   NO     | default = `none`;                                                      |
+| location        | string    |   NO     | default = ""                                                           |
+| description     | string    |   NO     | default = ""                                                           |
+| url             | string    |   NO     | default = ""                                                           |
+| shared          | bool      |   NO     | default = `false`                                                      |
+| shared_users    | []string  |   NO     | default = [""]                                                         |
+| sub_tasks       | []string  |   NO     | default = [""]                                                         |
+
+
 ## Adding Data to a Collection
 
 ### Add User
