@@ -1,3 +1,4 @@
+//imports
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -14,26 +15,25 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
-const app = express();
+const app = express(); //create express app for routing api calls
 
 let jsonObject = require('./test.json');
 const {
   getDefaultNormalizer
 } = require('@testing-library/dom');
 
-// view engine setup
+// view engine setup for express
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 // using bodyParser to parse JSON bodies into JS objects
 app.use(express.json());
-// app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', indexRouter); //default path
+app.use('/users', usersRouter); //unused /users path
 
 // adding Helmet to enhance your API's security
 app.use(helmet());
@@ -41,79 +41,35 @@ app.use(helmet());
 // enabling CORS for all requests
 app.use(cors());
 
-// var server = http.createServer(app);
-// server.listen(port);
-// server.on('error', onError);
-// server.on('listening', onListening);
 
 
-// to test login page from front end. will delete later - gaven
-app.use('/login', (req, res) => {
-  res.send({
-    token: 'test123'
-  });
+
+
+// starting the server
+app.listen(3003, () => {
+  console.log('listening on port 3003');
 });
+module.exports = app;
 
 
-// defining an endpoint to return all ads
-app.get('/test1', (req, res) => {
-  res.send("you rang?");
-  res.end("hello?")
-});
 
 
-app.get('/api/:input', (req, res) => {
-  if (req.params.input in jsonObject.users) {
-    res.send(jsonObject.users[req.params.input])
-  } else {
-    setCustomError(req, res, "Invalid API Reference. Please check the path again.", "Invalid API Reference", 404)
-    res.render('error')
-  }
-})
 
-
-app.get('/getTasks', (req, res) => {
-  console.log("HIT /api/getTasks");
-  getTasks((result) => { //this is terrible and I hate it
-
-    //console.log(result)
-    var myresults = result["result"]["Tasks"]
-    console.log("myresults")
-    console.log(myresults)
-    res.send(myresults)
-  })
-});
-/*
-app.get('/api/getTasks', (req, res) => {
-  console.log("HIT /api/getTasks")
-  /*
-  getTasks( (result) => { //this is terrible and I hate it
-
-    console.log(result)
-    //var myresults = result["result"]["Tasks"]
-    //console.log("myresults")
-    //console.log(myresults)
-    res.send(result)
-  })
-  res.send("you rang?");
-  res.end("hello?")
-});*/
-
-
+//user info api calls
 app.get('/api/userData/:id', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (result) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //necessary callback to send results back to client
 
     console.log(result)
     res.send(result)
   })
-  // res.send(JSON.stringify(name.Name))
+
 
 })
 
 app.get('/api/userData/:id/name', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (result) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //necessary callback to send results back to client
 
     console.log(result)
     res.send(result.user.name)
@@ -124,7 +80,7 @@ app.get('/api/userData/:id/name', (req, res) => {
 
 app.get('/api/userData/:id/email', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (result) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //necessary callback to send results back to client
 
     console.log(result)
     res.send(result.user.email)
@@ -135,7 +91,7 @@ app.get('/api/userData/:id/email', (req, res) => {
 
 app.get('/api/userData/:id/status', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (result) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //necessary callback to send results back to client
 
     console.log(result)
     res.send(result.user.status)
@@ -146,7 +102,7 @@ app.get('/api/userData/:id/status', (req, res) => {
 
 app.get('/api/userData/:id/lists', (req, res) => {
   console.log(req.params.id)
-  getName(req.params.id, (result) => { //this is terrible and I hate it
+  getName(req.params.id, (result) => { //necessary callback to send results back to client
 
     console.log(result)
     res.send(result.lists)
@@ -157,7 +113,7 @@ app.get('/api/userData/:id/lists', (req, res) => {
 
 app.get('/api/userData/:id/list/:listID', (req, res) => {
   console.log(req.params.id)
-  readAPI(req.params.id, `/list/${req.params.listID}`, (result) => { //this is terrible and I hate it
+  readAPI(req.params.id, `/list/${req.params.listID}`, (result) => { //necessary callback to send results back to client
     console.log(result)
     res.send(result)
   })
@@ -165,7 +121,10 @@ app.get('/api/userData/:id/list/:listID', (req, res) => {
 
 })
 
-//http://localhost:10000/create/{uid}/task/{name}/parents/{pid}?<params>
+//begin CRUD api calls section
+
+
+//CREATE
 app.post('/api/create/:uid', (req, res) => {
   let body = req.body
 
@@ -179,7 +138,7 @@ app.post('/api/create/:uid', (req, res) => {
       })
 
       break;
-    } //http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/list/test_list_2?lock=true&shared=false`
+    }
     case 'list': {
       delete body.create //remove the update parameter to simplify object
       const list_name = body.list_name;
@@ -204,9 +163,7 @@ app.post('/api/create/:uid', (req, res) => {
         res.send(result)
       })
 
-      //http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/subtask/sub_task_1/parent/mOCohcha1i6sInCJPeEp
 
-      // http://localhost:10000/update/{uid}/task/{id}?
 
       break;
     }
@@ -222,9 +179,7 @@ app.post('/api/create/:uid', (req, res) => {
         res.send(result)
       })
 
-      //http://localhost:10000/create/gNMA6TlIOCdB52LPSuL5/subtask/sub_task_1/parent/mOCohcha1i6sInCJPeEp
 
-      // http://localhost:10000/update/{uid}/task/{id}?
       break;
     }
 
@@ -239,12 +194,12 @@ app.post('/api/create/:uid', (req, res) => {
 
 
 
-
+//UPDATE
 app.post('/api/update/:uid', (req, res) => {
 
   let body = req.body
 
-  // getName(req.params.id,(name)=>{ //this is terrible and I hate it
+  // getName(req.params.id,(name)=>{ //necessary callback to send results back to client
   switch (body.update) {
     case 'userSettings':
       delete body.update //remove the update parameter to simplify object
@@ -294,10 +249,7 @@ app.post('/api/update/:uid', (req, res) => {
     default:
       console.log('default case hit')
   }
-  // console.log(name)
-  // res.send(JSON.stringify(name))
-  // })
-  // res.send(JSON.stringify(name.Name))
+
 
 })
 
@@ -313,7 +265,7 @@ app.get('/api/update/:uid/list/:list_id', (req, res) => {
 
 
 
-
+//DELETE/DESTROY
 app.delete('/api/delete/:uid', (req, res) => {
   let body = req.body
 
@@ -354,18 +306,7 @@ app.delete('/api/delete/:uid', (req, res) => {
     case 'subtask':
       delete body.delete //remove the update parameter to simplify object
 
-      //make this just edit the array
 
-      // const task_name = body.task_name;
-      // const parentId = body.parentId;
-      // delete body.task_name;
-      // delete body.parentId;
-      // updateAPIJSON(req.params.uid + `/task/${task_name}/parents/${parentId}`, body, (result) => { //add /Task/:ID to url
-      //   console.log(result)
-      //   res.send(result)
-      // })
-
-      // http://localhost:10000/update/{uid}/task/{id}?
 
       break;
     default:
@@ -374,8 +315,9 @@ app.delete('/api/delete/:uid', (req, res) => {
 
 })
 
-//http://localhost:10000/create/{uid}/task/{name}/parents/{pid}?<params>
-function createAPI(uid, callback) {
+//Begin Helper Functions
+
+function createAPI(uid, callback) { //general create function (mostly for users)
   var url = 'http://localhost:10000/create/' + uid
 
   apiCall(url, (output) => {
@@ -383,7 +325,7 @@ function createAPI(uid, callback) {
   })
 }
 
-function createAPIJSON(uid, json, callback) {
+function createAPIJSON(uid, json, callback) { //create function with payload parameters
   var url = 'http://localhost:10000/create/' + uid + "?"
 
   for (const query in json) {
@@ -398,13 +340,13 @@ function createAPIJSON(uid, json, callback) {
 }
 //
 
-function readAPI(uid, parameters, callback) {
+function readAPI(uid, parameters, callback) { //general read function with parameters baked into function call
   apiCall('http://localhost:10000/read/' + uid + parameters, (output) => {
     callback(output)
   })
 }
 
-function updateAPI(uid, parameters, queries, callback) {
+function updateAPI(uid, parameters, queries, callback) { //update function with payload parameters
   var url = 'http://localhost:10000/update/' + uid + parameters + "?"
 
   for (const query in queries) {
@@ -418,7 +360,7 @@ function updateAPI(uid, parameters, queries, callback) {
   })
 }
 
-function updateAPISubtasks(uid, parameters, subtasks, callback) {
+function updateAPISubtasks(uid, parameters, subtasks, callback) { //update function just for subtasks since they are special
   var url = 'http://localhost:10000/update/' + uid + parameters
 
 
@@ -430,7 +372,7 @@ function updateAPISubtasks(uid, parameters, subtasks, callback) {
   })
 }
 
-function updateAPIJSON(uid, json, callback) {
+function updateAPIJSON(uid, json, callback) { //update function with payload parameters received in json format
   var url = 'http://localhost:10000/update/' + uid + "?"
 
   for (const query in json) {
@@ -445,9 +387,9 @@ function updateAPIJSON(uid, json, callback) {
     callback(output) //return output to the passed in callback function
   })
 }
-//http://localhost:10000/destroy/MIUVfleqSkxAtzwNeW0W/list/364DgExvwpE4lNC7JV59`
 
-function destroyAPI(uid, parameters, callback) {
+
+function destroyAPI(uid, parameters, callback) { //delete function
   var url = 'http://localhost:10000/destroy/' + uid + parameters
 
   console.log(url)
@@ -460,7 +402,7 @@ function destroyAPI(uid, parameters, callback) {
 
 
 
-function apiCall(url, callback) {
+function apiCall(url, callback) { //regular read function
   http.get(url, (resp) => {
     let data = ''
 
@@ -481,16 +423,8 @@ function apiCall(url, callback) {
   })
 }
 
-function apiCallWithPayload(url, payload, callback) {
+function apiCallWithPayload(url, payload, callback) { //function for specifically items that must be put in arrays
 
-  // const options = {
-  //   method: 'GET',
-  //   headers: {
-  //     Accept: 'application/json',
-  //     'Content-Type': 'application/json'
-  //   },
-  //   body: JSON.stringify(payload)
-  // }
   url += `?sub_tasks=[`
 
   for (const item in payload) {
@@ -517,7 +451,7 @@ function apiCallWithPayload(url, payload, callback) {
     console.log("Error: " + err.message)
   })
 }
-// function apiCallWithPayload(url, payload, callback) {
+// function apiCallWithPayload(url, payload, callback) { //attempt at making it run by sending an array json
 
 //   const options = {
 //     method: 'POST',
@@ -548,7 +482,7 @@ function apiCallWithPayload(url, payload, callback) {
 //   })
 // }
 
-function getTasks(callback) {
+function getTasks(callback) { //get all tasks
   // var output =1
   http.get('http://localhost:10000/readtaskreminders', (resp) => {
     let data = ''
@@ -571,7 +505,7 @@ function getTasks(callback) {
   // return output
 }
 
-function getName(uid, callback) {
+function getName(uid, callback) { //simple api call for reads
   // var output =1
   http.get('http://localhost:10000/read/' + uid, (resp) => {
     let data = ''
@@ -594,7 +528,7 @@ function getName(uid, callback) {
   // return output
 }
 
-function setCustomError(req, res, message, name, status) {
+function setCustomError(req, res, message, name, status) { //error message for 404
   const err = createError(status, name)
   res.locals.title = name
   res.locals.message = message
@@ -626,8 +560,25 @@ function errorHandler(err, req, res, next) {
 
 }
 
-// starting the server
-app.listen(3003, () => {
-  console.log('listening on port 3003');
+
+
+//test function
+app.get('/api/:input', (req, res) => {
+  if (req.params.input in jsonObject.users) {
+    res.send(jsonObject.users[req.params.input])
+  } else {
+    setCustomError(req, res, "Invalid API Reference. Please check the path again.", "Invalid API Reference", 404)
+    res.render('error')
+  }
+})
+
+//test function
+app.get('/getTasks', (req, res) => {
+  console.log("HIT /api/getTasks");
+  getTasks((result) => { //necessary callback to send results back to client
+
+    //console.log(result)
+    var myresults = result["result"]["Tasks"]
+    res.send(myresults)
+  })
 });
-module.exports = app;
