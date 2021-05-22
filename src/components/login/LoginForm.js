@@ -1,4 +1,5 @@
 //component for login form. used on login page - Login.js
+// built off template from official react docs source https://material-ui.com/getting-started/templates/
 
 import React from 'react';
 import Button from '@material-ui/core/Button';

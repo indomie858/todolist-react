@@ -31,6 +31,7 @@ const AddTask = (props) => {
 
     return ( 
         <div>
+            {/* This is all largely self-explanatory.  It's just a complicated html page, basically */}
             <div className="popover" >
                 <span>Add New Task:</span>
                 <label className="templateInput">Template: &nbsp;
@@ -91,6 +92,7 @@ const AddTask = (props) => {
                 </div>
                 <div className="addTaskInput">
                     <button className="addTaskInput addTaskButton" onClick={() => { 
+                        // this time math is ridiculous.  so many different formats.  the goal format is: HH:MM:SS AM, but the input can be many things
                         console.log("time:")
                         console.log(time);
                         console.log("date:")
@@ -119,6 +121,7 @@ const AddTask = (props) => {
 
                         console.log("updated Time:")
                         console.log(timeString);
+                        // whether we're adding a new task or updating one, we'll need all this info
                         props.onAdd({
                             id: id,
                             date: moment(dateValue).format("MM/DD/YYYY") + " " + timeString,
@@ -136,6 +139,8 @@ const AddTask = (props) => {
                     <button className="addTaskInput addTaskButton" onClick={() => props.onCancel()}>Cancel</button>
                 </div>
             </div>
+
+            {/* these divs create the little bubbles under the window */}
             <div className="popoverTag1 popoverRight1"></div>
             <div className="popoverTag2 popoverRight2"></div>
         </div>
